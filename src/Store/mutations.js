@@ -6,7 +6,11 @@ export default {
         state.lang = lang;
     },
     [types.SET_USERINFO](state, userInfo) {
-        lStore.set("userInfo", userInfo);
+        if (userInfo) {
+            lStore.set("userInfo", userInfo);
+        } else {
+            lStore.remove("userInfo");
+        }
         state.userInfo = userInfo;
     },
     setTabNav(state, val) {

@@ -1,6 +1,6 @@
 <template>
   <div class="pos">
-    <NavBar title="BTC/USDT" fixed showL @clickLeft="clickLeft" @handleClick="showSelect"/>
+    <NavBar title="BTC/USDT" fixed showL @clickLeft="clickLeft" @handleClick="showSelect" />
     <van-popup v-model="show" position="top">
       <div class="selectWrap">
         <h2>BTC/USDT</h2>
@@ -94,15 +94,15 @@
         <div :style="styls" class="tabs_line"></div>
       </div>
       <div class="cont">
-        <Capital v-if="tabsType == 'Capital'"/>
-        <Intord v-if="tabsType == 'Intord'"/>
+        <Capital v-if="tabsType == 'Capital'" />
+        <Intord v-if="tabsType == 'Intord'" />
       </div>
     </div>
     <div class="handWrap">
       <button>买跌 5794.34</button>
       <button>买涨 5798.39</button>
     </div>
-    <PlaceOrder v-show="false"/>
+    <PlaceOrder v-show="false" />
   </div>
 </template>
 
@@ -136,6 +136,7 @@ export default {
     this.initSocket();
   },
   destroyed() {
+    this.$EventListener.off("TVdetail", this.renderDetail);
     this.Socket.close();
   },
   components: {
@@ -152,18 +153,14 @@ export default {
       let datas = this.resolutionSocket(this.TVInterval);
       setTimeout(() => this.Socket.Send(JSON.stringify(datas)), 100);
       this.$EventListener.on("TVdetail", this.renderDetail);
-      this.$EventListener.on("TVdepth", this.rederDeoth);
     },
     //更新头部价格成交量
     renderDetail(data) {
-      console.log(data);
       setTimeout(() => {
         this.detailData = data;
       }, 300);
     },
-    rederDeoth(data) {
-      //   console.log(data);
-    },
+
     //点击tabs
     tabClick(type) {
       let index = 0;

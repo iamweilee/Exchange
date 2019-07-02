@@ -1,12 +1,12 @@
 <template>
   <div class="Pwd">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft"/>
+    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <p class="tab_bar">
       <router-link to="/me/pwd">修改密码</router-link>
       <router-link to="/me/pwd/reset">重置密码</router-link>
     </p>
     <transition :name="transitionName">
-      <router-view/>
+      <router-view />
     </transition>
   </div>
 </template>
@@ -29,6 +29,15 @@ export default {
     }
   },
   methods: {
+    editPwd() {
+      this.$http({
+        url: "/v1/user/update_login_pwd",
+        data: { codeType: 7, password: "123456" },
+        method: "put"
+      }).then(res => {
+        console.log(res);
+      });
+    },
     clickLeft() {
       this.$router.push("/me/security");
     }

@@ -1,24 +1,35 @@
 <template>
   <div class="history">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft"/>
+    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <van-list v-model="loading" :finished="finished" :offset="80" finished-text="没有更多了" @load="onLoad">
-        <ul class="history_single" v-for="(item,index) in List" :key="index">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        :offset="80"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <router-link
+          class="history_single"
+          v-for="(item,index) in List"
+          :to="`/chat/history/${index}`"
+          :key="index"
+        >
           <li class="top">
             <p class="top_l">
               <span class="big">ETH</span>
               <span class="small">USDT</span>
               <span class="icon">
-                <img :src="isBuy(index)" alt>
+                <img :src="isBuy(index)" alt />
               </span>
               <span class="num">×1手</span>
             </p>
             <p class="top_btn">
               <span :class="isColor(index)">-18.76</span>
-              <button>平仓</button>
+              <button>已平仓</button>
             </p>
           </li>
-          <li class="bot">
+          <span class="bot">
             <p class="line-1px">
               <span>5.7605</span>
               <span>开仓价</span>
@@ -35,8 +46,8 @@
               <span>6.0002</span>
               <span>止盈价</span>
             </p>
-          </li>
-        </ul>
+          </span>
+        </router-link>
       </van-list>
     </van-pull-refresh>
     <!-- <div class="not_data">没有更多数据</div> -->

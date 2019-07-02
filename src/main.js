@@ -21,6 +21,7 @@ import {
     Swipe,
     SwipeItem,
     Dialog,
+    Switch,
     Popup
 } from "vant";
 import VueClipboard from "vue-clipboard2";
@@ -56,6 +57,7 @@ Vue.use(VueI18n)
     .use(Swipe)
     .use(SwipeItem)
     .use(Popup)
+    .use(Switch)
     .use(Dialog)
     .use(VueClipboard);
 const i18n = new VueI18n({

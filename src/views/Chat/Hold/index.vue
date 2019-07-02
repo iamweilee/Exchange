@@ -18,7 +18,7 @@
         </p>
         <p class="top_btn">
           <span :class="isColor(index)">-18.76</span>
-          <button @click="closeOut">平仓</button>
+          <button @click.stop="closeOut">平仓</button>
         </p>
       </li>
       <li class="bot">

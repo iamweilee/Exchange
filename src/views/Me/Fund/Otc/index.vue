@@ -1,6 +1,6 @@
 <template>
   <div class="fund_list">
-    <ScrollH pulldown pullup @pullDown="pullDown" @pullUp="pullUp" :data="List">
+    <ScrollV pulldown pullup @pullDown="pullDown" @pullUp="pullUp" :data="List">
       <router-link
         tag="ul"
         class="fund_list_single border-1px"
@@ -18,12 +18,12 @@
         </li>
         <li class="right">+4000</li>
       </router-link>
-    </ScrollH>
+    </ScrollV>
   </div>
 </template>
 
 <script>
-import ScrollH from "components/ScrollH";
+import ScrollV from "components/Scroll";
 export default {
   data() {
     return {
@@ -34,7 +34,7 @@ export default {
     };
   },
   components: {
-    ScrollH
+    ScrollV
   },
   methods: {
     statusColor(status) {

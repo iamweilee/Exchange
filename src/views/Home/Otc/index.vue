@@ -1,9 +1,9 @@
 <template>
   <div class="otc">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft"/>
+    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <div class="otc_wrapper">
       <transition :name="transitionName">
-        <router-view/>
+        <router-view />
       </transition>
     </div>
   </div>
@@ -11,6 +11,7 @@
 
 <script>
 import NavBar from "components/NavBar/Switch";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -21,9 +22,33 @@ export default {
       ]
     };
   },
-
+  computed: {
+    ...mapState(["userInfo"])
+  },
   components: { NavBar },
+  created() {
+    this.getAddress();
+  },
   methods: {
+    getAddr() {
+      this.$http({
+        url: "/v1/user/wallet_address_other",
+        data: { userId: this.userInfo.userId, coinCode: "USDT" },
+        method: "get"
+      }).then(res => {
+        console.log(res);
+      });
+    },
+    //充币地址
+    getAddress() {
+      this.$http({
+        url: "/v1/user/wallet_address",
+        data: { userId: this.userInfo.userId, coinType: "USDT" },
+        method: "post"
+      }).then(res => {
+        console.log(res);
+      });
+    },
     clickLeft() {
       this.$router.push("/");
     }

@@ -2,7 +2,7 @@
   <div class="service">
     <NavBar title="联系客服" hideBorder fixed showL @clickLeft="clickLeft"/>
     <div class="service_wrap">
-      <ScrollH scrollToEndFlag pulldown @pullDown="pullDown" :data="List">
+      <ScrollV scrollToEndFlag pulldown @pullDown="pullDown" :data="List">
         <p class="time">22:35</p>
         <div
           class="msg"
@@ -24,7 +24,7 @@
           </div>
           <div class="msg_r" v-else>{{item}}</div>
         </div>
-      </ScrollH>
+      </ScrollV>
     </div>
     <div class="service_send">
       <div class="inp">
@@ -40,7 +40,7 @@
 
 <script>
 import NavBar from "components/NavBar";
-import ScrollH from "components/ScrollH";
+import ScrollV from "components/Scroll";
 export default {
   data() {
     return {
@@ -51,7 +51,7 @@ export default {
   },
   components: {
     NavBar,
-    ScrollH
+    ScrollV
   },
   mounted() {
     setTimeout(() => {

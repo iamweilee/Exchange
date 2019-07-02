@@ -3,9 +3,9 @@
     <h2 class="pwd_title">设置用户密码</h2>
     <div class="pwd_wrap">
       <div class="inp_group border-1px">
-        <input type="password" placeholder="输入新账户密码" v-model="pwd">
+        <input type="password" placeholder="输入新账户密码" v-model="pwd" />
       </div>
-      <button class="from_btn" :disabled="isClick" @click="subMit">登录</button>
+      <button class="from_btn" @click="subMit">登录</button>
       <p class="pwd_wrap_back" @click="back">返回上一页</p>
     </div>
   </div>
@@ -29,8 +29,8 @@ export default {
         this.$toast(err);
       } else {
         req.loginPwd = this.$md5(this.pwd);
-        this.$lStore.remove("req");
-        // this.register(req);
+        // this.$lStore.remove("req");
+        this.register(req);
       }
     },
     register(req) {
@@ -43,10 +43,10 @@ export default {
         if (res.status == 200) {
           this.$toast("恭喜你注册成功");
 
-          this.$lStore.removeItem("req");
           this.$lStore.set("userInfo", data);
           this.$lStore.set("token", data.token);
           this.$router.push("/");
+          this.$lStore.remove("req");
         }
       });
     },

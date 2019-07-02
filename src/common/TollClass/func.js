@@ -242,7 +242,7 @@ function scientificToNumber(num) {
         .replace(/(\.\d+[1-9])0+$/, "$1");
 }
 //科学计数法
-function toFixeds(nums, len) {
+function toFixeds(nums, len = 2) {
     if (nums || nums === 0) {
         let re = `/([0-9]+\.?[0-9]{${len}})[0-9]*/`,
             regexp = /(?:\.0*|(\.\d+?)0+)$/;
@@ -251,7 +251,7 @@ function toFixeds(nums, len) {
             nums == 0
                 ? nums
                 : nums.replace(eval(re), "$1").replace(regexp, "$1");
-        return Number(nums).toFixed(2);
+        return Number(nums).toFixed(len);
     } else {
         return "--";
     }

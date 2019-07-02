@@ -8,9 +8,9 @@
             <p>USDT</p>
             <p>2,210.03</p>
           </div>
-          <p class="card_btn">
+          <router-link tag="p" to="/otc" class="card_btn">
             <button>立即充币</button>
-          </p>
+          </router-link>
         </div>
         <ul class="list">
           <li>

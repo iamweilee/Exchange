@@ -74,7 +74,7 @@ const router = new Router({
         },
         {
             path: "/asked/:type",
-            name: "Asked",
+            name: "AskedType",
             meta: { id: 1.33 },
             components: {
                 default: () => import("views/Home/Asked")
@@ -96,13 +96,13 @@ const router = new Router({
             children: [
                 {
                     path: "/otc",
-                    name: "Merchant",
+                    name: "otcMerchant",
                     meta: { id: 1.51 },
                     component: () => import("views/Home/Otc/Merchant")
                 },
                 {
                     path: "/otc/wallet",
-                    name: "Wallet",
+                    name: "otcWallet",
                     meta: { id: 1.52, type: "sub" },
                     component: () => import("views/Home/Otc/Wallet")
                 }
@@ -116,13 +116,13 @@ const router = new Router({
             children: [
                 {
                     path: "/Withdraw",
-                    name: "Merchant",
+                    name: "withdrawMerchant",
                     meta: { id: 1.51 },
                     component: () => import("views/Home/Withdraw/Merchant")
                 },
                 {
                     path: "/Withdraw/wallet",
-                    name: "Wallet",
+                    name: "withdrawWallet",
                     meta: { id: 1.52, type: "sub" },
                     component: () => import("views/Home/Withdraw/Wallet")
                 }
@@ -235,6 +235,12 @@ const router = new Router({
             component: () => import("views/Chat/History")
         },
         {
+            path: "/chat/history/:id", //持仓历史
+            name: "ChatHistoryDetail",
+            meta: { id: 4.21 },
+            component: () => import("views/Chat/History/Detail.vue")
+        },
+        {
             path: "/me", //我的
             name: "Me",
             meta: { id: 5 },
@@ -321,7 +327,7 @@ const router = new Router({
         },
         {
             path: "/me/pwd", //修改登录密码
-            name: "Pwd",
+            name: "MePwd",
             meta: { id: 5.51 },
             component: () => import("views/Me/Security/Child/Pwd.vue"),
             children: [

@@ -1,5 +1,5 @@
 <template>
-  <div class="TVChartContainer" :id="containerId"/>
+  <div class="TVChartContainer" :id="containerId" />
 </template>
 
 <script>
@@ -149,6 +149,7 @@ export default {
           "right_bar_stays_on_scroll",
           "legend_context_menu",
           "edit_buttons_in_legend"
+          //   "create_volume_indicator_by_default"
         ],
         enabled_features: [
           "dont_show_boolean_study_arguments",
@@ -202,8 +203,7 @@ export default {
       });
     },
     handleClick() {
-      console.log(1111);
-      console.log(this.tvWidget.chart().getShapeById("MACD"));
+      this.tvWidget.chart().getShapeById("MACD");
     },
     createStudy(tvWidget) {
       let mas = [
@@ -218,23 +218,18 @@ export default {
         {
           day: 30,
           color: "#397d51"
-        },
-        {
-          day: 60,
-          color: "#60407f"
         }
+        // {
+        //   day: 60,
+        //   color: "#60407f"
+        // }
       ];
       mas.forEach(item => {
-        tvWidget.createStudy(
-          "Moving Average",
-          false,
-          false,
-          [item.day],
-          entity => {
-            widget.MAStudies.push(entity);
-          },
-          { "plot.color": item.color }
-        );
+        tvWidget
+          .chart()
+          .createStudy("Moving Average", false, false, [item.day], null, {
+            "plot.color": item.color
+          });
       });
     },
     clickBtn(resolution) {

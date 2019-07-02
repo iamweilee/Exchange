@@ -1,4 +1,4 @@
-import { Get } from "common/Api";
+import { http } from "common/Api";
 const history = {};
 
 export default {
@@ -27,10 +27,12 @@ export default {
             interval: resolution, //resolution
             pageSize: limit ? limit : 200
         };
-        return Get({
+        return http({
             url: "/v1/kline/findList",
             data: qs,
-            name: "K线数据源"
+            name: "K线数据源",
+            method: "get",
+            baseApi: "TV"
         }).then(data => {
             if (data.Response && data.Response === "Error") {
                 console.log("CryptoCompare API error:", data.Message);
@@ -44,7 +46,7 @@ export default {
                         high: el.high,
                         open: el.open,
                         close: el.close,
-                        volume: el.volume,
+                        volume: el.volume
                     };
                 });
                 if (first) {

@@ -4,6 +4,7 @@ import ENV from "./ENV";
 import { Toast } from "vant";
 const baseApi = ENV.getENV().httpApi;
 const uploadAPI = ENV.getENV().uploadApi;
+const TVApi = ENV.getENV().TVApi;
 
 //公共函数
 const comFunc = function(options) {
@@ -21,6 +22,8 @@ const comFunc = function(options) {
         };
     if (options.baseApi == "upload") {
         axiosData.baseURL = uploadAPI;
+    } else if (options.baseApi == "TV") {
+        axiosData.baseURL = TVApi;
     }
     if (options.method == "get") {
         axiosData.params = params;

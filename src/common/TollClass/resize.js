@@ -4,7 +4,6 @@ import { throttle } from "common/TollClass/func";
         resizeEvt =
             "orientationchange" in window ? "orientationchange" : "resize",
         recalc =  throttle(function() {
-            console.log("resize");
             var clientWidth = docEl.clientWidth;
             if (!clientWidth) return;
             if (clientWidth >= 750) {
