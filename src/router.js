@@ -276,6 +276,18 @@ const router = new Router({
             ]
         },
         {
+            path: "/me/bank", //账户设置
+            name: "Bank",
+            meta: { id: 5.4 },
+            component: () => import("views/Me/Bank")
+        },
+        {
+            path: "/me/bank/add", //账户设置
+            name: "BankAdd",
+            meta: { id: 5.41 },
+            component: () => import("views/Me/Bank/AddBank.vue")
+        },
+        {
             path: "/me/fund/status/:orderId", //账户设置
             name: "Status",
             meta: { id: 5.23 },

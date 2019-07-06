@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <NavBar title="我的持仓" fixed/>
+    <NavBar title="我的持仓" fixed />
     <div class="chat_wrap">
       <div class="chat_wrap_top">
         <div class="card">
@@ -44,7 +44,7 @@
         </div>
         <div class="cont">
           <transition :name="transitionName">
-            <router-view ref="child" :showDialog="showDialog"/>
+            <router-view ref="child" :showDialog="showDialog" />
           </transition>
         </div>
       </div>
@@ -112,6 +112,7 @@ export default {
       } else {
         this.$refs.child.refresh(done);
       }
+
       return false;
     }
   },

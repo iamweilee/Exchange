@@ -7637,6 +7637,11 @@ vue-loader@^15.7.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-pickers@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/vue-pickers/-/vue-pickers-1.1.5.tgz#cc3d1a5b560977188ba51a8aae9ee020831710d8"
+  integrity sha512-2cvsOSxBjwH9R54WgK/307ZBqMy27bLhyNLQXpPHff5ZW3ehC/H09Rdt2E1KIhzdJGk+zlaLvoSHUkMKiZe3kw==
+
 vue-router@^3.0.3:
   version "3.0.6"
   resolved "https://registry.npm.taobao.org/vue-router/download/vue-router-3.0.6.tgz#2e4f0f9cbb0b96d0205ab2690cfe588935136ac3"

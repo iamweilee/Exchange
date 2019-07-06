@@ -78,8 +78,8 @@
       </div>
     </div>
     <div class="k_line">
-      <TradingView ref="trading" :symbol="symbol" :interval="TVInterval"></TradingView>
-      <!-- <TradingView ref="trading"></TradingView> -->
+      <!-- <TradingView ref="trading" :symbol="symbol" :interval="TVInterval"></TradingView> -->
+      <TradingView ref="trading"></TradingView>
     </div>
     <div class="pos_wrap">
       <div class="tabs">

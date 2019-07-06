@@ -3,8 +3,8 @@
 </template>
 
 <script>
-// import Datafeed from "./api/index";
-import Datafeed from "./pro/index";
+import Datafeed from "./api/index";
+// import Datafeed from "./pro/index";
 import { setTimeout, setInterval } from "timers";
 function getLanguageFromURL() {
   const regex = new RegExp("[\\?&]lang=([^&#]*)");
@@ -149,6 +149,7 @@ export default {
           "right_bar_stays_on_scroll",
           "legend_context_menu",
           "edit_buttons_in_legend"
+
           //   "create_volume_indicator_by_default"
         ],
         enabled_features: [
@@ -194,7 +195,8 @@ export default {
           backgroundColor: "#1b212d",
           foregroundColor: "#1b212d"
         },
-        custom_css_url: "bundles/coustom.css"
+        custom_css_url: "bundles/coustom.css",
+        indicators_file_name: "customIndex.js",
       };
       const tvWidget = new TradingView.widget(widgetOptions);
       this.tvWidget = tvWidget;
@@ -224,6 +226,7 @@ export default {
         //   color: "#60407f"
         // }
       ];
+        
       mas.forEach(item => {
         tvWidget
           .chart()
@@ -259,9 +262,8 @@ export default {
     },
     MACD() {
       this.closeOther();
-      this.tvWidget.chart().createStudy("MACD", false, false, [], Id => {
-        this.getID(Id, "MACDID");
-      });
+      this.tvWidget.chart().createStudy("MACD", false, false, []);
+      this.tvWidget.chart().createStudy("Equity", false, false,[]);
     },
     BOLL() {
       this.closeOther();

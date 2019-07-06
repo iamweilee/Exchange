@@ -11,6 +11,74 @@ import icon_me from "Images/footer/me.png";
 import icon_me_a from "Images/footer/me_active.png";
 import radio from "Images/other/icon_radio.png";
 import radios from "Images/other/icon_radios.png";
+
+export const bankList = [
+    {
+        text: "中国工商银行 (ICBC)",
+        value: "中国工商银行 (ICBC)"
+    },
+    {
+        text: "中国农业银行 (ABC)",
+        value: "中国农业银行 (ABC)"
+    },
+    {
+        text: "中国建设银行 (CBC)",
+        value: "中国建设银行 (CBC)"
+    },
+    {
+        text: "中国银行 (BC)",
+        value: "中国银行 (BC)"
+    },
+    {
+        text: "交通银行 (BOCOM)",
+        value: "交通银行 (BOCOM)"
+    },
+    {
+        text: "招商银行 (CNBC)",
+        value: "招商银行 (CNBC)"
+    },
+    {
+        text: "广发银行 (CGB)",
+        value: "广发银行 (CGB)"
+    },
+    {
+        text: "招商银行 (CNBC)",
+        value: "招商银行 (CNBC)"
+    },
+    {
+        text: "浦发银行 (SDPB)",
+        value: "浦发银行 (SDPB)"
+    },
+    {
+        text: "兴业银行 (CIB)",
+        value: "兴业银行 (CIB)"
+    },
+    {
+        text: "中国光大银行 (CEB)",
+        value: "中国光大银行 (CEB)"
+    },
+    {
+        text: "平安银行 (PAB)",
+        value: "平安银行 (PAB)"
+    },
+    {
+        text: "中国民生银行 (CMBC)",
+        value: "中国民生银行 (CMBC)"
+    },
+    {
+        text: "中信银行 (ECITIC)",
+        value: "中信银行 (ECITIC)"
+    },
+    {
+        text: "上海银行 (BOSC)",
+        value: "上海银行 (BOSC)"
+    },
+    {
+        text: "中国邮政储蓄银行 (PSBC)",
+        value: "中国邮政储蓄银行 (PSBC)"
+    }
+];
+
 export const navList = [
     {
         id: 1,
@@ -267,19 +335,25 @@ export const meList = [
         title: "投资报表",
         icon: require("../assets/Images/me/icon_0.png"),
         link: "/me/report",
-        id: 'report0'
+        id: "report0"
     },
     {
         title: "资金明细",
         icon: require("../assets/Images/me/icon_1.png"),
         link: "/me/fund",
-        id: 'fund1'
+        id: "fund1"
+    },
+    {
+        title: "银行卡包",
+        icon: require("../assets/Images/me/icon_1.png"),
+        link: "/me/bank",
+        id: "bank1"
     },
     {
         title: "消息中心",
         icon: require("../assets/Images/me/icon_2.png"),
-        link: "/me/msg",
-        id: 'msg2'
+        link: "/me/bank",
+        id: "msg2"
     },
     {
         title: "新手引导",
@@ -291,19 +365,19 @@ export const meList = [
         title: "联系客服",
         icon: require("../assets/Images/me/icon_4.png"),
         link: "/service",
-        id: 'service4'
+        id: "service4"
     },
     {
         title: "安全中心",
         icon: require("../assets/Images/me/icon_5.png"),
         link: "/me/security",
-        id: 'security5'
+        id: "security5"
     },
     {
         title: "账户设置",
         icon: require("../assets/Images/me/icon_6.png"),
         link: "/me/setting",
-        id: 'setting6'
+        id: "setting6"
     }
 ];
 

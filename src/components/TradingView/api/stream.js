@@ -74,7 +74,6 @@ socket.on("m", e => {
         if (data.ts < sub.lastBar.time / 1000) {
             return;
         }
-        console.log(data,sub)
         var _lastBar = updateBar(data, sub);
 
         // send the most recent bar back to TV's realtimeUpdate callback
