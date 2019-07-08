@@ -9,20 +9,33 @@
     </div>
     <div class="from">
       <div class="inp_group border-1px">
-        <input type="text" placeholder="输入手机号/邮箱账号">
+        <input
+          type="text"
+          placeholder="输入手机号/邮箱账号"
+          v-model="loginData.loginName"
+        />
       </div>
       <div class="inp_group border-1px">
-        <input type="text" placeholder="输入验证码">
-        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">{{sendBtnText}}</button>
+        <input
+          type="text"
+          placeholder="输入验证码"
+          v-model="loginData.mobileCode"
+        />
+        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
+          {{ sendBtnText }}
+        </button>
       </div>
       <button class="from_btn" @click="login">登录</button>
-      <router-link tag="p" to="/login/pwd" class="from_check">密码登录</router-link>
+      <router-link tag="p" to="/login/pwd" class="from_check"
+        >密码登录</router-link
+      >
     </div>
   </div>
 </template>
 
 <script>
 import { setInterval, clearInterval } from "timers";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -31,23 +44,26 @@ export default {
       sendBtnText: "获取验证码",
       timer: null,
       activeClass: "phone",
-      type: this.$route.params.type
+      type: this.$route.params.type,
+      loginData: { loginName: "", mobileCode: "", emailCode: "", type: 1 }
     };
   },
   created() {},
   components: {},
   methods: {
     login() {
+      this.loginData.emailCode = this.loginData.mobileCode;
       this.$http({
         url: "/auth/authorize",
-        data: {
-          loginName: "1234567@qq.com",
-          loginPwd: this.$md5("123456")
-        },
+        data: this.loginData,
         method: "put",
         pro: true
       }).then(res => {
-        this.$lStore.set("token", res.data.token);
+        if (res.status == 200) {
+          this.$lStore.set("token", res.data.token);
+          this.updatedUserInfo(res.data);
+          this.$router.push("/");
+        }
       });
     },
     //发送验证
@@ -66,7 +82,8 @@ export default {
         }
       }, 1000);
       this.sendBtnText = num + "S后重新获取";
-    }
+    },
+    ...mapActions(["updatedUserInfo"])
   }
 };
 </script>

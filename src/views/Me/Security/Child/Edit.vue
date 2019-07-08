@@ -1,16 +1,30 @@
 <template>
   <div class="Phone">
-    <NavBar :title="Edit.title" fixed showL @clickLeft="clickLeft"/>
-    <p class="tips">{{Edit.tips}}</p>
+    <NavBar
+      :title="isMobile() ? Edit.title : Edit.title1"
+      fixed
+      showL
+      @clickLeft="clickLeft"
+    />
+    <p v-if="isMobile()" class="tips">{{ Edit.tips }}</p>
     <div class="from">
       <div class="inp_group border-1px">
-        <input type="text" :placeholder="Edit.tipPhone" disabled v-model="phone">
+        <input
+          type="text"
+          :placeholder="Edit.tipPhone"
+          :disabled="isMobile()"
+          v-model="emailPhone"
+        />
       </div>
       <div class="inp_group border-1px">
-        <input type="text" placeholder="输入验证码">
-        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">{{sendBtnText}}</button>
+        <input type="text" placeholder="输入验证码" v-model="emailPhoneCode" />
+        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
+          {{ sendBtnText }}
+        </button>
       </div>
-      <button class="from_btn" @click="step">下一步</button>
+      <button class="from_btn" @click="step">
+        {{ isMobile() ? "下一步" : "确定" }}
+      </button>
     </div>
   </div>
 </template>
@@ -18,43 +32,94 @@
 <script>
 import NavBar from "components/NavBar";
 import { Edit } from "common/staticData";
+import extend from "./EditExtends";
 export default {
+  extends: extend,
   data() {
     return {
-      phone: "1762****222",
-      isSend: false, //发送验证码按钮是否可点击
-      sendBtnText: "获取验证码",
-      timer: null,
-      Edit: Edit[this.$route.params.type]
+      Edit: Edit[this.$route.params.type],
+      emailPhone: this.$store.state.userInfo[this.$route.params.type],
+      emailPhoneCode: ""
     };
-  },
-  created() {
-    console.log(Edit[this.$route.params.type]);
   },
   components: { NavBar },
   methods: {
+    //下一步或者绑定手机或者邮箱
+    step() {
+      if (!this.isMobile()) {
+        let phoneData = {
+          oldMobile: this.emailPhone,
+          oldMobileCode: this.emailPhoneCode,
+          mobile: "",
+          mobileCode: "",
+          codeType: 5,
+          type: 0
+        };
+        if (this.isEmailPhone()) {
+          phoneData = {
+            oldMobile: this.emailPhone,
+            oldMobileCode: this.emailPhoneCode,
+            mobile: "",
+            mobileCode: "",
+            codeType: 5,
+            type: 0
+          };
+        } else {
+          phoneData = {
+            oldEmail: this.emailPhone,
+            oldEmailCode: this.emailPhoneCode,
+            email: "",
+            emailCode: "",
+            deType: 6,
+            type: 1
+          };
+        }
+        this.$lStore.set("phoneData", phoneData);
+        this.$router.push(`/me/edit1/${this.pageType}`);
+      } else {
+        this.bindPhoneEmail();
+      }
+    },
+    //判断是email 还是 phone
+    isEmailPhone() {
+      if (this.pageType == "mobile") {
+        return true;
+      } else if (this.pageType == "email") {
+        return false;
+      }
+    },
+
+    //判断是否未绑定
+    isMobile() {
+      if (this.userInfo[this.pageType]) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    //绑定  手机号||邮箱
+    bindPhoneEmail() {
+      let req = {};
+      if (this.isEmailPhone()) {
+        req = {
+          codeType: 5,
+          type: 0,
+          mobile: this.emailPhone,
+          mobileCode: this.emailPhoneCode
+        };
+      } else {
+        req = {
+          codeType: 6,
+          type: 1,
+          email: this.emailPhone,
+          emailCode: this.emailPhoneCode
+        };
+      }
+      this.editPhone(req, true);
+    },
+
     clickLeft() {
       this.$router.push("/me/security");
-    },
-    step() {
-      this.$router.push(`/me/edit1/${this.$route.params.type}`);
-    },
-    //发送验证
-    sendMsg() {
-      this.isSend = true;
-      let _this = this,
-        num = 10;
-      _this.timer = setInterval(() => {
-        num--;
-        if (num <= 0) {
-          clearInterval(_this.timer);
-          this.isSend = false;
-          this.sendBtnText = "获取验证码";
-        } else {
-          this.sendBtnText = num + "S后重新获取";
-        }
-      }, 1000);
-      this.sendBtnText = num + "S后重新获取";
     }
   }
 };

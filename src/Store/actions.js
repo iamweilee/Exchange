@@ -1,6 +1,6 @@
 import * as types from "./mutation-types";
 import { Toast } from "vant";
-import { http } from "common/Api";
+import http from "common/Api";
 const getUserInfo = function(commit) {
     http({
         url: "/v1/user/user_info",

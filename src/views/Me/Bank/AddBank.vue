@@ -110,6 +110,7 @@ export default {
         identifyId: "",
         bankAccount: "",
         bankName: "",
+        type: "",
         bankInfo: "",
         bankPhone: "",
         papers: "中国身份证"
@@ -207,6 +208,7 @@ export default {
       if (this.pickType == "bankList") {
         this.defaultData = [val.select1];
         this.bankName = [val.select1];
+        this.cardData.type = val.select1.value;
         this.cardData.bankName = val.select1.text;
       } else if (this.pickType == "address") {
         this.defaultData = [val.select1, val.select2, val.select3];

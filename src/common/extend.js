@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { Post, Get, http } from "./Api";
+import http from "./Api";
 import { lStore, sStore, throttle } from "./TollClass/func";
 import EventListener from "./event-listener";
 import md5 from "md5";
@@ -26,8 +26,6 @@ Vue.prototype.$ScrollTop = ScrollTop;
 Vue.prototype.$lStore = lStore;
 Vue.prototype.$sStore = sStore;
 Vue.prototype.$throttle = throttle;
-Vue.prototype.$Post = Post;
-Vue.prototype.$Get = Get;
 Vue.prototype.$http = http;
 Vue.prototype.$EventListener = EventListener({});
 Vue.prototype.$md5 = md5;

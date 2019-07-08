@@ -15,67 +15,67 @@ import radios from "Images/other/icon_radios.png";
 export const bankList = [
     {
         text: "中国工商银行 (ICBC)",
-        value: "中国工商银行 (ICBC)"
+        value: "ICBC"
     },
     {
         text: "中国农业银行 (ABC)",
-        value: "中国农业银行 (ABC)"
+        value: "ABC"
     },
     {
         text: "中国建设银行 (CBC)",
-        value: "中国建设银行 (CBC)"
+        value: "CBC"
     },
     {
         text: "中国银行 (BC)",
-        value: "中国银行 (BC)"
+        value: "BC"
     },
     {
         text: "交通银行 (BOCOM)",
-        value: "交通银行 (BOCOM)"
+        value: "BOCOM"
     },
     {
         text: "招商银行 (CNBC)",
-        value: "招商银行 (CNBC)"
+        value: "CNBC"
     },
     {
         text: "广发银行 (CGB)",
-        value: "广发银行 (CGB)"
+        value: "CGB"
     },
     {
         text: "招商银行 (CNBC)",
-        value: "招商银行 (CNBC)"
+        value: "CNBC"
     },
     {
         text: "浦发银行 (SDPB)",
-        value: "浦发银行 (SDPB)"
+        value: "SDPB"
     },
     {
         text: "兴业银行 (CIB)",
-        value: "兴业银行 (CIB)"
+        value: "CIB"
     },
     {
         text: "中国光大银行 (CEB)",
-        value: "中国光大银行 (CEB)"
+        value: "CEB"
     },
     {
         text: "平安银行 (PAB)",
-        value: "平安银行 (PAB)"
+        value: "PAB"
     },
     {
         text: "中国民生银行 (CMBC)",
-        value: "中国民生银行 (CMBC)"
+        value: "CMBC"
     },
     {
         text: "中信银行 (ECITIC)",
-        value: "中信银行 (ECITIC)"
+        value: "ECITIC"
     },
     {
         text: "上海银行 (BOSC)",
-        value: "上海银行 (BOSC)"
+        value: "BOSC"
     },
     {
         text: "中国邮政储蓄银行 (PSBC)",
-        value: "中国邮政储蓄银行 (PSBC)"
+        value: "PSBC"
     }
 ];
 
@@ -352,7 +352,7 @@ export const meList = [
     {
         title: "消息中心",
         icon: require("../assets/Images/me/icon_2.png"),
-        link: "/me/bank",
+        link: "/me/msg",
         id: "msg2"
     },
     {
@@ -382,19 +382,21 @@ export const meList = [
 ];
 
 export const Edit = {
-    phone: {
+    mobile: {
         title: "修改手机号",
+        title1:"绑定手机号",
         tips: "修改手机号前请先验证原手机号",
         tipPhone: "输入手机号"
     },
     email: {
         title: "修改邮箱",
+        title1: "绑定邮箱",
         tips: "修改邮箱前请先验证原邮箱账号",
         tipPhone: "输入邮箱号"
     }
 };
 export const Edit1 = {
-    phone: {
+    mobile: {
         title: "修改手机号",
         tips: "确认新的手机号",
         tipPhone: "输入您要绑定的新手机号"

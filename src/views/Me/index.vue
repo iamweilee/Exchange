@@ -8,7 +8,7 @@
             <img :src="userInfo.portrait" alt>
           </p>
           <div class="left_user">
-            <p>{{userInfo.loginName}}</p>
+            <p>{{userInfo.nickName}}</p>
             <p>实盘账户</p>
           </div>
         </router-link>
@@ -62,7 +62,7 @@ export default {
   components: {},
   methods: {
     getUser() {
-      this.$http({ url: "/v1/position/list", method: "get" }).then(res => {
+      this.$http({ url: "/v1/position/list", method: "get",data:{coinCode:"USDT"} }).then(res => {
         console.log(res);
       });
     },

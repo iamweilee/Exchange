@@ -1,10 +1,35 @@
 import axios from "axios";
 import { lStore } from "../TollClass/func";
+import router from "../../router";
+import Store from "../../Store";
 import ENV from "./ENV";
 import { Toast } from "vant";
 const baseApi = ENV.getENV().httpApi;
 const uploadAPI = ENV.getENV().uploadApi;
 const TVApi = ENV.getENV().TVApi;
+
+// // 添加请求拦截器
+// axios.interceptors.request.use(function (config) {
+//     // 在发送请求之前做些什么
+//     return config;
+//   }, function (error) {
+//     // 对请求错误做些什么
+//     return Promise.reject(error);
+//   });
+
+// 添加响应拦截器
+axios.interceptors.response.use(
+    function(response) {
+        // 对响应数据做点什么
+        notLogin(response);
+        return response;
+    },
+    function(error) {
+        // 对响应错误做点什么
+        notLogin(error.response);
+        return Promise.reject(error);
+    }
+);
 
 //公共函数
 const comFunc = function(options) {
@@ -32,6 +57,17 @@ const comFunc = function(options) {
     }
     return axiosData;
 };
+//登录失效处理
+const notLogin = function(res) {
+    if (res.status == 401 || res.status == 403) {
+        Toast("登录失效，请重新登录");
+        Store.commit("SET_USERINFO", "");
+        lStore.remove("token");
+        router.push("/login");
+    } else if (res.status == 500) {
+        Toast(res.data.message);
+    }
+};
 
 const http = function(options) {
     return new Promise((resolve, reject) => {
@@ -47,74 +83,10 @@ const http = function(options) {
             })
             .catch(err => {
                 let errData = err.response;
-                // if (errData.data) {
-                //     Toast(errData.data.message);
-                // }
                 console.log("ERROR:", errData, options.url);
                 reject(errData);
             });
     });
 };
 
-const Post = function(options) {
-    let params = options.data ? options.data : "",
-        headers = {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (lStore.get("token") || "")
-        };
-    return new Promise((resolve, reject) => {
-        axios({
-            headers: headers,
-            url: options.url,
-            method: "post",
-            baseURL: options.pro ? baseApi : httpApiTest,
-            timeout: 5000,
-            data: params
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    let res = response.data;
-                    resolve(res);
-                    console.log(res, options.name);
-                } else {
-                    reject(response.data);
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                reject(err.response);
-            });
-    });
-};
-const Get = function(options) {
-    let params = options.data ? options.data : "",
-        headers = {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (lStore.get("token") || "")
-        };
-    return new Promise((resolve, reject) => {
-        axios({
-            headers: headers,
-            url: options.url,
-            method: "get",
-            baseURL: options.pro ? baseApi : httpApiTest,
-            timeout: 5000,
-            params: params
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    let res = response.data;
-                    resolve(res);
-                    console.log(res, options.name);
-                } else {
-                    reject(response);
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                reject(err.response);
-            });
-    });
-};
-
-export { Post, Get, http };
+export default http;

@@ -25,10 +25,12 @@ export default {
     subMit() {
       let req = this.$lStore.get("req");
       let err = isPwd(this.pwd);
+      console.log(req);
       if (err) {
         this.$toast(err);
       } else {
         req.loginPwd = this.$md5(this.pwd);
+        req.userCode = "7m95t";
         // this.$lStore.remove("req");
         this.register(req);
       }
@@ -40,6 +42,7 @@ export default {
         data: req,
         pro: true
       }).then(res => {
+        let data = res.data;
         if (res.status == 200) {
           this.$toast("恭喜你注册成功");
 

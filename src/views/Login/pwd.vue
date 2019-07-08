@@ -9,13 +9,24 @@
     </div>
     <div class="from">
       <div class="inp_group border-1px">
-        <input type="text" placeholder="输入手机号/邮箱账号" v-model="loginData.account">
+        <input
+          type="text"
+          placeholder="输入手机号/邮箱账号"
+          v-model="loginData.loginName"
+        />
       </div>
       <div class="inp_group border-1px">
-        <input type="password" placeholder="输入密码" v-model="loginData.pwd" @keyup.enter="login">
+        <input
+          type="password"
+          placeholder="输入密码"
+          v-model="loginData.loginPwd"
+          @keyup.enter="login"
+        />
       </div>
       <button class="from_btn" @click="login">登录</button>
-      <router-link tag="p" to="/login" class="from_check">验证码登录</router-link>
+      <router-link tag="p" to="/login" class="from_check"
+        >验证码登录</router-link
+      >
     </div>
   </div>
 </template>
@@ -32,8 +43,8 @@ export default {
       timer: null,
       activeClass: "phone",
       loginData: {
-        account: "",
-        pwd: ""
+        loginName: "",
+        loginPwd: ""
       }
     };
   },
@@ -41,8 +52,13 @@ export default {
   components: {},
   methods: {
     login() {
-      let err = isAccount(this.loginData.account),
-        err1 = isPwd(this.loginData.pwd);
+      let err = isAccount(this.loginData.loginName),
+        err1 = isPwd(this.loginData.loginPwd),
+        req = {
+          loginName: this.loginData.loginName,
+          loginPwd: this.$md5(this.loginData.loginPwd),
+          type: 0
+        };
       if (err) {
         this.$toast(err);
       } else if (err1) {
@@ -50,11 +66,7 @@ export default {
       } else {
         this.$http({
           url: "/auth/authorize",
-          data: {
-            loginName: this.loginData.account,
-            loginPwd: this.$md5(this.loginData.pwd),
-            type: 1
-          },
+          data: req,
           method: "put",
           pro: true
         }).then(res => {

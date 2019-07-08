@@ -1,4 +1,4 @@
-import { http } from "common/Api";
+import http from "common/Api";
 const history = {};
 
 export default {
@@ -32,7 +32,6 @@ export default {
             data: qs,
             name: "K线数据源",
             method: "get",
-            baseApi: "TV"
         }).then(data => {
             if (data.Response && data.Response === "Error") {
                 console.log("CryptoCompare API error:", data.Message);

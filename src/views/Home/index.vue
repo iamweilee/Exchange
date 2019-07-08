@@ -1,15 +1,15 @@
 <template>
   <div class="home">
     <div class="home_top container">
-      <HomeHead/>
-      <Swipe :bannerList="bannerList"/>
-      <ModulInfo/>
-      <Notice/>
-      <Coin/>
+      <HomeHead />
+      <Swipe :bannerList="bannerList" />
+      <ModulInfo />
+      <Notice />
+      <Coin />
     </div>
-    <Legal/>
-    <News/>
-    <Tips/>
+    <Legal />
+    <News />
+    <Tips />
   </div>
 </template>
 
@@ -23,7 +23,6 @@ import Coin from "components/Home/Coin";
 import Legal from "components/Home/Legal";
 import News from "components/Home/News";
 import Tips from "components/Tips";
-
 export default {
   data() {
     return {
@@ -32,8 +31,11 @@ export default {
   },
 
   created() {
+    this.getInviteList();
     this.getBanner();
+    this.getSetting();
   },
+  mounted() {},
   methods: {
     getBanner() {
       this.$http({
@@ -43,11 +45,27 @@ export default {
       }).then(res => {
         if (res.status == 200) {
           res.data.map(item => {
-            console.log(item);
             item.picPath = bannerImg;
           });
           this.bannerList = res.data;
         }
+      });
+    },
+    getSetting() {
+      this.$http({
+        url: "/v1/leverage/baseinfo",
+        method: "post"
+      }).then(res => {
+        console.log(res);
+      });
+    },
+    getInviteList() {
+      this.$http({
+        url: "/user_recommend_detail/childlist",
+        data: { pageNo: 1, pageSize: 20 },
+        method: "get"
+      }).then(res => {
+        console.log(res.data);
       });
     }
   },

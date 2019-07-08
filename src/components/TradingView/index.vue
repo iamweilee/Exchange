@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import Datafeed from "./api/index";
-// import Datafeed from "./pro/index";
+// import Datafeed from "./api/index";
+import Datafeed from "./pro/index";
 import { setTimeout, setInterval } from "timers";
 function getLanguageFromURL() {
   const regex = new RegExp("[\\?&]lang=([^&#]*)");

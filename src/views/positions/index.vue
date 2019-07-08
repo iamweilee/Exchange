@@ -1,13 +1,19 @@
 <template>
   <div class="pos">
-    <NavBar title="BTC/USDT" fixed showL @clickLeft="clickLeft" @handleClick="showSelect" />
+    <NavBar
+      title="BTC/USDT"
+      fixed
+      showL
+      @clickLeft="clickLeft"
+      @handleClick="showSelect"
+    />
     <van-popup v-model="show" position="top">
       <div class="selectWrap">
         <h2>BTC/USDT</h2>
         <ul class="selectList">
           <li @click="select">
             <p class="coin">BTC/USDT</p>
-            <p class="price">{{detailData.close}}</p>
+            <p class="price">{{ detailData.close }}</p>
           </li>
           <li class="active">
             <p class="coin">ETH/USDT</p>
@@ -31,63 +37,126 @@
           </li>
         </ul>
         <button class="selectBtn">切换至实际盘</button>
-        <button class="closeBtn" @click="show=false">点击收起</button>
+        <button class="closeBtn" @click="show = false">点击收起</button>
       </div>
     </van-popup>
     <!-- @click="show=!show" -->
     <div class="pos_top">
       <div class="pos_top_t">
-        <div class="left color-green">{{detailData.close|toFixeds(2)}}</div>
+        <div class="left color-green">{{ detailData.close | toFixeds(2) }}</div>
         <ul class="right">
-          <li>高(24H)&nbsp;&nbsp;{{detailData.high|toFixeds(2)}}</li>
-          <li>低(24H)&nbsp;&nbsp;{{detailData.low|toFixeds(2)}}</li>
-          <li>量(24H)&nbsp;&nbsp;{{detailData.amount|toFixeds(2)}}</li>
+          <li>高(24H)&nbsp;&nbsp;{{ detailData.high | toFixeds(2) }}</li>
+          <li>低(24H)&nbsp;&nbsp;{{ detailData.low | toFixeds(2) }}</li>
+          <li>量(24H)&nbsp;&nbsp;{{ detailData.amount | toFixeds(2) }}</li>
         </ul>
       </div>
       <div class="pos_top_btn">
         <div class="btn_list">
-          <button :class="TVInterval == 1&&'active'" @click="clickBtn(1)">1分</button>
-          <button :class="TVInterval == 5&&'active'" @click="clickBtn(5)">5分</button>
-          <button :class="TVInterval == 15&&'active'" @click="clickBtn(15)">15分</button>
-          <button :class="TVInterval == 30&&'active'" @click="clickBtn(30)">30分</button>
-          <button :class="TVInterval == 60&&'active'" @click="clickBtn(60)">1时</button>
+          <button :class="TVInterval == 1 && 'active'" @click="clickBtn(1)">
+            1分
+          </button>
+          <button :class="TVInterval == 5 && 'active'" @click="clickBtn(5)">
+            5分
+          </button>
+          <button :class="TVInterval == 15 && 'active'" @click="clickBtn(15)">
+            15分
+          </button>
+          <button :class="TVInterval == 30 && 'active'" @click="clickBtn(30)">
+            30分
+          </button>
+          <button :class="TVInterval == 60 && 'active'" @click="clickBtn(60)">
+            1时
+          </button>
           <button @click="clickBtnMore(true)">更多</button>
           <button @click="clickBtnMore(false)">指标</button>
         </div>
         <transition name="moreIndex">
           <div v-if="isShow" class="child_list">
             <div v-show="isOther">
-              <button :class="TVInterval == '240'&&'active'" @click="clickBtn(240)">4时</button>
-              <button :class="TVInterval == '1D'&&'active'" @click="clickBtn('1D')">1天</button>
-              <button :class="TVInterval == '1W'&&'active'" @click="clickBtn('1W')">1周</button>
-              <button :class="TVInterval == '1M'&&'active'" @click="clickBtn('1M')">1月</button>
+              <button
+                :class="TVInterval == '240' && 'active'"
+                @click="clickBtn(240)"
+              >
+                4时
+              </button>
+              <button
+                :class="TVInterval == '1D' && 'active'"
+                @click="clickBtn('1D')"
+              >
+                1天
+              </button>
+              <button
+                :class="TVInterval == '1W' && 'active'"
+                @click="clickBtn('1W')"
+              >
+                1周
+              </button>
+              <button
+                :class="TVInterval == '1M' && 'active'"
+                @click="clickBtn('1M')"
+              >
+                1月
+              </button>
             </div>
             <div v-show="!isOther">
-              <button :class="TVInterval == 'MACD'&&'active'" @click="clickIndicator('MACD')">MACD</button>
-              <button :class="TVInterval == 'BOLL'&&'active'" @click="clickIndicator('BOLL')">BOLL</button>
-              <button :class="TVInterval == 'KDJ'&&'active'" @click="clickIndicator('KDJ')">KDJ</button>
-              <button :class="TVInterval == 'RSI'&&'active'" @click="clickIndicator('RSI')">RSI</button>
-              <button :class="TVInterval == 'WR'&&'active'" @click="clickIndicator('WR')">WR</button>
               <button
-                :class="TVInterval == 'closeOther'&&'active'"
+                :class="TVInterval == 'MACD' && 'active'"
+                @click="clickIndicator('MACD')"
+              >
+                MACD
+              </button>
+              <button
+                :class="TVInterval == 'BOLL' && 'active'"
+                @click="clickIndicator('BOLL')"
+              >
+                BOLL
+              </button>
+              <button
+                :class="TVInterval == 'KDJ' && 'active'"
+                @click="clickIndicator('KDJ')"
+              >
+                KDJ
+              </button>
+              <button
+                :class="TVInterval == 'RSI' && 'active'"
+                @click="clickIndicator('RSI')"
+              >
+                RSI
+              </button>
+              <button
+                :class="TVInterval == 'WR' && 'active'"
+                @click="clickIndicator('WR')"
+              >
+                WR
+              </button>
+              <button
+                :class="TVInterval == 'closeOther' && 'active'"
                 @click="clickIndicator('closeOther')"
-              >隐藏</button>
+              >
+                隐藏
+              </button>
             </div>
           </div>
         </transition>
       </div>
     </div>
     <div class="k_line">
-      <!-- <TradingView ref="trading" :symbol="symbol" :interval="TVInterval"></TradingView> -->
-      <TradingView ref="trading"></TradingView>
+      <TradingView ref="trading" :symbol="symbol" :interval="TVInterval"></TradingView>
+      <!-- <TradingView ref="trading"></TradingView> -->
     </div>
     <div class="pos_wrap">
       <div class="tabs">
         <ul class="tabs_wrap">
-          <li :class="tabsType == 'Capital'&&'active'" @click="tabClick('Capital')">
+          <li
+            :class="tabsType == 'Capital' && 'active'"
+            @click="tabClick('Capital')"
+          >
             <p>资金</p>
           </li>
-          <li :class="tabsType == 'Intord'&&'active'" @click="tabClick('Intord')">
+          <li
+            :class="tabsType == 'Intord' && 'active'"
+            @click="tabClick('Intord')"
+          >
             <p>简介</p>
           </li>
         </ul>
@@ -99,10 +168,10 @@
       </div>
     </div>
     <div class="handWrap">
-      <button>买跌 5794.34</button>
+      <button @click="showOrderHandle">买跌 5794.34</button>
       <button>买涨 5798.39</button>
     </div>
-    <PlaceOrder v-show="false" />
+    <PlaceOrder v-show="showOrder" :cloeModle="cloeModle" />
   </div>
 </template>
 
@@ -124,6 +193,7 @@ export default {
       show: false,
       symbol: "BTC/USDT",
       tabsType: "Capital",
+      showOrder: false,
       styls: {
         left: 0
       },
@@ -132,8 +202,7 @@ export default {
     };
   },
   created() {
-    this.Socket = new WBT({ url: "TVsocket" });
-    this.initSocket();
+    this._initPage();
   },
   destroyed() {
     this.$EventListener.off("TVdetail", this.renderDetail);
@@ -147,6 +216,18 @@ export default {
     PlaceOrder
   },
   methods: {
+    _initPage() {
+      this.Socket = new WBT({ url: "TVsocket" });
+      this.initSocket();
+    },
+    //显示下单
+    showOrderHandle() {
+      this.showOrder = true;
+    },
+    //关闭下单
+    cloeModle() {
+      this.showOrder = false;
+    },
     //初始化Socket
     initSocket() {
       this.Socket.initWs();

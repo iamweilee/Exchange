@@ -95,7 +95,12 @@
           <img src="~assets/Images/other/icon_night.png" alt />持仓到6:00
         </p>
       </div>
-      <van-switch v-model="checked" active-color="#00A7E0" inactive-color="#DEDEDE" size="0.5rem" />
+      <van-switch
+        v-model="checked"
+        active-color="#00A7E0"
+        inactive-color="#DEDEDE"
+        size="0.5rem"
+      />
     </div>
     <div class="holdD_hanle">
       <button>追单</button>

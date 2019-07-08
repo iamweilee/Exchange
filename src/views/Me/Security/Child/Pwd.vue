@@ -29,15 +29,7 @@ export default {
     }
   },
   methods: {
-    editPwd() {
-      this.$http({
-        url: "/v1/user/update_login_pwd",
-        data: { codeType: 7, password: "123456" },
-        method: "put"
-      }).then(res => {
-        console.log(res);
-      });
-    },
+   
     clickLeft() {
       this.$router.push("/me/security");
     }
