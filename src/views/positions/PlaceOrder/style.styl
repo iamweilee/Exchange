@@ -1,8 +1,5 @@
 @import '~assets/stylus/variable.styl';
 .order {
-    position: fixed;
-    left: 0;
-    bottom: 0;
     height: 406px;
     width: 100%;
     background-color: $KSub1Bg;
@@ -29,10 +26,14 @@
         p {
             display: flex;
             align-items: center;
+            img {
+                width: 18px;
+                margin-left: 4px;
+            }
         }
-        img {
-            width: 18px;
-            margin-left: 4px;
+        &_r {
+            width: 52px;
+            height: 44px;
         }
     }
     &_form {

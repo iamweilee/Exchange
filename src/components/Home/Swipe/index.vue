@@ -4,19 +4,19 @@
       class="swipe-wrap"
       :autoPlay="true"
       :showIndicator="true"
-      interval="2500"
+      interval="500000"
       duration="500"
       v-if="bannerList.length"
     >
       <Slide v-for="item in bannerList" :key="item.id">
-        <img src="~assets/Images/home/banner.png" alt>
+        <img src="~assets/Images/home/banner.png" alt />
       </Slide>
     </Swiper>
   </div>
 </template>
 
 <script>
-import { Swiper, Slide } from "vue-swiper-component";
+import { Swiper, Slide } from "components/customSwiper";
 
 export default {
   props: {

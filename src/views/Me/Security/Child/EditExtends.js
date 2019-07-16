@@ -3,16 +3,31 @@ const extendTest = {
     data() {
         return {
             isSend: false, //发送验证码按钮是否可点击
+            isClick: true,
             sendBtnText: "获取验证码",
             timer: null,
-            pageType: this.$route.params.type
+            pageType: this.$route.params.type,
+            changeTimer: null
         };
     },
     computed: {
         ...mapState(["userInfo"])
     },
-
     methods: {
+        verify(type) {
+            console.log(type, arguments);
+            if (type == "edit") {
+                this.emailPhone.trim() && this.emailPhoneCode.trim()
+                    ? (this.isClick = false)
+                    : (this.isClick = true);
+            } else if (type == "edit1") {
+                console.log(this.phoneData[this.pageType]);
+                this.phoneData[this.pageType].trim() &&
+                this.phoneData[this.pageType + "Code"].trim()
+                    ? (this.isClick = false)
+                    : (this.isClick = true);
+            }
+        },
         editPhone(req, bol) {
             this.$http({
                 url: `/v1/user/bind_${this.pageType}`,

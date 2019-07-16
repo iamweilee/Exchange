@@ -1,5 +1,4 @@
 import historyProvider from "./historyProvider";
-import { dateFormat } from "common/TollClass/func";
 import stream from './stream'
 const supportedResolutions = ["1", "5", "15", "30", "60", "D", "W", "M"];
 

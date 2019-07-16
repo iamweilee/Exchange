@@ -34,7 +34,7 @@ export default {
         url: "/v1/announcement/list",
         method: "get",
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.List = res.data;
         }
       });

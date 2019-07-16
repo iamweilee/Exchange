@@ -14,10 +14,9 @@
         切换至专业版
         <img src="~assets/Images/pos/icon_zy.png" alt />
       </p>
-      <p class="order_handle_r">
-        挂单
-        <img src="~assets/Images/pos/icon_down.png" alt />
-      </p>
+      <div class="order_handle_r">
+        <Select v-model="value" :values="values"></Select>
+      </div>
     </div>
     <div class="order_form">
       <div class="from_single">
@@ -36,7 +35,7 @@
       <div class="from_single">
         <div class="from_single_label">
           <p>手数</p>
-          <p>价值1个BTC</p>
+          <p>价值{{ checkHand * valRate }}个{{ coinCode }}</p>
         </div>
         <div class="from_single_cont">
           <div class="hand">
@@ -64,7 +63,7 @@
               :class="item == checkCash && 'active'"
               @click="handClick(item, 'checkCash')"
             >
-              {{ item }}手
+              {{ item * checkHand }}
             </button>
           </div>
         </div>
@@ -77,11 +76,16 @@
 </template>
 
 <script>
+import Select from "components/Select";
 export default {
   props: {
     title: {
       default: "快捷下单",
       type: String
+    },
+    coinCode: {
+      type: String,
+      required: true
     },
     cloeModle: {
       type: Function,
@@ -94,12 +98,20 @@ export default {
     return {
       price: 8572.19,
       checkHand: 2,
+      valRate: 1,
       checkCash: 200,
-      handList: [1, 2, 3, 5, 8],
-      cashList: [200, 240, 360]
+      handList: this.$lStore.get("setingData").nums,
+      cashList: [],
+      values: ["市价", "挂单"],
+      value: "挂单"
     };
   },
-  components: {},
+  created() {
+    let setingData = this.$lStore.get("setingData");
+    this.cashList = setingData[this.coinCode].poundageArray;
+    this.valRate = setingData[this.coinCode].valRate;
+  },
+  components: { Select },
   methods: {
     handClick(item, type) {
       this[type] = item;

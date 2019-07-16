@@ -141,8 +141,13 @@
       </div>
     </div>
     <div class="k_line">
-      <TradingView ref="trading" :symbol="symbol" :interval="TVInterval"></TradingView>
+      <TradingView
+        ref="trading"
+        :symbol="symbol"
+        :interval="TVInterval"
+      ></TradingView>
       <!-- <TradingView ref="trading"></TradingView> -->
+      <div id="kline_logo"></div>
     </div>
     <div class="pos_wrap">
       <div class="tabs">
@@ -171,7 +176,13 @@
       <button @click="showOrderHandle">买跌 5794.34</button>
       <button>买涨 5798.39</button>
     </div>
-    <PlaceOrder v-show="showOrder" :cloeModle="cloeModle" />
+    <van-popup
+      v-model="showOrder"
+      position="bottom"
+      :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }"
+    >
+      <PlaceOrder coinCode="ETH" />
+    </van-popup>
   </div>
 </template>
 
@@ -232,7 +243,9 @@ export default {
     initSocket() {
       this.Socket.initWs();
       let datas = this.resolutionSocket(this.TVInterval);
-      setTimeout(() => this.Socket.Send(JSON.stringify(datas)), 100);
+      setTimeout(() => {
+        this.Socket.Send(JSON.stringify(datas));
+      }, 100);
       this.$EventListener.on("TVdetail", this.renderDetail);
     },
     //更新头部价格成交量
@@ -241,7 +254,6 @@ export default {
         this.detailData = data;
       }, 300);
     },
-
     //点击tabs
     tabClick(type) {
       let index = 0;

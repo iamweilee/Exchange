@@ -5,6 +5,10 @@
         type="password"
         v-model="editData.oldLoginPwd"
         placeholder="输入旧密码"
+        v-debounce="{
+          fn: verify,
+          method: 'input'
+        }"
       />
     </div>
     <div class="inp_group border-1px">
@@ -12,10 +16,22 @@
         type="password"
         v-model="editData.password"
         placeholder="请设置新密码"
+        v-debounce="{
+          fn: verify,
+          method: 'input'
+        }"
       />
     </div>
     <p class="from_tips">* 6 - 16 位字母和数字组成</p>
-    <button class="from_btn" @click="editPwd">登录</button>
+    <button
+      class="from_btn"
+      :disabled="isClick"
+      v-debounce="{
+        fn: editPwd
+      }"
+    >
+      登录
+    </button>
   </div>
 </template>
 
@@ -24,7 +40,7 @@ import { mapActions } from "vuex";
 export default {
   data() {
     return {
-      isClick: false,
+      isClick: true,
       editData: {
         oldLoginPwd: "",
         password: "",
@@ -46,8 +62,13 @@ export default {
         method: "put"
       }).then(res => {
         console.log(res);
-        this.getUserInfo()
+        this.getUserInfo();
       });
+    },
+    verify() {
+      this.editData.oldLoginPwd.trim() && this.editData.password.trim()
+        ? (this.isClick = false)
+        : (this.isClick = true);
     },
     ...mapActions(["getUserInfo"])
   }

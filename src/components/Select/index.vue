@@ -1,135 +1,122 @@
 <template>
-  <div class="searchZJ">
-    <div class="f-search">
-      <div class="f-searchIn" v-bind:class="{searchInFous: this.fousFlag}">
-        {{this.searchValue}}
-        <span
-          v-bind:class="{searchActive: this.searchFlag}"
-          v-on:click="searchDown"
-        ></span>
-      </div>
-      <div
-        class="f-searchXl"
-        v-if="this.dataHas"
-        v-bind:style="{height:this.searchFous, border:this.searchBorder}"
-      >
-        <div v-for="item in searchList" v-on:click="choseValue(item)" :key="item">{{item}}</div>
-      </div>
-      <div class="f-searchXl" v-else>
-        <div>暂无数据</div>
-      </div>
+  <div class="selectWrap">
+    <div class="selectWrap_inp" ref="select" @click="showSel">
+      <input readonly :value="value" />
+      <img src="~assets/Images/pos/icon_down.png" alt />
     </div>
+    <transition name="fade">
+      <ul class="selectWrap_list" v-if="show">
+        <li
+          v-for="item in values"
+          :key="item"
+          :class="item == value && 'active'"
+          @click="checkSel($event, item)"
+        >
+          {{ item }}
+        </li>
+        <p class="jiao"></p>
+      </ul>
+    </transition>
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
+import { addEvent, removeEvent, stopEvent } from "common/utli";
 export default {
+  props: {
+    values: {
+      type: Array,
+      default: () => []
+    },
+    value: {}
+  },
   data() {
     return {
-      data: [],
-      dataHas: true,
-      searchFlag: false,
-      searchFous: "0",
-      fousFlag: false,
-      searchValue: "",
-      searchBorder: "none"
+      show: false
     };
   },
-  props: {
-    searchList: Array,
-    selectValue: Object
-  },
-  mounted() {
-    this.data = this.searchList;
-  },
+  mounted() {},
   methods: {
-    searchDown() {
-      this.searchFlag === false
-        ? (this.searchFlag = true)
-        : (this.searchFlag = false);
-      this.searchFous === "0"
-        ? (this.searchFous = "auto")
-        : (this.searchFous = "0");
-      this.searchBorder === "none"
-        ? (this.searchBorder = "1px solid #D9D9D9")
-        : (this.searchBorder = "none");
-      this.fousFlag === false
-        ? (this.fousFlag = true)
-        : (this.fousFlag = false);
+    checkSel(e, value) {
+      this.$emit("input", value);
+      this.hideSel(e);
     },
-    choseValue(value) {
-      this.searchValue = value;
-      this.searchDown();
-      this.selectValue.data = "我被修改了";
-      this.$emit("selectFunc", value);
+    showSel(e) {
+      this.show = true;
+      addEvent(document, "click", this.hideSel);
+    },
+    hideSel(e) {
+      let ref = this.$refs.select;
+      if (ref && ref.contains(e.target)) {
+        stopEvent(e);
+        return;
+      }
+      this.show = false;
+      removeEvent(document, "click", this.hideSel);
     }
   }
 };
 </script>
 
 <style scoped lang="stylus">
-.f-search {
-  width: 250px;
-  height: auto;
-  position: relative;
-  margin-left: 20px;
-  box-sizing: border-box;
-}
-.f-searchIn {
-  width: 250px;
-  height: 35px;
-  line-height: 35px;
-  font-size: 0.95rem;
-  border-radius: 5px;
-  overflow: hidden;
-  position: relative;
-  background-color: white;
-  box-shadow: none;
-  box-sizing: border-box;
-  color: #000000;
-  padding-left: 10px;
-  border: 1px solid #A3A3A3;
-}
-.searchInFous {
-  border: 1px solid #57C4F6;
-  box-shadow: 0px 0px 5px #57C4F6;
-}
-.f-searchIn > span {
-  display: block;
-  width: 28px;
-  height: 28px;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: 0px -13px;
-  position: absolute;
-  top: 10px;
-  right: 5px;
-}
-.f-searchIn .searchActive {
-  background-position: 0px 12px;
-  top: -2px;
-}
-.f-search .f-searchXl {
-  position: absolute;
+.selectWrap {
   width: 100%;
-  height: auto;
-  max-height: 220px;
-  top: 41px;
-  left: -1px;
-  border-radius: 5px;
-  /* border: 1px solid #D9D9D9; */
-  background-color: white;
-  overflow-x: hidden;
-  overflow-y: scroll;
-}
-.f-search .f-searchXl > div {
-  height: 35px;
-  line-height: 38px;
-  color: #000000;
-  padding-left: 25px;
-  font-size: 0.92rem;
-}
-.f-search .f-searchXl > div:hover {
-  background-color: #D5F1FD;
+  height: 100%;
+  font-size: 14px;
+  &_inp {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      font-size: 14px;
+      background-color: transparent;
+    }
+    img {
+      width: 18px;
+      margin-left: 4px;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      margin-top: -9px;
+    }
+  }
+  &_list {
+    width: calc(100% + 8px);
+    height: 60px;
+    padding: 4px;
+    border-radius: 2px;
+    background-color: #1b212d;
+    position: relative;
+    left: -4px;
+    z-index: 2;
+    li {
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ba0ac;
+      &.active {
+        color: #fff;
+      }
+    }
+    .jiao {
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      margin-left: -10px;
+      border: 6px solid transparent;
+      border-bottom-color: #1b212d;
+    }
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+    height: 0;
+  }
 }
 </style>

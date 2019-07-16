@@ -1,5 +1,5 @@
 import * as types from "./mutation-types";
-import { lStore } from "../common/TollClass/func";
+import { lStore } from "../common/utli";
 export default {
     [types.SET_LANG](state, lang) {
         lStore.set("lang", lang);

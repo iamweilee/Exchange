@@ -1,7 +1,7 @@
 <template>
   <div class="holdD">
     <NavBar title="持仓详情" fixed showL @clickLeft="clickLeft" />
-    <!-- <div class="holdD_btn">
+    <div class="holdD_btn">
       <ScrollH scrollX :data="btnList">
         <div class="holdD_btn_scroll">
           <button
@@ -12,13 +12,13 @@
           >{{item.title}}</button>
         </div>
       </ScrollH>
-    </div> -->
-    <!-- <div class="holdD_kline">
+    </div>
+    <div class="holdD_kline">
       <div class="holdD_kline_container">
           <Echart/>
       </div>
-    </div> -->
-    <!-- <div class="dotted"></div> -->
+    </div>
+    <div class="dotted"></div>
     <div class="holdD_title">
       <div class="holdD_title_top">
         <p>BTC/USDT</p>

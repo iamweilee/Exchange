@@ -14,15 +14,33 @@
           :placeholder="Edit.tipPhone"
           :disabled="isMobile()"
           v-model="emailPhone"
+          v-debounce="{
+            fn: verify.bind(arguments, 'edit'),
+            method: 'input'
+          }"
         />
       </div>
       <div class="inp_group border-1px">
-        <input type="text" placeholder="输入验证码" v-model="emailPhoneCode" />
+        <input
+          type="text"
+          placeholder="输入验证码"
+          v-debounce="{
+            fn: verify.bind(arguments, 'edit'),
+            method: 'input'
+          }"
+          v-model="emailPhoneCode"
+        />
         <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
           {{ sendBtnText }}
         </button>
       </div>
-      <button class="from_btn" @click="step">
+      <button
+        class="from_btn"
+        v-debounce="{
+          fn: step
+        }"
+        :disabled="isClick"
+      >
         {{ isMobile() ? "下一步" : "确定" }}
       </button>
     </div>
@@ -46,7 +64,7 @@ export default {
   methods: {
     //下一步或者绑定手机或者邮箱
     step() {
-      if (!this.isMobile()) {
+      if (this.isMobile()) {
         let phoneData = {
           oldMobile: this.emailPhone,
           oldMobileCode: this.emailPhoneCode,

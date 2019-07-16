@@ -1,4 +1,4 @@
-import { lStore } from "../common/TollClass/func";
+import { lStore } from "../common/utli";
 export default {
     lang: lStore.get("lang") || "zh",
     tabNav: lStore.get("tabNav") || 1,

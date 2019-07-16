@@ -3,7 +3,6 @@ export default {
     testENV: {
         name: "test",
         httpApi: "http://192.168.50.67:8183",
-        TVApi: "http://192.168.50.71:8080",
         uploadApi:"http://upload.bit2019.com",
         TVsocket: "ws://192.168.50.71:8800/ws",
     },
@@ -11,9 +10,9 @@ export default {
     proENV: {
         name: "prod",
         httpApi: "http://114.55.209.191:8183",
-        TVApi: "http://192.168.50.71:8080",
         uploadApi:"http://upload.bit2019.com",
-        TVsocket: "ws://192.168.50.71:8800/ws",
+        TVsocket: "ws://114.55.209.191:8195/ws",
+        // TVsocket: "ws://192.168.50.71:8195/ws",
     },
     getENV: function() {
         return this.proENV;

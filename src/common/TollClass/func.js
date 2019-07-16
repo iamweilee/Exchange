@@ -1,147 +1,4 @@
-//判断数据类型的方法（对typeof的增强，7种常用类型的判断，返回小写字符串）
-function dataType(obj) {
-    if (obj === null) {
-        return "null";
-    }
-    if (obj !== obj) {
-        return "nan";
-    }
-    if (typeof Array.isArray === "function") {
-        if (Array.isArray(obj)) {
-            //浏览器支持则使用isArray()方法
-            return "array";
-        }
-    } else {
-        //否则使用toString方法
-        if (Object.prototype.toString.call(obj) === "[object Array]") {
-            return "array";
-        }
-    }
-    return (typeof obj).toLowerCase();
-}
-var Store = function() {
-    this.name = "Store";
-};
-Store.prototype = {
-    init: function(options) {
-        this.store = function() {
-            return options.type;
-        };
-        return this;
-    },
-    set: function(key, value) {
-        var type = dataType(value);
-
-        switch (type) {
-            case "object":
-            case "array":
-                this.store().setItem(key, JSON.stringify(value));
-                break;
-            // case 'array':
-            //             this.store().setItem(key,'['+value+']');
-            //             break;
-            case "function": //如果是函数先用eval()计算执行js代码
-                this.store().setItem(key, value);
-                break;
-            default:
-                this.store().setItem(key, value);
-        }
-    },
-    get: function(key) {
-        var value = this.store().getItem(key);
-
-        try {
-            value = JSON.parse(value);
-        } catch (e) {}
-        return value;
-    },
-    getAll: function() {
-        var json = {};
-        var value = "";
-
-        for (var attr in this.store()) {
-            try {
-                value = JSON.parse(this.store()[attr]);
-            } catch (e) {}
-            json[attr] = value;
-        }
-        return json;
-    },
-    remove: function(key) {
-        this.store().removeItem(key);
-    },
-    clear: function() {
-        this.store().clear();
-    }
-};
-const lStore = new Store().init({
-    type: window.localStorage
-});
-const sStore = new Store().init({
-    type: window.sessionStorage
-});
-
-//正常化日期
-function normalDate(oDate) {
-    var CurrentDate = oDate;
-    var reg = /\-+/g;
-
-    if (dataType(oDate) == "string") {
-        oDate = oDate.split(".")[0]; //解决ie浏览器对yyyy-MM-dd HH:mm:ss.S格式的不兼容
-        oDate = oDate.replace(reg, "/"); //解决苹果浏览器对yyyy-MM-dd格式的不兼容性
-    }
-
-    CurrentDate = new Date(oDate);
-    return CurrentDate;
-}
-//日期格式化函数
-//oDate（时间戳或字符串日期都支持）
-//fmt（格式匹配）
-//月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
-//年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
-//例子：
-//dateFormat0(new Date(),'yyyy-MM-dd hh:mm:ss.S') ==> 2006-07-02 08:09:04.423
-//dateFormat0(new Date(),'yyyy-M-d h:m:s.S')      ==> 2006-7-2 8:9:4.18
-function dateFormat(mydate, ft) {
-    if (!mydate) {
-        return "--";
-    }
-    var fmt = ft || "MM-dd hh:mm:ss",
-        reg = /\d/g;
-    if (reg.test(mydate)) {
-        mydate = mydate - 0;
-    }
-    var oDate = normalDate(mydate);
-    var date = {
-        "M+": oDate.getMonth() + 1, //月份
-        "d+": oDate.getDate(), //日
-        "h+": oDate.getHours(), //小时
-        "m+": oDate.getMinutes(), //分
-        "s+": oDate.getSeconds(), //秒
-        "q+": Math.floor((oDate.getMonth() + 3) / 3), //季度，+3为了好取整
-        S: oDate.getMilliseconds() //毫秒
-    };
-
-    if (/(y+)/.test(fmt)) {
-        //RegExp.$1(正则表达式的第一个匹配，一共有99个匹配)
-        fmt = fmt.replace(
-            RegExp.$1,
-            (oDate.getFullYear() + "").substr(4 - RegExp.$1.length)
-        );
-    }
-
-    for (var attr in date) {
-        if (new RegExp("(" + attr + ")").test(fmt)) {
-            fmt = fmt.replace(
-                RegExp.$1,
-                RegExp.$1.length == 1
-                    ? date[attr]
-                    : ("00" + date[attr]).substring((date[attr] + "").length)
-            );
-        }
-    }
-    return fmt;
-}
+import { normalDate } from "../utli";
 // js获取日期：前天、昨天、今天、明天、后天
 // GetDateStr(1);明天
 // GetDateStr();今天
@@ -590,31 +447,9 @@ function toFixedsPic(num, extent = 2) {
     }
     return toThousands(num.toFixed(extent));
 }
-//函数节流
-function throttle(method, delay = 100, duration = 300) {
-    var timer = null;
-    var begin = new Date();
-    return function() {
-        var context = this,
-            args = arguments;
-        var current = new Date();
-        clearTimeout(timer);
-        if (current - begin >= duration) {
-            method.apply(context, args);
-            begin = current;
-        } else {
-            timer = setTimeout(function() {
-                method.apply(context, args);
-            }, delay);
-        }
-    };
-}
 
 export {
     getDataSingle,
-    Store,
-    lStore,
-    sStore,
     isAction,
     isAccount,
     isEmail,
@@ -624,7 +459,6 @@ export {
     isShenfenCard,
     isPhone,
     isNum,
-    dateFormat,
     GetDateStr,
     tryToParseJson,
     toFixeds,
@@ -641,6 +475,5 @@ export {
     isNormal,
     IsColor,
     toThousands,
-    toFixedsPic,
-    throttle
+    toFixedsPic
 };

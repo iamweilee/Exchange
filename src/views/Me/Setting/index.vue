@@ -26,7 +26,7 @@ export default {
     loginOut() {
       this.$http({ url: "/v1/user/login_out", method: "post" }).then(res => {
         console.log(res);
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.$lStore.remove("token");
           this.updatedUserInfo("");
           this.$router.push("/login");

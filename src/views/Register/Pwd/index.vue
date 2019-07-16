@@ -43,9 +43,8 @@ export default {
         pro: true
       }).then(res => {
         let data = res.data;
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.$toast("恭喜你注册成功");
-
           this.$lStore.set("userInfo", data);
           this.$lStore.set("token", data.token);
           this.$router.push("/");

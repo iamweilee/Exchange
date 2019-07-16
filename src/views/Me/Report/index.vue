@@ -1,6 +1,6 @@
 <template>
   <div class="report">
-    <NavBar title="投资报表" fixed showL @clickLeft="clickLeft"/>
+    <NavBar title="投资报表" fixed showL @clickLeft="clickLeft" />
     <div class="report_wrap">
       <div class="report_wrap_top">
         <div class="single">
@@ -85,11 +85,13 @@
           </div>
 
           <ul class="right">
-            <li v-for="(item,i) in chartData.rows" :key="item.coin">
-              <p class="icon" :style="{borderColor:colors[i]}"></p>
-              <p class="coin">{{item.coin}}</p>
-              <p class="defCoin">{{item.defCoin}}</p>
-              <p class="ratio" :style="{color:colors[i]}">{{item.ratio}}%</p>
+            <li v-for="(item, i) in chartData.rows" :key="item.coin">
+              <p class="icon" :style="{ borderColor: colors[i] }"></p>
+              <p class="coin">{{ item.coin }}</p>
+              <p class="defCoin">{{ item.defCoin }}</p>
+              <p class="ratio" :style="{ color: colors[i] }">
+                {{ item.ratio }}%
+              </p>
             </li>
           </ul>
         </div>
@@ -170,10 +172,10 @@ export default {
   components: { NavBar, VeRing },
   mounted() {
     this.resetWH();
-    window.addEventListener("resize", this.resetWH);
+    this.$addEvent(window, "resize", this.resetWH);
   },
   destroyed() {
-    window.removeEventListener("resize", this.resetWH);
+    this.$removeEvent(window, "resize", this.resetWH);
   },
   methods: {
     resetWH() {

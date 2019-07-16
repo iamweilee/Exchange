@@ -61,7 +61,7 @@ export default {
         },
         method: "put"
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.getUserInfo();
           done();
         }
@@ -83,7 +83,7 @@ export default {
         data: _FormData,
         baseApi: "upload"
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.setAvatar(res.data.relativePath);
         }
       });
@@ -94,7 +94,7 @@ export default {
         method: "post",
         data: { portrait: url }
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.getUserInfo();
         }
       });

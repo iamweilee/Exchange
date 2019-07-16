@@ -2,7 +2,7 @@
   <div class="home">
     <div class="home_top container">
       <HomeHead />
-      <Swipe :bannerList="bannerList" />
+      <Swipe v-if="bannerList.length" :bannerList="bannerList" />
       <ModulInfo />
       <Notice />
       <Coin />
@@ -23,27 +23,39 @@ import Coin from "components/Home/Coin";
 import Legal from "components/Home/Legal";
 import News from "components/Home/News";
 import Tips from "components/Tips";
+import { dateFormat } from "common/utli";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
-      bannerList: []
+      bannerList: [],
+      values: ["BTC", "ETH", "EOS"],
+      value: "BTC"
     };
   },
 
   created() {
-    this.getInviteList();
-    this.getBanner();
-    this.getSetting();
+    this._initPage();
   },
-  mounted() {},
   methods: {
+    change(val) {
+      console.log(val);
+      this.value = val;
+    },
+    _initPage() {
+      this.getBanner();
+      this.getSetting();
+      this.getInfo();
+      console.log(dateFormat(new Date(), "MM-dd w"));
+    },
+
     getBanner() {
       this.$http({
         url: "/v1/banner/",
         method: "get",
         data: { type: 1 }
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           res.data.map(item => {
             item.picPath = bannerImg;
           });
@@ -51,12 +63,37 @@ export default {
         }
       });
     },
+    getInfo() {
+      this.$http({
+        url: "/tradeInfo/allTradeInfo",
+        method: "get"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+        }
+      });
+    },
     getSetting() {
+      //   if (this.$lStore.get("setingData")) return;
       this.$http({
         url: "/v1/leverage/baseinfo",
         method: "post"
       }).then(res => {
-        console.log(res);
+        if (res.data == this.STATUS) {
+          let info = {
+            coinList: [],
+            stopRate: res.data.stopRate,
+            stopRateOffset: res.data.stopRateOffset,
+            nums: res.data.nums
+          };
+          res.data.coinInfo.map(item => {
+            info.coinList.push(item.coinCode);
+            info[item.coinCode] = {
+              poundageArray: item.poundageArray,
+              valRate: item.valRate
+            };
+          });
+          this.$lStore.set("setingData", info);
+        }
       });
     },
     getInviteList() {

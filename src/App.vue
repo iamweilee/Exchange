@@ -2,7 +2,7 @@
   <div id="app">
     <div class="main">
       <transition :name="transitionName">
-        <router-view class="main_wrapper"/>
+        <router-view class="main_wrapper" />
       </transition>
     </div>
     <router-view name="mainfooter"></router-view>
@@ -19,11 +19,10 @@ export default {
       transitionName: "slide-left"
     };
   },
-  created() {
-  },
+  created() {},
   mounted() {
-//    this.Socket = new WBT({ url: "testSocket" });
-//    this.Socket.initWs();
+    //    this.Socket = new WBT({ url: "testSocket" });
+    //    this.Socket.initWs();
   },
   components: {
     Footer
@@ -43,6 +42,7 @@ export default {
 <style lang="stylus">
 #app {
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   .main {

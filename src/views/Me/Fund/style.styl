@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
     &_wrap {
         width: 100%;
     }
@@ -39,8 +40,15 @@
                 }
             }
             .right {
-                font-size: 20px;
-                color: $color6;
+                .big {
+                    font-size: 20px;
+                    color: $color6;
+                }
+                .small {
+                    text-align: right;
+                    font-size: 13px;
+                    color: $color9;
+                }
             }
         }
     }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { lStore } from "../TollClass/func";
+import { lStore } from "../utli";
 import router from "../../router";
 import Store from "../../Store";
 import ENV from "./ENV";
@@ -75,8 +75,8 @@ const http = function(options) {
             .then(response => {
                 if (response.status === 200) {
                     let res = response.data;
-                    resolve(res);
                     console.log(res, options.url);
+                    resolve(res);
                 } else {
                     reject(response);
                 }

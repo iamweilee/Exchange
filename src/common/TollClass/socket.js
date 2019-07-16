@@ -62,6 +62,7 @@ WBT.prototype.initWs = function() {
     //每次初始化开启重连状态
     var that = this;
     this.socket = new WebSocket(this.url); // 创建连接并注册响应函数
+
     this.socket.onopen = function(e) {
         this.isReconnect = false;
         that.onopen(e);
@@ -112,8 +113,10 @@ WBT.prototype.handleEvent = function(message) {
 };
 //发送消息
 WBT.prototype.Send = function(data) {
-    if (this.socket) {
+    if (this.socket && this.socket.readyState == 1) {
         this.socket.send(data);
+    } else {
+        console.log("ERROR: Socket 连接故障");
     }
 };
 //事务处理 根据action

@@ -59,7 +59,7 @@ export default {
         method: "put",
         pro: true
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.$lStore.set("token", res.data.token);
           this.updatedUserInfo(res.data);
           this.$router.push("/");

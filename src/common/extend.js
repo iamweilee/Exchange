@@ -1,7 +1,13 @@
 import Vue from "vue";
 import http from "./Api";
-import { lStore, sStore, throttle } from "./TollClass/func";
-import EventListener from "./event-listener";
+import {
+    addEvent,
+    removeEvent,
+    EventListener,
+    control,
+    lStore,
+    sStore
+} from "./utli";
 import md5 from "md5";
 function ScrollTop(anim = true) {
     if (anim) {
@@ -25,7 +31,23 @@ function ScrollTop(anim = true) {
 Vue.prototype.$ScrollTop = ScrollTop;
 Vue.prototype.$lStore = lStore;
 Vue.prototype.$sStore = sStore;
-Vue.prototype.$throttle = throttle;
+Vue.prototype.$control = control;
 Vue.prototype.$http = http;
 Vue.prototype.$EventListener = EventListener({});
+Vue.prototype.$addEvent = addEvent;
+Vue.prototype.$removeEvent = removeEvent;
 Vue.prototype.$md5 = md5;
+Vue.prototype.STATUS = 200;
+Vue.directive("debounce", {
+    bind(el, { value }) {
+        const time = value.time || 300,
+            method = value.method || "click",
+            debounced = control(value.fn, time, 1);
+        addEvent(el, method, debounced);
+        el._debounced = debounced;
+    },
+    unbind(el, { value }) {
+        const method = value.method || "click";
+        removeEvent(el, method, el._debounced);
+    }
+});

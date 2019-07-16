@@ -1,60 +1,44 @@
 <template>
   <van-popup v-model="show" position="bottom">
-    <div class="recharge">
-      <div class="recharge_title">
-        <p class="recharge_title_l">充值USDT</p>
-        <p class="recharge_title_r">
+    <div class="withdraw">
+      <div class="withdraw_title">
+        <p class="withdraw_title_l">提币USDT</p>
+        <p class="withdraw_title_r">
           <span>单价：</span>
-          <span class="size">≈7</span>
+          <span class="size">≈6.9</span>
         </p>
       </div>
-      <div class="recharge_scroll">
-        <div class="recharge_cont">
-          <p class="recharge_cont_title">购买数量(USDT):</p>
-          <div class="List">
-            <button
-              v-for="item in numList"
-              @click="checkNum(item)"
-              :class="inpVal == item && 'active'"
-              :key="item"
-            >
-              {{ item == "other" ? "其他" : item }}
-            </button>
+      <div class="withdraw_scroll">
+        <div class="withdraw_from">
+          <div class="withdraw_from_single">
+            <p class="label">账户余额：</p>
+            <p>0.00USDT</p>
           </div>
-        </div>
-        <div class="recharge_num" @click="inpFocus">
-          <input class="inp" ref="inpVal" v-model="inpVal" />
-          <p class="recharge_num_r">
-            <span>约需：</span>
-            <span class="color-red">￥{{ (inpVal * 7) | toFixeds(2) }}</span>
-          </p>
-        </div>
-        <div class="recharge_from">
-          <div class="recharge_from_single">
-            <p class="label">付款人姓名：</p>
-            <input type="text" placeholder="请输入付款人姓名" />
+          <div class="withdraw_from_inp">
+            <p class="withdraw_from_inp_left">提币数量：</p>
+            <input
+              class="withdraw_from_inp_middle"
+              type="text"
+              placeholder="最小可售20 USDT"
+            />
+            <p class="withdraw_from_inp_right">全部提出</p>
           </div>
-          <div class="recharge_from_single radioGroup">
-            <p class="label">支付方式：</p>
-            <ul>
-              <li @click="changeRadio(1)">
-                <p>
-                  <img v-if="checkRdio == 1" :src="radios" alt />
-                  <img v-else :src="radio" alt />
-                </p>
-                <p>网上银行</p>
-              </li>
-              <li @click="changeRadio(2)">
-                <p>
-                  <img v-if="checkRdio == 2" :src="radios" alt />
-                  <img v-else :src="radio" alt />
-                </p>
-                <p>手机银行</p>
-              </li>
-            </ul>
+          <div class="withdraw_from_deal" @click="isCheckBox = !isCheckBox">
+            <p class="checkbox">
+              <img
+                v-show="isCheckBox"
+                src="~assets/Images/other/icon_check.png"
+                alt
+              />
+            </p>
+            <p>
+              您可以消耗
+              <span class="color-blue">200.00CNC</span>
+              ，实现30分钟内提币到账！
+            </p>
           </div>
-          <div class="recharge_from_single bank">
-            <p class="label">银行卡号：</p>
+          <div class="withdraw_from_single bank">
+            <p class="label">收款账户：</p>
             <div class="bankList">
               <van-collapse v-model="bankKey" accordion>
                 <van-collapse-item name="bankList" v-if="bankList.length">
@@ -87,35 +71,18 @@
               </van-collapse>
             </div>
           </div>
-          <div class="recharge_from_deal" @click="isCheckBox = !isCheckBox">
-            <p class="checkbox">
-              <img
-                v-show="isCheckBox"
-                src="~assets/Images/other/icon_check.png"
-                alt
-              />
-            </p>
-            <p>已阅读并同意&nbsp;</p>
-            <p class="color-blue" @click.stop="toIntrod()">《OTC交易协议》</p>
-          </div>
         </div>
-        <div class="recharge_tips">
+        <div class="withdraw_tips">
           <h2>注意事项</h2>
-          <p>
-            <span>1、</span>为了保证资金顺利到账，请务必在转账时输入转账附言
-          </p>
+          <p><span>1、</span>工作日提币24小时内到账，节假日顺延到工作日；</p>
           <p>
             <span>2、</span
-            >请按照填写的姓名、付款金额、转账方式进行付款方可快速到账、否则资金将无法及时到账
-          </p>
-          <p>
-            <span>3、</span
-            >如果您的转账5分钟内未能到账，请您联系客服处理；订单的有效时间为20分钟，如您已转账但订单失效，请您联系客服处理
+            >未交易用户提币将收取一定手续费，手续费将从到账金额中扣除。
           </p>
         </div>
       </div>
-      <div class="recharge_btn">
-        <button @click="recharge">确定</button>
+      <div class="withdraw_btn">
+        <button @click="withdrawPost">出售</button>
       </div>
     </div>
   </van-popup>
@@ -186,9 +153,9 @@ export default {
       this.checkRdio = type;
     },
     //充值接口
-    recharge() {
+    withdrawPost() {
       this.$http({
-        url: "/v1/position/otc/recharge-record-add",
+        url: "/v1/position/otc/draw-record-add",
         data: {
           coinAmount: this.inpVal,
           otcId: "1",
@@ -211,10 +178,7 @@ export default {
         }
       });
     },
-    //点击OTC协议
-    toIntrod() {
-      this.$router.push("/intord/otc_intord");
-    },
+
     clickLeft() {
       this.$router.push("/otc");
     }

@@ -8,6 +8,10 @@
           type="text"
           :placeholder="Edit1.tipPhone"
           v-model="phoneData[pageType]"
+          v-debounce="{
+            fn: verify.bind(arguments, 'edit1'),
+            method: 'input'
+          }"
         />
       </div>
       <div class="inp_group border-1px">
@@ -15,12 +19,24 @@
           type="text"
           placeholder="输入手机验证码"
           v-model="phoneData[pageType + 'Code']"
+          v-debounce="{
+            fn: verify.bind(arguments, 'edit1'),
+            method: 'input'
+          }"
         />
         <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
           {{ sendBtnText }}
         </button>
       </div>
-      <button class="from_btn" @click="editPhone(phoneData)">完成</button>
+      <button
+        :disabled="isClick"
+        class="from_btn"
+        v-debounce="{
+          fn: editPhone.bind(arguments,phoneData)
+        }"
+      >
+        完成
+      </button>
     </div>
   </div>
 </template>
@@ -34,7 +50,7 @@ export default {
   data() {
     return {
       Edit1: Edit1[this.$route.params.type],
-      phoneData: this.$lStore.get("phoneData") || {}
+      phoneData: this.$lStore.get("phoneData") || { mobile: "", mobileCode: "" }
     };
   },
   destroyed() {

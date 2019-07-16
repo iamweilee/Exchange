@@ -262,7 +262,7 @@ const router = new Router({
             component: () => import("views/Me/Fund"),
             children: [
                 {
-                    path: "/me/fund/", //OTC资金明细
+                    path: "/me/fund", //OTC资金明细
                     name: "FundOtc",
                     meta: { id: 5.21 },
                     component: () => import("views/Me/Fund/Otc")

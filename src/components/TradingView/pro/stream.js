@@ -1,6 +1,5 @@
 // api/stream.js
 import historyProvider from "./historyProvider.js";
-import { dateFormat } from "common/TollClass/func";
 import Vue from "vue";
 const _comm = new Vue();
 // keep track of subscriptions

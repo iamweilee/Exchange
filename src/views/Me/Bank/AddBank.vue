@@ -169,7 +169,7 @@ export default {
         data: this.cardData,
         method: "post"
       }).then(res => {
-        if (res.status == 200) {
+        if (res.status == this.STATUS) {
           this.$toast("开户成功！");
           this.clickLeft();
         }

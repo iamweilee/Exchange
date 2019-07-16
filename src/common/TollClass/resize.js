@@ -1,9 +1,9 @@
-import { throttle } from "common/TollClass/func";
+import { addEvent, control } from "common/utli";
 (function(doc, win) {
     var docEl = doc.documentElement,
         resizeEvt =
             "orientationchange" in window ? "orientationchange" : "resize",
-        recalc =  throttle(function() {
+        recalc = control(function() {
             var clientWidth = docEl.clientWidth;
             if (!clientWidth) return;
             if (clientWidth >= 750) {
@@ -14,6 +14,6 @@ import { throttle } from "common/TollClass/func";
             }
         });
     if (!doc.addEventListener) return;
-    win.addEventListener(resizeEvt, recalc, false);
-    doc.addEventListener("DOMContentLoaded", recalc, false);
+    addEvent(win, resizeEvt, recalc);
+    addEvent(doc, "DOMContentLoaded", recalc);
 })(document, window);

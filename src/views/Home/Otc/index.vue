@@ -27,7 +27,7 @@ export default {
   },
   components: { NavBar },
   created() {
-    this.getAddress();
+    // this.getAddress();
   },
   methods: {
     getAddr() {

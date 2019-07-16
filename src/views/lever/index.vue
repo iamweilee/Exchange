@@ -21,11 +21,11 @@
           class="lever_List_single border-1px"
           v-for="(item, index) in List"
           :class="index % 2 && 'fall'"
-          :key="index"
+          :key="item"
         >
           <li class="left">
             <p class="left_top">
-              <span class="big">BTC</span>
+              <span class="big">{{item}}</span>
               <span class="small">比特币</span>
               <span class="icon" v-show="!(index % 3)">
                 <img src="~assets/Images/lever/icon_hot.png" alt />
@@ -49,11 +49,10 @@
 <script>
 import NavBar from "components/NavBar";
 import ScrollV from "components/Scroll";
-const list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 export default {
   data() {
     return {
-      List: list,
+      List: this.$lStore.get("setingData").coinList,
       loading: false,
       finished: false,
       isLoading: false
@@ -73,18 +72,15 @@ export default {
     // 获取币对
     getList() {
       this.$http({ url: "/coin/all/detail", method: "get" }).then(res => {
-        console.log(res);
       });
     },
     //获取全部币种
     getLists() {
       this.$http({ url: "tradeInfo/allTradeInfo", method: "get" }).then(res => {
-        console.log(res);
       });
     },
     pullDown(scroll) {
       setTimeout(() => {
-        this.List = list;
         this.$toast({
           message: "刷新成功",
           duration: 500
@@ -95,7 +91,6 @@ export default {
     pullUp(scroll) {
       let arr = list;
       setTimeout(() => {
-        this.List = [...this.List, ...arr];
         console.log("到底了");
         scroll.finishPullUp();
       }, 1000);
