@@ -181,7 +181,7 @@
       position="bottom"
       :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }"
     >
-      <PlaceOrder coinCode="ETH" />
+      <PlaceOrder coinCode="ETH" :cloeModle="cloeModle" />
     </van-popup>
   </div>
 </template>

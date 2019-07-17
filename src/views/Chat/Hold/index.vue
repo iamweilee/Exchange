@@ -3,7 +3,7 @@
     <router-link
       class="hold_single"
       tag="ul"
-      v-for="(item,index) in List"
+      v-for="(item, index) in List"
       :key="index"
       :to="`/chat/hold/${index}`"
     >
@@ -12,7 +12,7 @@
           <span class="big">ETH</span>
           <span class="small">USDT</span>
           <span class="icon">
-            <img :src="isBuy(index)" alt>
+            <img :src="isBuy(index)" alt />
           </span>
           <span class="num">×1手</span>
         </p>
@@ -46,7 +46,6 @@
 <script>
 import iconBuy from "Images/chat/icon_buy.png";
 import iconSale from "Images/chat/icon_sale.png";
-import { setTimeout } from "timers";
 export default {
   props: {
     showDialog: {
@@ -59,8 +58,21 @@ export default {
       List: new Array(10)
     };
   },
+  created() {
+    this.getList();
+  },
   components: {},
   methods: {
+    //获取持仓单
+    getList() {
+      this.$http({
+        url: "/v1/leverage/hold",
+        data: { position: 0, tradeType: 0 },
+        method: "get"
+      }).then(res => {
+        console.log(res.data);
+      });
+    },
     closeOut() {
       this.showDialog({
         title: "平仓"
@@ -75,9 +87,22 @@ export default {
     },
     refresh(done) {
       console.log("refresh");
-      setTimeout(() => {
-        done();
-      }, 1000);
+      this.$http({
+        url: "/v1/leverage/eveningUp",
+        data: { orderNo: "1111111" },
+        method: "get"
+      })
+        .then(res => {
+          done();
+          console.log(res);
+        })
+        .catch(err => {
+          this.$toast(err.data.message);
+          done(false);
+        });
+      //   setTimeout(() => {
+      //     done();
+      //   }, 1000);
     },
     isColor(num) {
       if (num % 2) {

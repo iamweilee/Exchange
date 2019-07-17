@@ -2,7 +2,11 @@
   <div class="selectWrap">
     <div class="selectWrap_inp" ref="select" @click="showSel">
       <input readonly :value="value" />
-      <img src="~assets/Images/pos/icon_down.png" alt />
+      <img
+        :class="show && 'rotate'"
+        src="~assets/Images/pos/icon_down.png"
+        alt
+      />
     </div>
     <transition name="fade">
       <ul class="selectWrap_list" v-if="show">
@@ -81,6 +85,11 @@ export default {
       right: 0;
       top: 50%;
       margin-top: -9px;
+      transform: rotate(0);
+      transition: all 0.4s ease-out;
+      &.rotate {
+        transform: rotate(-180deg);
+      }
     }
   }
   &_list {
@@ -112,7 +121,7 @@ export default {
     }
   }
   .fade-enter-active, .fade-leave-active {
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
   .fade-enter, .fade-leave-to {
     opacity: 0;

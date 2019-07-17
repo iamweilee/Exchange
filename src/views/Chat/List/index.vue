@@ -1,12 +1,12 @@
 <template>
   <div class="hold">
-    <ul class="hold_single" v-for="(item,index) in List" :key="index">
+    <ul class="hold_single" v-for="(item, index) in List" :key="index">
       <li class="top">
         <p class="top_l">
           <span class="big">ETH</span>
           <span class="small">USDT</span>
           <span class="icon">
-            <img :src="isBuy(index)" alt>
+            <img :src="isBuy(index)" alt />
           </span>
           <span class="num">×1手</span>
         </p>
@@ -52,11 +52,23 @@ export default {
       List: new Array(10)
     };
   },
-  components: {},
+  created() {
+    this.getList();
+  },
   methods: {
+    //获取持仓单
+    getList() {
+      this.$http({
+        url: "/v1/leverage/hold",
+        data: { position: 0, tradeType: 1 },
+        method: "get"
+      }).then(res => {
+        console.log(res.data);
+      });
+    },
     closeOut() {
       this.showDialog({
-          title:'撤单'
+        title: "撤单"
       });
     },
     isBuy(type) {
