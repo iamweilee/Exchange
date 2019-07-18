@@ -4,14 +4,19 @@
       <li class="order_title_l">
         <img src="~assets/Images/pos/icon_explain.png" alt />
       </li>
-      <li class="order_title_m">{{ title }}</li>
+      <li class="order_title_m">{{ title }}下单</li>
       <li class="order_title_r" @click="cloeModle">
         <img src="~assets/Images/pos/icon_close.png" alt />
       </li>
     </ul>
     <div class="order_scroll">
       <div class="order_handle">
-        <p class="order_handle_l">
+        <p
+          class="order_handle_l"
+          v-debounce="{
+            fn: Specialty
+          }"
+        >
           切换至专业版
           <img src="~assets/Images/pos/icon_zy.png" alt />
         </p>
@@ -23,11 +28,15 @@
         <div class="from_single" v-if="isMarket()">
           <div class="from_single_label">
             <p>挂单价格</p>
-            <p>价格≥8572.19&nbsp;或&nbsp;价格≤8552.19</p>
+            <p>
+              价格≥{{ closePic | toFixeds }}&nbsp;或&nbsp;价格≤{{
+                (closePic * 0.9975) | toFixeds
+              }}
+            </p>
           </div>
           <div class="from_single_cont">
             <div class="box">
-              <input type="text" v-model="price" />
+              <input type="text" v-model="closePic" />
               <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
               <img class="add" src="~assets/Images/pos/icon_add.png" alt />
             </div>
@@ -52,9 +61,14 @@
           </div>
         </div>
         <div class="from_single">
-          <div class="from_single_labelB">
+          <div class="from_single_label">
             <p>保证金(USDT)</p>
-            <p>可用&nbsp;-&nbsp;USDT，杠杆约32.19X</p>
+            <p>
+              可用&nbsp;-&nbsp;USDT，杠杆约{{
+                ((closePic * checkHand * valRate) / (checkCash * checkHand))
+                  | toFixeds
+              }}X
+            </p>
           </div>
           <div class="from_single_cont">
             <div class="hand cash">
@@ -70,7 +84,7 @@
           </div>
         </div>
 
-        <div class="from_single" v-if="isMarket()">
+        <div class="from_single" v-if="isSpecialty()">
           <div class="from_single_label big">
             <div class="left">
               止盈止损
@@ -87,8 +101,8 @@
           <div class="from_single_cont" v-show="isLoss">
             <div class="from_single_cont_single">
               <div class="left">止损价</div>
-              <div class="box">
-                <input type="text" v-model="price" />
+              <div class="box small">
+                <input type="text" :value="(closePic * 1.025) | toFixeds" />
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
@@ -96,15 +110,15 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≥<em data-v-25ef0b48="">0.0100</em> 预计亏损约
+                  ≥<em data-v-25ef0b48="">{{(closePic * 1.025) | toFixeds}}</em> 预计亏损约
                   <em data-v-25ef0b48="">80.00</em>
                 </p>
               </div>
             </div>
             <div class="from_single_cont_single">
               <div class="left">止盈价</div>
-              <div class="box">
-                <input type="text" v-model="price" />
+              <div class="box small">
+                <input type="text" :value="(closePic * 0.9975) | toFixeds" />
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
@@ -112,14 +126,14 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≤<em data-v-25ef0b48="">-0.0100</em> 预计盈利约
+                  ≤<em data-v-25ef0b48="">{{(closePic * 0.9975) | toFixeds}}</em> 预计盈利约
                   <em data-v-25ef0b48="">80.00</em>
                 </p>
               </div>
             </div>
           </div>
         </div>
-        <div class="from_single" v-if="isMarket()">
+        <div class="from_single" v-if="isSpecialty()">
           <div class="from_single_label big">
             <div class="left">
               持仓过夜
@@ -153,10 +167,15 @@
             <p>7.10</p>
           </div>
         </div>
+        <div class="from_single">
+          <div class="from_single_label big" @click="freeShow = !freeShow">
+            {{ closePic }}
+          </div>
+        </div>
       </div>
     </div>
     <div class="submit_btn">
-      <button @click="placeOrder">挂单买涨&nbsp;{{ price }}</button>
+      <button @click="placeOrder">挂单买涨&nbsp;{{ closePic }}</button>
     </div>
   </div>
 </template>
@@ -166,9 +185,9 @@ import Select from "components/Select";
 import { mapState } from "vuex";
 export default {
   props: {
-    title: {
-      default: "快捷下单",
-      type: String
+    closePic: {
+      type: [String, Number],
+      default: 0
     },
     coinCode: {
       type: String,
@@ -193,20 +212,25 @@ export default {
       value: "挂单",
       freeShow: false,
       isNight: false,
-      isLoss: false
+      isLoss: false,
+      title: "快捷"
     };
   },
   computed: {
     ...mapState(["userInfo"])
   },
   created() {
-    let setingData = this.$lStore.get("setingData");
-    this.cashList = setingData[this.coinCode].poundageArray;
-    this.checkCash = setingData[this.coinCode].poundageArray[0];
-    this.valRate = setingData[this.coinCode].valRate;
+    this._initPage();
   },
   components: { Select },
   methods: {
+    _initPage() {
+      let setingData = this.$lStore.get("setingData");
+      this.cashList = setingData[this.coinCode].poundageArray;
+      this.checkCash = setingData[this.coinCode].poundageArray[0];
+      this.valRate = setingData[this.coinCode].valRate;
+    },
+    //下单函数
     placeOrder() {
       this.$http({
         url: "/v1/leverage/market/submit",
@@ -234,6 +258,11 @@ export default {
         console.log(res);
       });
     },
+    //获取socket数据
+    detail(data) {
+      //   console.log(data);
+    },
+    //判断  市价  挂单
     isMarket() {
       switch (this.value) {
         case "挂单":
@@ -241,6 +270,19 @@ export default {
         case "市价":
           return false;
       }
+    },
+    //判断类型 快捷  专业
+    isSpecialty() {
+      switch (this.title) {
+        case "专业":
+          return true;
+        case "快捷":
+          return false;
+      }
+    },
+    //选择快捷还是专业
+    Specialty() {
+      this.title = this.title == "快捷" ? "专业" : "快捷";
     },
     handClick(item, type) {
       this[type] = item;

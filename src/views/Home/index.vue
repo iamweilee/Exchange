@@ -78,7 +78,7 @@ export default {
         url: "/v1/leverage/baseinfo",
         method: "post"
       }).then(res => {
-        if (res.data == this.STATUS) {
+        if (res.status == this.STATUS) {
           let info = {
             coinList: [],
             stopRate: res.data.stopRate,
@@ -92,6 +92,7 @@ export default {
               valRate: item.valRate
             };
           });
+          console.log(info)
           this.$lStore.set("setingData", info);
         }
       });

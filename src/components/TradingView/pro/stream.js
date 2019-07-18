@@ -8,6 +8,7 @@ var _subs = [];
 export default {
     subscribeBars: function(symbolInfo, resolution, updateCb, uid, resetCache) {
         _comm.$EventListener.on("TVkline", klineLastBar);
+
         var newSub = {
             uid,
             resolution,
@@ -28,6 +29,7 @@ export default {
 };
 
 const klineLastBar = data => {
+    console.log("TVkline");
     if (_subs.length) {
         // disregard the initial catchup snapshot of trades for already closed candles
         let sub = _subs[0];
@@ -85,12 +87,4 @@ function updateBar(data, sub) {
     return _lastBar;
 }
 
-// takes symbolInfo object as input and creates the subscription string to send to CryptoCompare
-function createChannelString(symbolInfo) {
-    var channel = symbolInfo.name.split(/[:/]/);
-    const exchange = channel[0] === "GDAX" ? "Coinbase" : channel[0];
-    const to = channel[2];
-    const from = channel[1];
-    // subscribe to the CryptoCompare trade channel for the pair and exchange
-    return `0~${exchange}~${from}~${to}`;
-}
+export { klineLastBar };

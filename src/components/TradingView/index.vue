@@ -5,7 +5,6 @@
 <script>
 // import Datafeed from "./api/index";
 import Datafeed from "./pro/index";
-import { setTimeout, setInterval } from "timers";
 function getLanguageFromURL() {
   const regex = new RegExp("[\\?&]lang=([^&#]*)");
   const results = regex.exec(window.location.search);

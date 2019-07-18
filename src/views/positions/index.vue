@@ -181,7 +181,7 @@
       position="bottom"
       :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }"
     >
-      <PlaceOrder coinCode="ETH" :cloeModle="cloeModle" />
+      <PlaceOrder coinCode="BTC" :cloeModle="cloeModle" :closePic="detailData.close" />
     </van-popup>
   </div>
 </template>
@@ -193,7 +193,7 @@ import Intord from "./Intord";
 import PlaceOrder from "./PlaceOrder";
 import TradingView from "components/TradingView";
 import WBT from "common/TollClass/socket";
-import { setTimeout } from "timers";
+import { klineLastBar } from "components/TradingView/pro/stream";
 export default {
   data() {
     return {
@@ -217,7 +217,8 @@ export default {
   },
   destroyed() {
     this.$EventListener.off("TVdetail", this.renderDetail);
-    this.Socket.close();
+    this.$EventListener.off("TVkline", klineLastBar);
+    // this.Socket.close();
   },
   components: {
     NavBar,

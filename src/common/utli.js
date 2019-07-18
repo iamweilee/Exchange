@@ -110,11 +110,20 @@ function EventListener(obj) {
         if (!Register.hasOwnProperty(name)) {
             Register[name] = [];
         }
-        Register[name].push(method);
+        let handlerList = Register[name];
+        let newArr = handlerList.filter(item => {
+            if (item == method) {
+                return;
+            } else {
+                return item;
+            }
+        });
+        newArr.push(method);
+        Register[name] = newArr;
     };
     obj.fire = function(name) {
         if (Register.hasOwnProperty(name)) {
-            var handlerList = Register[name];
+            let handlerList = Register[name];
             for (let i = 0; i < handlerList.length; i++) {
                 let handler = handlerList[i];
                 let args = [];
@@ -128,13 +137,17 @@ function EventListener(obj) {
     };
     obj.off = function(name, method) {
         if (Register.hasOwnProperty(name)) {
-            var handlerList = Register[name];
-            for (var i = 0; i < handlerList.length; i++) {
+            let handlerList = Register[name];
+            for (let i = 0; i < handlerList.length; i++) {
                 if (handlerList[i] === method) {
                     handlerList.splice(i, 1);
                 }
             }
         }
+    };
+    obj.has = function(name) {
+        let bol = Register.hasOwnProperty(name);
+        return bol;
     };
     obj.destroy = function() {
         Register = {};
