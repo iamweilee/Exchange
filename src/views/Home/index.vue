@@ -5,7 +5,7 @@
       <Swipe v-if="bannerList.length" :bannerList="bannerList" />
       <ModulInfo />
       <Notice />
-      <Coin />
+      <Coin :coinList="coinList" />
     </div>
     <Legal />
     <News />
@@ -29,13 +29,20 @@ export default {
   data() {
     return {
       bannerList: [],
-      values: ["BTC", "ETH", "EOS"],
-      value: "BTC"
+      coinList: [
+        { symbol: "BTC/USDT" },
+        { symbol: "ETH/USDT" },
+        { symbol: "EOS/USDT" }
+      ]
     };
   },
 
-  created() {
+  mounted() {
     this._initPage();
+  },
+  beforeDestroy() {
+    this.$EventListener.off("TVdetail", this.Detail);
+    this.$EventListener.fire("SendMsg", {});
   },
   methods: {
     change(val) {
@@ -44,11 +51,29 @@ export default {
     },
     _initPage() {
       this.getBanner();
-      this.getSetting();
       this.getInfo();
-      console.log(dateFormat(new Date(), "MM-dd w"));
+      this.sendMsg();
+      this.$EventListener.on("TVdetail", this.Detail);
     },
-
+    sendMsg() {
+      setTimeout(() => {
+        this.$EventListener.fire("SendMsg", {
+          "btcusdt-ticker": 0,
+          "ethusdt-ticker": 0,
+          "eosusdt-ticker": 0
+        });
+      }, 100);
+    },
+    Detail(data) {
+      let List = this.coinList;
+      for (let i = 0; i < List.length; i++) {
+        if (List[i].symbol == data.symbol) {
+          List[i] = data;
+          break;
+        }
+      }
+      this.coinList = [...List];
+    },
     getBanner() {
       this.$http({
         url: "/v1/banner/",
@@ -72,31 +97,7 @@ export default {
         }
       });
     },
-    getSetting() {
-      //   if (this.$lStore.get("setingData")) return;
-      this.$http({
-        url: "/v1/leverage/baseinfo",
-        method: "post"
-      }).then(res => {
-        if (res.status == this.STATUS) {
-          let info = {
-            coinList: [],
-            stopRate: res.data.stopRate,
-            stopRateOffset: res.data.stopRateOffset,
-            nums: res.data.nums
-          };
-          res.data.coinInfo.map(item => {
-            info.coinList.push(item.coinCode);
-            info[item.coinCode] = {
-              poundageArray: item.poundageArray,
-              valRate: item.valRate
-            };
-          });
-          console.log(info)
-          this.$lStore.set("setingData", info);
-        }
-      });
-    },
+
     getInviteList() {
       this.$http({
         url: "/user_recommend_detail/childlist",

@@ -26,8 +26,6 @@
 </template>
 <script>
 import BScroll from "better-scroll";
-import { async } from "q";
-import { setTimeout } from "timers";
 
 export default {
   props: {
@@ -147,7 +145,7 @@ export default {
       }
     };
   },
-  created() {
+  mounted() {
     // 保证在DOM渲染完毕后初始化better-scroll
     this.$nextTick(() => {
       setTimeout(() => {

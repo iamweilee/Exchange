@@ -1,51 +1,54 @@
 <template>
   <div class="hold">
-    <router-link
-      class="hold_single"
-      tag="ul"
-      v-for="(item, index) in List"
-      :key="index"
-      :to="`/chat/hold/${index}`"
-    >
-      <li class="top">
-        <p class="top_l">
-          <span class="big">ETH</span>
-          <span class="small">USDT</span>
-          <span class="icon">
-            <img :src="isBuy(index)" alt />
-          </span>
-          <span class="num">×1手</span>
-        </p>
-        <p class="top_btn">
-          <span :class="isColor(index)">-18.76</span>
-          <button @click.stop="closeOut">平仓</button>
-        </p>
-      </li>
-      <li class="bot">
-        <p>
-          <span>5.7605</span>
-          <span>开仓价</span>
-        </p>
-        <p>
-          <span>--</span>
-          <span>当前价</span>
-        </p>
-        <p>
-          <span>5.6605</span>
-          <span>止损价</span>
-        </p>
-        <p>
-          <span>6.0002</span>
-          <span>止盈价</span>
-        </p>
-      </li>
-    </router-link>
+    <div class="hold_wrap" v-if="List.length">
+      <router-link
+        class="hold_single"
+        tag="ul"
+        v-for="(item, index) in List"
+        :key="item.orderNo"
+        :to="`/chat/hold/${index}`"
+      >
+        <li class="top">
+          <p class="top_l">
+            <span class="big">{{ item.targetCoin }}</span>
+            <span class="small">{{ item.sourceCoin }}</span>
+            <span class="icon">
+              <img :src="isBuy(index)" alt />
+            </span>
+            <span class="num">×{{ item.tradeAmount / item.stockRate }}手</span>
+          </p>
+          <p class="top_btn">
+            <span :class="isColor(index)">-18.76</span>
+            <button @click.stop="closeOut">平仓</button>
+          </p>
+        </li>
+        <li class="bot">
+          <p>
+            <span>{{ item.dealPrice }}</span>
+            <span>开仓价</span>
+          </p>
+          <p>
+            <span>{{ coinPrice[item.targetCoin] }}</span>
+            <span>当前价</span>
+          </p>
+          <p>
+            <span>{{ item.stopLoss }}</span>
+            <span>止损价</span>
+          </p>
+          <p>
+            <span>{{ item.stopProfit }}</span>
+            <span>止盈价</span>
+          </p>
+        </li>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import iconBuy from "Images/chat/icon_buy.png";
 import iconSale from "Images/chat/icon_sale.png";
+import { distinct } from "common/utli";
 export default {
   props: {
     showDialog: {
@@ -55,22 +58,56 @@ export default {
   },
   data() {
     return {
-      List: new Array(10)
+      List: [],
+      coinPrice: {}
     };
   },
-  created() {
-    this.getList();
+  mounted() {
+    this._initPage();
   },
-  components: {},
+  beforeDestroy() {
+    this.$EventListener.off("TVdetail", this.Detail);
+    this.$EventListener.fire("SendMsg", {});
+  },
   methods: {
+    _initPage() {
+      this.getHoldList();
+      this.$EventListener.on("TVdetail", this.Detail);
+    },
+    sendMsg(coinArr) {
+      let datas = {};
+      coinArr.forEach(item => {
+        datas[`${item.toLowerCase()}usdt-ticker`] = 0;
+      });
+      this.$EventListener.fire("SendMsg", datas);
+    },
+    Detail(data) {
+      data.symbol = data.symbol.replace("/USDT", "");
+      if (this.coinPrice[data.symbol]) {
+        this.coinPrice[data.symbol] = data.close;
+      }
+    },
     //获取持仓单
-    getList() {
+    getHoldList() {
       this.$http({
-        url: "/v1/leverage/hold",
+        url: "/v1/leverage/holdList",
         data: { position: 0, tradeType: 0 },
         method: "get"
       }).then(res => {
-        console.log(res.data);
+        if (res.status == this.STATUS) {
+          this.List = res.data;
+          let arr = [],
+            obj = {};
+          for (let i = 0; i < res.data.length; i++) {
+            arr.push(res.data[i].targetCoin);
+          }
+          arr = distinct(arr);
+          for (let j = 0; j < arr.length; j++) {
+            obj[arr[j]] = "--";
+          }
+          this.coinPrice = obj;
+          this.sendMsg(arr);
+        }
       });
     },
     closeOut() {

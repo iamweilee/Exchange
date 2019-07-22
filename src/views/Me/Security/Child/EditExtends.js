@@ -15,13 +15,11 @@ const extendTest = {
     },
     methods: {
         verify(type) {
-            console.log(type, arguments);
             if (type == "edit") {
                 this.emailPhone.trim() && this.emailPhoneCode.trim()
                     ? (this.isClick = false)
                     : (this.isClick = true);
             } else if (type == "edit1") {
-                console.log(this.phoneData[this.pageType]);
                 this.phoneData[this.pageType].trim() &&
                 this.phoneData[this.pageType + "Code"].trim()
                     ? (this.isClick = false)

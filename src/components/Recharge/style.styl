@@ -63,7 +63,7 @@
         .inp {
             border: none;
             height: 23px;
-            width: 150px;
+            width: 200px;
             font-size: 18px;
             display: flex;
             align-items: center;
@@ -214,6 +214,10 @@
             background: linear-gradient(left, #00BFDE, $blue);
             font-size: 16px;
             color: $write;
+            &:disabled {
+                color: rgba(255, 255, 255, 0.6);
+                opacity: 0.8;
+            }
         }
     }
 }

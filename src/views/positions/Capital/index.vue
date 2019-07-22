@@ -29,10 +29,10 @@ export default {
       List: []
     };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
-  destroyed() {
+  beforeDestroy() {
     this.$EventListener.off("TVdepth", this.rederDepth);
   },
   components: {},

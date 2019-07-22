@@ -20,11 +20,11 @@ export default {
       ]
     };
   },
-  created() {
+  mounted() {
     this.timer = setInterval(this.scroll, 3000);
     this.getNotice();
   },
-  destroyed() {
+  beforeDestroy() {
     clearInterval(this.timer);
   },
   components: {},

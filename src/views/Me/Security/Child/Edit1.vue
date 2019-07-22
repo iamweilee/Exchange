@@ -53,7 +53,7 @@ export default {
       phoneData: this.$lStore.get("phoneData") || { mobile: "", mobileCode: "" }
     };
   },
-  destroyed() {
+  beforeDestroy() {
     this.$lStore.remove("phoneData");
   },
   methods: {

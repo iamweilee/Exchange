@@ -26,7 +26,7 @@ export default {
     ...mapState(["userInfo"])
   },
   components: { NavBar },
-  created() {
+  mounted() {
     // this.getAddress();
   },
   methods: {

@@ -195,7 +195,7 @@ export default {
           foregroundColor: "#1b212d"
         },
         custom_css_url: "bundles/coustom.css",
-        indicators_file_name: "customIndex.js",
+        indicators_file_name: "customIndex.js"
       };
       const tvWidget = new TradingView.widget(widgetOptions);
       this.tvWidget = tvWidget;
@@ -225,7 +225,7 @@ export default {
         //   color: "#60407f"
         // }
       ];
-        
+
       mas.forEach(item => {
         tvWidget
           .chart()
@@ -262,7 +262,7 @@ export default {
     MACD() {
       this.closeOther();
       this.tvWidget.chart().createStudy("MACD", false, false, []);
-      this.tvWidget.chart().createStudy("Equity", false, false,[]);
+      this.tvWidget.chart().createStudy("Equity", false, false, []);
     },
     BOLL() {
       this.closeOther();
@@ -283,7 +283,7 @@ export default {
       this.tvWidget.chart().createStudy("Williams %R", false, false, []);
     }
   },
-  destroyed() {
+  beforeDestroy() {
     if (this.tvWidget !== null) {
       this.tvWidget.remove();
       this.tvWidget = null;

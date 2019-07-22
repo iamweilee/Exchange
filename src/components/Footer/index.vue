@@ -23,7 +23,7 @@ export default {
   computed: {
     ...mapState(["tabNav"])
   },
-  created() {},
+  mounted() {},
   components: {},
   methods: {
     activeIcon(id) {

@@ -38,7 +38,7 @@ export default {
   components: {
     NavBar
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   methods: {

@@ -36,7 +36,7 @@ export default {
       type: this.$route.name
     };
   },
-  created() {
+  mounted() {
     console.log(this.$md5("123456"));
     // this.register();
   },

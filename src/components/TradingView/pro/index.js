@@ -31,7 +31,7 @@ export default {
             session: "24x7",
             timezone: "Etc/UTC",
             ticker: symbolName,
-            exchange: "huobi",
+            exchange: "bitou",
             minmov: 1,
             pricescale: 100,
             has_intraday: true,

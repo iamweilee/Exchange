@@ -16,5 +16,10 @@ export default {
     setTabNav(state, val) {
         lStore.set("tabNav", val);
         state.tabNav = val;
+    },
+    setSocket(state, allSocket) {
+        debugger;
+        // lStore.set("Socket", allSocket);
+        state.Socket = allSocket;
     }
 };

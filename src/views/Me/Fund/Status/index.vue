@@ -1,29 +1,29 @@
 <template>
   <div class="status">
-    <NavBar title="订单状态" fixed showL @clickLeft="clickLeft"/>
+    <NavBar title="订单状态" fixed showL @clickLeft="clickLeft" />
     <ul class="status_top">
       <li>
         <h2>订单信息</h2>
-        <p>已失效</p>
+        <p>{{ detail.status | statusType }}</p>
       </li>
       <li>
         <p>付款金额</p>
         <p>
-          <span class="big">7020.00</span>
+          <span class="big">{{ detail.rmbValue | toFixeds }}</span>
           <span>CNY</span>
         </p>
       </li>
       <li>
         <p>单价</p>
         <p>
-          <span class="color6">7.02</span>
+          <span class="color6">{{ detail.rmbRate }}</span>
           <span>CNY</span>
         </p>
       </li>
       <li>
         <p>数量</p>
         <p>
-          <span class="color6">1000</span>
+          <span class="color6">{{ detail.coinAmount }}</span>
           <span>USDT</span>
         </p>
       </li>
@@ -32,19 +32,19 @@
     <ul class="status_bot">
       <li>
         <p>支付方式</p>
-        <p>网上银行</p>
+        <p>银行卡</p>
       </li>
       <li>
         <p>付款人姓名</p>
-        <p>姜婷</p>
+        <p>{{ detail.userName }}</p>
       </li>
       <li>
         <p>下单时间</p>
-        <p>2019/06/26 13:18:26</p>
+        <p>{{ detail.createTime | dateFormat }}</p>
       </li>
       <li>
         <p>订单号</p>
-        <p>BEEI12384658843685</p>
+        <p>{{ detail.tradeId }}</p>
       </li>
     </ul>
     <div class="status_btn">
@@ -57,12 +57,30 @@
 import NavBar from "components/NavBar";
 export default {
   data() {
-    return {};
+    return {
+      detail: {}
+    };
   },
   components: {
     NavBar
   },
+  mounted() {
+    this._initPage();
+  },
   methods: {
+    _initPage() {
+      this.getDetail();
+    },
+    //获取详情信息
+    getDetail() {
+      this.$http({
+        url: `/v1/position/otc/record-info/${this.$route.params.id}`
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.detail = res.data;
+        }
+      });
+    },
     clickLeft() {
       this.$router.back();
     },

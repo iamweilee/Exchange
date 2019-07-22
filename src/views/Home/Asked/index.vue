@@ -29,7 +29,7 @@ export default {
   components: {
     NavBar
   },
-  created() {
+  mounted() {
     this._initPage(this.$route.params.type, this.$route.query.name);
   },
   methods: {

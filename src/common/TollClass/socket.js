@@ -24,7 +24,6 @@ var WBT = function(obj) {
     //自定义Ws连接函数：服务器连接成功
     this.onopen = e => {
         this.isHeartflag = true;
-        console.log(e);
     };
     //自定义Ws消息接收函数：服务器向前端推送消息时触发
     this.onmessage = e => {

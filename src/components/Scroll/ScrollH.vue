@@ -11,7 +11,7 @@ export default {
   data() {
     return {};
   },
-  created() {
+  mounted() {
     this.$nextTick(() => {
       this._initScroll();
     });

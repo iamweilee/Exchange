@@ -87,7 +87,7 @@ export default {
       dialogData: {}
     };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: { NavBar },

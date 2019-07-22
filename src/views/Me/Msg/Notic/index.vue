@@ -25,7 +25,7 @@ export default {
     };
   },
   components: {},
-  created() {
+  mounted() {
     this._initPage();
   },
   methods: {

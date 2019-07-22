@@ -12,24 +12,22 @@
         tag="ul"
         class="fund_list_single border-1px"
         v-for="item in otcData.list"
-        :to="
-          `/me/fund/${item.status == 1 ? 'detail/' : 'status/'}${item.tradeId}`
-        "
+        :to="`/me/fund/${item.status == 1 ? 'detail/' : 'status/'}${item.id}`"
         :key="item.tradeId"
       >
         <li class="left">
           <p class="left_title">
             <span>OTC交易(BEEPAY充币)</span>
             <span :class="statusColor(item.status)">{{
-              statusText(item.status)
+              item.status | statusType
             }}</span>
           </p>
           <p class="left_shops">签约商户</p>
-          <p class="left_time">05-30 14:37:10</p>
+          <p class="left_time">{{ item.createTime | dateFormat }}</p>
         </li>
         <li class="right">
-            <p class="big">+4000</p>
-            <p class="small">USDT</p>
+          <p class="big">+4000</p>
+          <p class="small">USDT</p>
         </li>
       </router-link>
     </ScrollV>
@@ -50,8 +48,10 @@ export default {
   components: {
     ScrollV
   },
-  created() {
+  mounted() {
     this.getList();
+    var str = "2019-07-21T03:59:09.000+0000";
+    console.log(str.search('9'));
   },
   methods: {
     //设置Color
@@ -64,18 +64,7 @@ export default {
         return "color3";
       }
     },
-    //状态分辨
-    statusText(status) {
-      if (status == 1) {
-        return "申请中"; //"进行中";
-      } else if (status == 3) {
-        return "otc确认通过"; //"已失效";
-      } else if (status == 4) {
-        return "otc确认不通过"; //"已失效";
-      } else if (status == 9) {
-        return "已撤";
-      }
-    },
+
     //下拉刷新
     pullDown(scroll) {
       setTimeout(() => {
@@ -96,8 +85,11 @@ export default {
     //获取OTC充值列表
     getList() {
       this.$http({
-        url: "/v1/position/otc/recharge-record-list",
-        data: { pageNo: 1, pageSize: 20 },
+        url: "/v1/position/otc/record-list",
+        data: {
+          pageNo: 1,
+          pageSize: 20
+        },
         method: "get"
       }).then(res => {
         console.log(res);

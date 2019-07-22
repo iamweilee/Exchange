@@ -29,14 +29,14 @@
           <div class="from_single_label">
             <p>挂单价格</p>
             <p>
-              价格≥{{ closePic | toFixeds }}&nbsp;或&nbsp;价格≤{{
-                (closePic * 0.9975) | toFixeds
+              价格≥{{ orderPic(1) | toFixeds }}&nbsp;或&nbsp;价格≤{{
+                orderPic(0) | toFixeds
               }}
             </p>
           </div>
           <div class="from_single_cont">
-            <div class="box">
-              <input type="text" v-model="closePic" />
+            <div class="box" @click="allCustom = true">
+              <input type="number" :value="inpPrice | toFixeds" />
               <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
               <img class="add" src="~assets/Images/pos/icon_add.png" alt />
             </div>
@@ -102,7 +102,14 @@
             <div class="from_single_cont_single">
               <div class="left">止损价</div>
               <div class="box small">
-                <input type="text" :value="(closePic * 1.025) | toFixeds" />
+                <input
+                  type="text"
+                  :value="
+                    ((checkCash * checkHand * 0.8) / valRate +
+                      closePic * 1.0008)
+                      | toFixeds
+                  "
+                />
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
@@ -110,15 +117,27 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≥<em data-v-25ef0b48="">{{(closePic * 1.025) | toFixeds}}</em> 预计亏损约
-                  <em data-v-25ef0b48="">80.00</em>
+                  ≥<em data-v-25ef0b48="">{{
+                    ((checkCash * checkHand * 0.8) / valRate +
+                      closePic * 1.0008)
+                      | toFixeds
+                  }}</em>
+                  预计亏损约
+                  <em data-v-25ef0b48="">{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
               </div>
             </div>
             <div class="from_single_cont_single">
               <div class="left">止盈价</div>
               <div class="box small">
-                <input type="text" :value="(closePic * 0.9975) | toFixeds" />
+                <input
+                  type="text"
+                  :value="
+                    (closePic * 1.0008 -
+                      (checkCash * checkHand * 0.8) / valRate)
+                      | toFixeds
+                  "
+                />
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
@@ -126,8 +145,13 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≤<em data-v-25ef0b48="">{{(closePic * 0.9975) | toFixeds}}</em> 预计盈利约
-                  <em data-v-25ef0b48="">80.00</em>
+                  ≤<em data-v-25ef0b48="">{{
+                    (closePic * 1.0008 -
+                      (checkCash * checkHand * 0.8) / valRate)
+                      | toFixeds
+                  }}</em>
+                  预计盈利约
+                  <em data-v-25ef0b48="">{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
               </div>
             </div>
@@ -167,15 +191,12 @@
             <p>7.10</p>
           </div>
         </div>
-        <div class="from_single">
-          <div class="from_single_label big" @click="freeShow = !freeShow">
-            {{ closePic }}
-          </div>
-        </div>
       </div>
     </div>
     <div class="submit_btn">
-      <button @click="placeOrder">挂单买涨&nbsp;{{ closePic }}</button>
+      <button :class="position && 'active'" @click="placeOrder">
+        {{ this.btnText() }}{{ closePic }}
+      </button>
     </div>
   </div>
 </template>
@@ -183,6 +204,7 @@
 <script>
 import Select from "components/Select";
 import { mapState } from "vuex";
+import { toFixeds } from "common/utli";
 export default {
   props: {
     closePic: {
@@ -191,6 +213,10 @@ export default {
     },
     coinCode: {
       type: String,
+      required: true
+    },
+    position: {
+      type: [String, Number],
       required: true
     },
     cloeModle: {
@@ -202,7 +228,7 @@ export default {
   },
   data() {
     return {
-      price: 8572.19,
+      inpPrice: 0,
       checkHand: 2,
       valRate: 1,
       checkCash: 200,
@@ -213,13 +239,14 @@ export default {
       freeShow: false,
       isNight: false,
       isLoss: false,
-      title: "快捷"
+      title: "快捷",
+      allCustom: false
     };
   },
   computed: {
     ...mapState(["userInfo"])
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: { Select },
@@ -229,30 +256,60 @@ export default {
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;
+      this.inpPrice = this.closePic;
+    },
+    btnText() {
+      switch (this.position) {
+        case 0:
+          return `${this.value}买涨 `;
+        case 1:
+          return `${this.value}买跌 `;
+      }
     },
     //下单函数
     placeOrder() {
+      let obj = {
+        symbol: "ETH/USDT",
+        amount: 390594.22175084427,
+        high: 232.5,
+        vol: 87819928.10560414,
+        low: 217.15,
+        count: 172947,
+        type: "detail",
+        close: 230.31,
+        pair: "ethusdt",
+        open: 217.62,
+        ts: 1563639580553
+      };
+      let req = {
+        //   dealAmount: 12,//成交量
+        //   dealPrice: 198,//成交价
+        deposit: 120, //保证金
+        isDelay: 0, //是否过夜 0否 1是
+        // leverage: 19, //杠杆倍数
+        position: 0, //交易方向0-涨 1-跌
+        poundageAmount: 18.4, //手续费
+        //   matUserId: 1,//垫资账户id
+        sourceCoin: "USDT", //交易货币
+        stockRate: 12, //手数比例
+        // stopLoss: 190, //止损
+        // stopProfit: 206, //止盈
+        targetCoin: "ETH", //目标货币
+        tradeAmount: 12, //委托量
+        // tradePrice: 198, //委托价
+        tradeCode: "ETH/USDT", //交易对
+        tradeType: 0, //0-市价 1-限价
+        userId: this.userInfo.userId
+      };
+
+      req.leverage = toFixeds((230.31 * 12) / 120);
+      req.poundageAmount = toFixeds(0.8 * 10 + 230.31);
+      req.stopProfit = toFixeds(230.31 - 0.8 * 10);
+      req.tradePrice = toFixeds(230.31 * 1.008);
+      console.log(JSON.stringify(req));
       this.$http({
         url: "/v1/leverage/market/submit",
-        data: {
-          dealAmount: 12,
-          dealPrice: 198,
-          deposit: 120,
-          isDelay: 0,
-          leverage: 19,
-          position: 0,
-          poundageAmount: 18.4,
-          matUserId: 1,
-          sourceCoin: "USDT",
-          stockRate: 1,
-          stopLoss: 190,
-          stopProfit: 206,
-          tradeType: 0,
-          targetCoin: "ETH",
-          tradeAmount: 12,
-          tradePrice: 198,
-          userId: this.userInfo.userId
-        },
+        data: req,
         method: "post"
       }).then(res => {
         console.log(res);
@@ -284,8 +341,23 @@ export default {
     Specialty() {
       this.title = this.title == "快捷" ? "专业" : "快捷";
     },
+    // 下单价格限制
+    orderPic(position) {
+      if (position) {
+        return this.closePic * 1.008;
+      } else {
+        return this.closePic * 0.992;
+      }
+    },
     handClick(item, type) {
       this[type] = item;
+    }
+  },
+  watch: {
+    closePic(val) {
+      if (!this.allCustom) {
+        this.inpPrice = val;
+      }
     }
   }
 };

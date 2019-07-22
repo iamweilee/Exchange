@@ -110,7 +110,7 @@ export default {
       bankList: []
     };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: {

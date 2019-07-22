@@ -52,15 +52,18 @@ export default {
       List: new Array(10)
     };
   },
-  created() {
-    this.getList();
+  mounted() {
+    this._initPage();
   },
   methods: {
+    _initPage() {
+      this.getEntrustIng();
+    },
     //获取持仓单
-    getList() {
+    getEntrustIng() {
       this.$http({
-        url: "/v1/leverage/hold",
-        data: { position: 0, tradeType: 1 },
+        url: "/v1/leverage/entrustIng",
+        data: { position: 0, tradeType: 0 },
         method: "get"
       }).then(res => {
         console.log(res.data);

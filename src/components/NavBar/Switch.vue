@@ -54,7 +54,7 @@ export default {
   data() {
     return { styls: { left: 0 } };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: {},

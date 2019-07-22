@@ -56,7 +56,7 @@ export default {
   computed: {
     ...mapState(["userInfo"])
   },
-  created() {
+  mounted() {
     this.getUser();
   },
   components: {},

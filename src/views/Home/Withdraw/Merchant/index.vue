@@ -75,7 +75,7 @@ export default {
       showOtc: false
     };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: {

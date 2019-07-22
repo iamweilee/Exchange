@@ -173,15 +173,20 @@
       </div>
     </div>
     <div class="handWrap">
-      <button @click="showOrderHandle">买跌 5794.34</button>
-      <button>买涨 5798.39</button>
+      <button @click="showOrderHandle(1)">买跌 5794.34</button>
+      <button @click="showOrderHandle(0)">买涨 5798.39</button>
     </div>
     <van-popup
       v-model="showOrder"
       position="bottom"
       :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }"
     >
-      <PlaceOrder coinCode="BTC" :cloeModle="cloeModle" :closePic="detailData.close" />
+      <PlaceOrder
+        coinCode="BTC"
+        :position="position"
+        :cloeModle="cloeModle"
+        :closePic="detailData.close"
+      />
     </van-popup>
   </div>
 </template>
@@ -192,7 +197,6 @@ import Capital from "./Capital";
 import Intord from "./Intord";
 import PlaceOrder from "./PlaceOrder";
 import TradingView from "components/TradingView";
-import WBT from "common/TollClass/socket";
 import { klineLastBar } from "components/TradingView/pro/stream";
 export default {
   data() {
@@ -205,6 +209,7 @@ export default {
       symbol: "BTC/USDT",
       tabsType: "Capital",
       showOrder: false,
+      position: 0, //0买涨，1买跌
       styls: {
         left: 0
       },
@@ -212,13 +217,14 @@ export default {
       Socket: null
     };
   },
-  created() {
+  mounted() {
     this._initPage();
+    console.log("position");
   },
-  destroyed() {
+  beforeDestroy() {
     this.$EventListener.off("TVdetail", this.renderDetail);
     this.$EventListener.off("TVkline", klineLastBar);
-    // this.Socket.close();
+    this.$EventListener.fire("SendMsg", {});
   },
   components: {
     NavBar,
@@ -229,12 +235,12 @@ export default {
   },
   methods: {
     _initPage() {
-      this.Socket = new WBT({ url: "TVsocket" });
       this.initSocket();
     },
     //显示下单
-    showOrderHandle() {
+    showOrderHandle(position) {
       this.showOrder = true;
+      this.position = position;
     },
     //关闭下单
     cloeModle() {
@@ -242,12 +248,9 @@ export default {
     },
     //初始化Socket
     initSocket() {
-      this.Socket.initWs();
       let datas = this.resolutionSocket(this.TVInterval);
-      setTimeout(() => {
-        this.Socket.Send(JSON.stringify(datas));
-      }, 100);
       this.$EventListener.on("TVdetail", this.renderDetail);
+      this.$EventListener.fire("SendMsg", datas);
     },
     //更新头部价格成交量
     renderDetail(data) {
@@ -280,7 +283,7 @@ export default {
       this.isShow = false;
       this.TVInterval = resolution;
       this.$refs.trading.clickBtn(resolution);
-      this.Socket.Send(JSON.stringify(datas));
+      this.$EventListener.fire("SendMsg", datas);
     },
     //socket 时间区间格式化
     resolutionSocket(resolution) {

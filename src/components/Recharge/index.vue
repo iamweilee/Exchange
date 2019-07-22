@@ -23,7 +23,17 @@
           </div>
         </div>
         <div class="recharge_num" @click="inpFocus">
-          <input class="inp" ref="inpVal" v-model="inpVal" />
+          <input
+            class="inp"
+            type="text"
+            ref="inpVal"
+            placeholder="请输入金额(最少20)"
+            v-model="inpVal"
+            v-debounce="{
+              fn: verify.bind(arguments),
+              method: 'input'
+            }"
+          />
           <p class="recharge_num_r">
             <span>约需：</span>
             <span class="color-red">￥{{ (inpVal * 7) | toFixeds(2) }}</span>
@@ -32,7 +42,12 @@
         <div class="recharge_from">
           <div class="recharge_from_single">
             <p class="label">付款人姓名：</p>
-            <input type="text" placeholder="请输入付款人姓名" />
+            <input
+              type="text"
+              :value="currentBank.userName"
+              placeholder="请输入付款人姓名"
+              readonly
+            />
           </div>
           <div class="recharge_from_single radioGroup">
             <p class="label">支付方式：</p>
@@ -115,7 +130,7 @@
         </div>
       </div>
       <div class="recharge_btn">
-        <button @click="recharge">确定</button>
+        <button @click="recharge" :disabled="isDisabled">确定</button>
       </div>
     </div>
   </van-popup>
@@ -139,11 +154,12 @@ export default {
       show: false,
       inpVal: 1000,
       numList: [2000, 1000, 500, 100, 50, "other"],
-      otcId: 1,
-      bankList: []
+      otcDetail: {},
+      bankList: [],
+      isDisabled: false
     };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: {
@@ -153,12 +169,13 @@ export default {
     //初始化函数
     _initPage() {
       this.getBankList();
+      this.isClick();
     },
 
     //显示充值弹窗
-    showSelf(id) {
+    showSelf(item) {
       this.show = true;
-      this.otcId = id;
+      this.otcDetail = item;
     },
     //选择数量按钮
     checkNum(num) {
@@ -171,6 +188,24 @@ export default {
     //自动聚焦数量点击其他
     inpFocus() {
       this.$refs.inpVal.focus();
+    },
+    verify(type) {
+      this.inpVal = this.inpVal.replace(/[^\d]/g, "");
+      if (
+        this.inpVal < this.otcDetail.sellMinAmount ||
+        this.inpVal > this.otcDetail.sellMaxAmount
+      ) {
+        this.isDisabled = true;
+      }
+    },
+    //是否可以点击充值按钮
+    isClick() {
+      if (
+        this.inpVal < this.otcDetail.sellMinAmount ||
+        this.inpVal > this.otcDetail.sellMaxAmount
+      ) {
+        this.isDisabled = true;
+      }
     },
     //选择银行卡列表
     checkBankHandle(item) {
@@ -191,14 +226,15 @@ export default {
         url: "/v1/position/otc/recharge-record-add",
         data: {
           coinAmount: this.inpVal,
-          otcId: "1",
+          otcId: this.otcDetail.id,
           userCardId: this.currentBank.id,
           userName: "廉亚龙"
         },
         method: "post"
       }).then(res => {
         if (res.status == this.STATUS) {
-          this.show = false;
+          this.$router.push(`/me/fund/detail/${res.data.id}`);
+          //   this.show = false;
         }
       });
     },

@@ -10,22 +10,16 @@
       </ul>
     </div>
     <div class="lever_List">
-      <ScrollV
-        pulldown
-        pullup
-        @pullDown="pullDown"
-        @pullUp="pullUp"
-        :data="List"
-      >
+      <ScrollV pulldown pullup @pullDown="pullDown" @pullUp="pullUp">
         <ul
           class="lever_List_single border-1px"
           v-for="(item, index) in List"
           :class="index % 2 && 'fall'"
-          :key="item"
+          :key="item.symbol"
         >
           <li class="left">
             <p class="left_top">
-              <span class="big">{{item}}</span>
+              <span class="big">{{ item.symbol }}</span>
               <span class="small">比特币</span>
               <span class="icon" v-show="!(index % 3)">
                 <img src="~assets/Images/lever/icon_hot.png" alt />
@@ -34,7 +28,7 @@
             <p class="left_bot">行情稳，可操盘</p>
           </li>
           <li class="middle">
-            <p class="usdt">5800.67</p>
+            <p class="usdt">{{ item.close }}</p>
             <p class="cny">￥39058.88</p>
           </li>
           <li class="right">
@@ -49,6 +43,7 @@
 <script>
 import NavBar from "components/NavBar";
 import ScrollV from "components/Scroll";
+import { connect } from "net";
 export default {
   data() {
     return {
@@ -62,22 +57,35 @@ export default {
     NavBar,
     ScrollV
   },
-  created() {
+  mounted() {
     this._initPage();
+  },
+  beforeDestroy() {
+    this.$EventListener.off("TVdetail", this.Detail);
+    this.$EventListener.fire("SendMsg", {});
   },
   methods: {
     _initPage() {
-      this.getList();
+      this.$EventListener.on("TVdetail", this.Detail);
+      this.sendMsg();
     },
-    // 获取币对
-    getList() {
-      this.$http({ url: "/coin/all/detail", method: "get" }).then(res => {
+    sendMsg() {
+      let datas = {};
+      this.List.forEach(item => {
+        datas[`${item.symbol.toLowerCase()}usdt-ticker`] = 0;
       });
+      this.$EventListener.fire("SendMsg", datas);
     },
-    //获取全部币种
-    getLists() {
-      this.$http({ url: "tradeInfo/allTradeInfo", method: "get" }).then(res => {
-      });
+    Detail(data) {
+      data.symbol = data.symbol.replace("/USDT", "");
+      let List = this.List;
+      for (let i = 0; i < List.length; i++) {
+        if (List[i].symbol == data.symbol) {
+          List[i] = data;
+          break;
+        }
+      }
+      this.List = [...List];
     },
     pullDown(scroll) {
       setTimeout(() => {

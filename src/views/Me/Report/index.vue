@@ -174,7 +174,7 @@ export default {
     this.resetWH();
     this.$addEvent(window, "resize", this.resetWH);
   },
-  destroyed() {
+  beforeDestroy() {
     this.$removeEvent(window, "resize", this.resetWH);
   },
   methods: {

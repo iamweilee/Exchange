@@ -44,7 +44,7 @@ export default {
   computed: {
     ...mapState(["userInfo"])
   },
-  created() {
+  mounted() {
     this.getUserInfo();
   },
   components: { NavBar },

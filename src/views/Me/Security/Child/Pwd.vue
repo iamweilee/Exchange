@@ -21,7 +21,7 @@ export default {
     };
   },
   components: { NavBar },
-  created() {
+  mounted() {
     if (this.$route.name == "PwdReset") {
       this.title = "重置密码";
     } else {

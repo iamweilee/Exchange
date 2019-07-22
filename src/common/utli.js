@@ -130,6 +130,7 @@ function EventListener(obj) {
                 for (let j = 1; j < arguments.length; j++) {
                     args.push(arguments[j]);
                 }
+
                 handler.apply(this, args);
                 // console.log("args = " + JSON.stringify(args));
             }
@@ -262,11 +263,15 @@ function normalDate(oDate) {
     var reg = /\-+/g;
 
     if (dataType(oDate) == "string") {
-        oDate = oDate.split(".")[0]; //解决ie浏览器对yyyy-MM-dd HH:mm:ss.S格式的不兼容
-        oDate = oDate.replace(reg, "/"); //解决苹果浏览器对yyyy-MM-dd格式的不兼容性
+        console.log(oDate);
+        if (oDate.indexOf("+") == -1) {
+            oDate = oDate.split(".")[0]; //解决ie浏览器对yyyy-MM-dd HH:mm:ss.S格式的不兼容
+            oDate = oDate.replace(reg, "/"); //解决苹果浏览器对yyyy-MM-dd格式的不兼容性
+        }
     }
 
     CurrentDate = new Date(oDate);
+
     return CurrentDate;
 }
 
@@ -297,7 +302,7 @@ function dateFormat(mydate, ft) {
         return "--";
     }
     var fmt = ft || "yyyy-MM-dd hh:mm:ss",
-        reg = /\d/g,
+        reg = /^\d+$/g,
         weekday = [
             "星期日",
             "星期一",
@@ -310,6 +315,7 @@ function dateFormat(mydate, ft) {
     if (reg.test(mydate)) {
         mydate = mydate - 0;
     }
+
     var oDate = normalDate(mydate);
     var date = {
         "M+": oDate.getMonth() + 1, //月份
@@ -343,6 +349,50 @@ function dateFormat(mydate, ft) {
     return fmt;
 }
 
+//科学技术法转化
+function scientificToNumber(num) {
+    if (!num) return num;
+    let numStr = num.toString().toLocaleLowerCase();
+    if (!/(e)|(E)/g.test(numStr)) {
+        return num;
+    }
+    return Number(num)
+        .toFixed(18)
+        .replace(/\.0+$/, "")
+        .replace(/(\.\d+[1-9])0+$/, "$1");
+}
+//科学计数法
+function toFixeds(nums, len = 2) {
+    if (nums || nums === 0) {
+        let re = `/([0-9]+\.?[0-9]{${len}})[0-9]*/`,
+            regexp = /(?:\.0*|(\.\d+?)0+)$/;
+        nums = scientificToNumber(nums).toString();
+        nums =
+            nums == 0
+                ? nums
+                : nums.replace(eval(re), "$1").replace(regexp, "$1");
+        return Number(Number(nums).toFixed(len));
+    } else {
+        return "--";
+    }
+}
+
+//数组去重
+function distinct(a, b = []) {
+    let arr = a.concat(b);
+    let result = [];
+    let obj = {};
+
+    for (let i of arr) {
+        if (!obj[i]) {
+            result.push(i);
+            obj[i] = 1;
+        }
+    }
+
+    return result;
+}
+
 export {
     dataType,
     deepCopy,
@@ -355,5 +405,7 @@ export {
     sStore,
     normalDate,
     weekDay,
-    dateFormat
+    dateFormat,
+    toFixeds,
+    distinct
 };

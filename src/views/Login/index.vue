@@ -48,7 +48,9 @@ export default {
       loginData: { loginName: "", mobileCode: "", emailCode: "", type: 1 }
     };
   },
-  created() {},
+  mounted() {
+    
+  },
   components: {},
   methods: {
     login() {

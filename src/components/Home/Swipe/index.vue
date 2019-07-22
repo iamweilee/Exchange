@@ -34,7 +34,7 @@ export default {
     Swiper,
     Slide
   },
-  created() {},
+  mounted() {},
   methods: {
     hanleSwipe() {
       console.log("666666");

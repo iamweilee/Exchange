@@ -288,13 +288,13 @@ const router = new Router({
             component: () => import("views/Me/Bank/AddBank.vue")
         },
         {
-            path: "/me/fund/status/:orderId", //账户设置
+            path: "/me/fund/status/:id", //账户设置
             name: "Status",
             meta: { id: 5.23 },
             component: () => import("views/Me/Fund/Status")
         },
         {
-            path: "/me/fund/detail/:orderId", //账户设置
+            path: "/me/fund/detail/:id", //账户设置
             name: "Detail",
             meta: { id: 5.24 },
             component: () => import("views/Me/Fund/Detail")

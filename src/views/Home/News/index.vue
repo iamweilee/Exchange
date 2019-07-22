@@ -89,7 +89,7 @@ export default {
       newsData: {}
     };
   },
-  created() {
+  mounted() {
     this._initPage();
   },
   components: {

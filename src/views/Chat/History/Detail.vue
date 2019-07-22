@@ -52,7 +52,7 @@ export default {
       title: "BTC/USDT (止损平仓)"
     };
   },
-  created() {
+  mounted() {
     if (this.$route.params.id % 2) {
       this.title = "BTC/USDT (止损平仓)";
     } else {

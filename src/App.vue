@@ -10,8 +10,9 @@
 </template>
 <script>
 import Footer from "components/Footer";
-import { mapActions } from "vuex";
-import WBT from "./common/TollClass/socket";
+import { mapActions, mapMutations } from "vuex";
+import WBT from "common/TollClass/socket";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -19,15 +20,57 @@ export default {
       transitionName: "slide-left"
     };
   },
-  created() {},
   mounted() {
-    //    this.Socket = new WBT({ url: "testSocket" });
-    //    this.Socket.initWs();
+    this._initPage();
   },
   components: {
     Footer
   },
-  methods: {},
+  methods: {
+    _initPage() {
+      this.initSocket();
+      this.getSetting();
+    },
+    //初始化Socket
+    initSocket() {
+      let allSocket = new WBT({ url: "TVsocket" });
+      allSocket.initWs();
+      this.$EventListener.on("SendMsg", this.SendMsg);
+      this.Socket = allSocket;
+    },
+    SendMsg(datas) {
+      setTimeout(() => {
+        this.Socket.Send(JSON.stringify(datas));
+      });
+    },
+    getSetting() {
+      if (this.$lStore.get("setingData")) return;
+      this.$http({
+        url: "/v1/leverage/baseinfo",
+        method: "post"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          let info = {
+            coinList: [],
+            stopRate: res.data.stopRate,
+            stopRateOffset: res.data.stopRateOffset,
+            nums: res.data.nums
+          };
+          res.data.coinInfo.map(item => {
+            let obj = {};
+            obj.symbol = item.coinCode;
+            info.coinList.push(obj);
+            info[item.coinCode] = {
+              poundageArray: item.poundageArray,
+              valRate: item.valRate
+            };
+          });
+          this.$lStore.set("setingData", info);
+        }
+      });
+    }
+  },
+
   watch: {
     $route(to, from) {
       let toName = to.name;
