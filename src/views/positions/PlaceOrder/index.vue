@@ -64,9 +64,8 @@
           <div class="from_single_label">
             <p>保证金(USDT)</p>
             <p>
-              可用&nbsp;-&nbsp;USDT，杠杆约{{
-                ((closePic * checkHand * valRate) / (checkCash * checkHand))
-                  | toFixeds
+              可用&nbsp;{{ usableBalance | priceFormat }}&nbsp;USDT，杠杆约{{
+                ((closePic * valRate) / checkCash) | toFixeds
               }}X
             </p>
           </div>
@@ -117,13 +116,13 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≥<em data-v-25ef0b48="">{{
+                  ≥<em>{{
                     ((checkCash * checkHand * 0.8) / valRate +
                       closePic * 1.0008)
                       | toFixeds
                   }}</em>
                   预计亏损约
-                  <em data-v-25ef0b48="">{{ checkCash * checkHand * 0.8 }}</em>
+                  <em>{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
               </div>
             </div>
@@ -145,13 +144,13 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≤<em data-v-25ef0b48="">{{
+                  ≤<em>{{
                     (closePic * 1.0008 -
                       (checkCash * checkHand * 0.8) / valRate)
                       | toFixeds
                   }}</em>
                   预计盈利约
-                  <em data-v-25ef0b48="">{{ checkCash * checkHand * 0.8 }}</em>
+                  <em>{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
               </div>
             </div>
@@ -194,7 +193,7 @@
       </div>
     </div>
     <div class="submit_btn">
-      <button :class="position && 'active'" @click="placeOrder">
+      <button :class="position && 'active'" @click="placeOrder(closePic)">
         {{ this.btnText() }}{{ closePic }}
       </button>
     </div>
@@ -203,8 +202,9 @@
 
 <script>
 import Select from "components/Select";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { toFixeds } from "common/utli";
+import { setTimeout } from "timers";
 export default {
   props: {
     closePic: {
@@ -244,7 +244,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userInfo"])
+    ...mapState(["userInfo"]),
+    ...mapGetters(["usableBalance"])
   },
   mounted() {
     this._initPage();
@@ -267,53 +268,52 @@ export default {
       }
     },
     //下单函数
-    placeOrder() {
-      let obj = {
-        symbol: "ETH/USDT",
-        amount: 390594.22175084427,
-        high: 232.5,
-        vol: 87819928.10560414,
-        low: 217.15,
-        count: 172947,
-        type: "detail",
-        close: 230.31,
-        pair: "ethusdt",
-        open: 217.62,
-        ts: 1563639580553
-      };
+    placeOrder(closePic) {
+      console.log(closePic);
       let req = {
         //   dealAmount: 12,//成交量
         //   dealPrice: 198,//成交价
-        deposit: 120, //保证金
+        deposit: this.checkHand * this.checkCash, //保证金
         isDelay: 0, //是否过夜 0否 1是
         // leverage: 19, //杠杆倍数
         position: 0, //交易方向0-涨 1-跌
         poundageAmount: 18.4, //手续费
         //   matUserId: 1,//垫资账户id
         sourceCoin: "USDT", //交易货币
-        stockRate: 12, //手数比例
+        stockRate: this.valRate, //手数比例
         // stopLoss: 190, //止损
         // stopProfit: 206, //止盈
-        targetCoin: "ETH", //目标货币
-        tradeAmount: 12, //委托量
+        targetCoin: this.coinCode, //目标货币
+        tradeAmount: this.checkHand * this.valRate, //委托量
         // tradePrice: 198, //委托价
-        tradeCode: "ETH/USDT", //交易对
+        tradeCode: `${this.coinCode}/USDT`, //交易对
         tradeType: 0, //0-市价 1-限价
         userId: this.userInfo.userId
       };
+      //   ((closePic * checkHand * valRate) / (checkCash * checkHand))
 
-      req.leverage = toFixeds((230.31 * 12) / 120);
-      req.poundageAmount = toFixeds(0.8 * 10 + 230.31);
-      req.stopProfit = toFixeds(230.31 - 0.8 * 10);
-      req.tradePrice = toFixeds(230.31 * 1.008);
-      console.log(JSON.stringify(req));
-      this.$http({
-        url: "/v1/leverage/market/submit",
-        data: req,
-        method: "post"
-      }).then(res => {
-        console.log(res);
-      });
+      req.leverage = toFixeds((closePic * this.valRate) / this.checkCash, 4);
+      //   req.poundageAmount = toFixeds(0.8 * 10 + closePic);
+      req.tradePrice = toFixeds(closePic * 1.008, 4);
+      //止盈
+      req.stopProfit = toFixeds(
+        closePic + (0.8 * this.checkCash * this.checkHand) / this.valRate,
+        4
+      );
+      //止损
+      req.stopLoss = toFixeds(
+        closePic - (0.8 * this.checkCash * this.checkHand) / this.valRate,
+        4
+      );
+
+      console.log(req);
+        this.$http({
+          url: "/v1/leverage/market/submit",
+          data: req,
+          method: "post"
+        }).then(res => {
+          console.log(res);
+        });
     },
     //获取socket数据
     detail(data) {

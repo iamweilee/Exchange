@@ -13,6 +13,14 @@ export default {
         }
         state.userInfo = userInfo;
     },
+    [types.SET_BALANCE](state, balance) {
+        if (balance) {
+            lStore.set("balance", balance);
+        } else {
+            lStore.remove("balance");
+        }
+        state.balance = balance;
+    },
     setTabNav(state, val) {
         lStore.set("tabNav", val);
         state.tabNav = val;

@@ -6,7 +6,7 @@
         <div class="card">
           <div class="card_size">
             <p>USDT</p>
-            <p>2,210.03</p>
+            <p>{{ balance.enableAmount | priceFormat }}</p>
           </div>
           <router-link tag="p" to="/otc" class="card_btn">
             <button>立即充币</button>
@@ -15,15 +15,15 @@
         <ul class="list">
           <li>
             <p>可用保证金</p>
-            <p>0.00</p>
+            <p>{{ balance.currentAmount | priceFormat }}</p>
           </li>
           <li>
             <p>已用保证金</p>
-            <p>0.00</p>
+            <p>{{ balance.frozenAmount | priceFormat }}</p>
           </li>
           <li>
             <p>账户净值</p>
-            <p>0.00</p>
+            <p>{{ balance.enableAmount | priceFormat }}</p>
           </li>
         </ul>
       </div>
@@ -56,7 +56,7 @@
       :beforeClose="beforeClose"
       class="customDialog"
     >
-      <p class="order">订单编号：123456</p>
+      <p class="order">订单编号：{{ dialogData.orderNo }}</p>
       <ul class="hold_dialog">
         <li>
           <p>浮动盈亏</p>
@@ -64,11 +64,11 @@
         </li>
         <li>
           <p>开仓价</p>
-          <p>5.8737</p>
+          <p>{{ dialogData.dealPrice }}</p>
         </li>
         <li>
           <p>当前价</p>
-          <p>5.8737</p>
+          <p>{{ dialogData.tradePrice }}</p>
         </li>
       </ul>
     </van-dialog>
@@ -77,6 +77,7 @@
 
 <script>
 import NavBar from "components/NavBar";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -87,6 +88,9 @@ export default {
       dialogData: {}
     };
   },
+  computed: {
+    ...mapState(["balance"])
+  },
   mounted() {
     this._initPage();
   },
@@ -95,6 +99,7 @@ export default {
     showDialog(data) {
       this.dialogData = data;
       this.show = true;
+      console.log(data);
     },
     _initPage() {
       if (this.$route.name == "ChatList") {
@@ -110,7 +115,21 @@ export default {
       if (action == "cancel") {
         done();
       } else {
-        this.$refs.child.refresh(done);
+        this.$http({
+          url: "/v1/leverage/eveningUp",
+          data: { orderNo: this.dialogData.orderNo },
+          method: "get"
+        })
+          .then(res => {
+            console.log(res.data);
+            if (res.data == this.STATUS) {
+              this.$refs.child.refresh(done);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            done(false);
+          });
       }
 
       return false;

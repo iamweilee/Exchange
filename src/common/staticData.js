@@ -1,4 +1,5 @@
 // navList
+import { lStore } from "./utli";
 import icon_home from "Images/footer/home.png";
 import icon_home_a from "Images/footer/home_active.png";
 import icon_lever from "Images/footer/lever.png";
@@ -9,8 +10,6 @@ import icon_chat from "Images/footer/chat.png";
 import icon_chat_a from "Images/footer/chat_active.png";
 import icon_me from "Images/footer/me.png";
 import icon_me_a from "Images/footer/me_active.png";
-import radio from "Images/other/icon_radio.png";
-import radios from "Images/other/icon_radios.png";
 
 export const bankList = [
     {
@@ -32,10 +31,6 @@ export const bankList = [
     {
         text: "交通银行 (BOCOM)",
         value: "BOCOM"
-    },
-    {
-        text: "招商银行 (CNBC)",
-        value: "CNBC"
     },
     {
         text: "广发银行 (CGB)",
@@ -99,7 +94,7 @@ export const navList = [
         normal: icon_position,
         active: icon_position_a,
         name: "position",
-        path: "/position"
+        path: `/position/${lStore.get("coinCode") || "BTC"}`
     },
     {
         id: 4,
@@ -384,7 +379,7 @@ export const meList = [
 export const Edit = {
     mobile: {
         title: "修改手机号",
-        title1:"绑定手机号",
+        title1: "绑定手机号",
         tips: "修改手机号前请先验证原手机号",
         tipPhone: "输入手机号"
     },

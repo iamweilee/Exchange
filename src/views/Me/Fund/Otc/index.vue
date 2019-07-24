@@ -19,14 +19,16 @@
           <p class="left_title">
             <span>OTC交易(BEEPAY充币)</span>
             <span :class="statusColor(item.status)">{{
-              item.status | statusType
+              item.status | statusType(true)
             }}</span>
           </p>
           <p class="left_shops">签约商户</p>
           <p class="left_time">{{ item.createTime | dateFormat }}</p>
         </li>
         <li class="right">
-          <p class="big">+4000</p>
+          <p class="big">
+            {{ item.status == 1 ? "-" : "+" }}{{ item.coinAmount }}
+          </p>
           <p class="small">USDT</p>
         </li>
       </router-link>
@@ -51,20 +53,33 @@ export default {
   mounted() {
     this.getList();
     var str = "2019-07-21T03:59:09.000+0000";
-    console.log(str.search('9'));
+    console.log(str.search("9"));
   },
   methods: {
     //设置Color
     statusColor(status) {
-      if (status == 1) {
+      if (status == 1 || status == 2) {
         return "color-green";
-      } else if (status == 2) {
+      } else if (status == 9 || status == 4) {
         return "color9";
       } else if (status == 3) {
         return "color3";
       }
     },
-
+    statusType(status) {
+      switch (status) {
+        case "1":
+          return "申请中";
+        case "2":
+          return "申请中";
+        case "3":
+          return "已成功";
+        case "4":
+          return "已失效";
+        case "9":
+          return "已失效";
+      }
+    },
     //下拉刷新
     pullDown(scroll) {
       setTimeout(() => {
@@ -74,10 +89,7 @@ export default {
     },
     //上拉加载
     pullUp(scroll) {
-      let list = [1, 2, 3];
-
       setTimeout(() => {
-        this.List = [...this.List, ...list];
         console.log("到底了");
         scroll.finishPullUp();
       }, 1000);

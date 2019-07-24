@@ -9,28 +9,38 @@
         class="single"
         v-for="item in otcData.list"
         :key="item.id"
-        @click="toRecharge(item.id)"
+        @click="toRecharge(item)"
       >
         <div class="single_t">
           <div class="single_t_l">
             <p class="name">{{ item.userName }}</p>
             <div class="single_t_l_b">
               <p>{{ item.successService }}笔交易</p>
-              <p class="line-1px">99%成交量</p>
+              <p class="line-1px">
+                {{
+                  ((item.successService * 100) /
+                    (item.successService + item.failService))
+                    | toFixeds
+                }}%成交量
+              </p>
             </div>
           </div>
           <div class="single_t_r">
-            <button>已认证</button>
+            <button>{{ item.authType ? "已认证" : "未认证" }}</button>
           </div>
         </div>
         <div class="single_m">
           <div class="single_m_l">
-            <p>限额：&nbsp;单笔20-14000&nbsp;USDT</p>
-            <p class="tips">大额充币首选，安全稳定！</p>
+            <p>
+              限额：&nbsp;单笔{{ item.sellMinAmount }}-{{
+                item.sellMaxAmount
+              }}&nbsp;USDT
+            </p>
+            <p class="tips">{{ item.accountDesc }}</p>
           </div>
           <div class="single_m_r">
             <p>单价：</p>
-            <p class="price">≈6.7</p>
+            <p class="price">≈{{ item.buyRate }}</p>
           </div>
         </div>
         <div class="single_b">
@@ -72,7 +82,8 @@ export default {
   data() {
     return {
       otcData: {},
-      showOtc: false
+      showOtc: false,
+
     };
   },
   mounted() {
@@ -96,10 +107,9 @@ export default {
         }
       });
     },
-
     //跳转到充值页面
-    toRecharge(id) {
-      this.$refs.Withdraw.showSelf(id);
+    toRecharge(item) {
+      this.$refs.Withdraw.showSelf(item);
       //   this.$router.push("/recharge");
     }
   }

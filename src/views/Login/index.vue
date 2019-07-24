@@ -64,6 +64,7 @@ export default {
         if (res.status == this.STATUS) {
           this.$lStore.set("token", res.data.token);
           this.updatedUserInfo(res.data);
+          this.getBanlace();
           this.$router.push("/");
         }
       });
@@ -85,7 +86,7 @@ export default {
       }, 1000);
       this.sendBtnText = num + "S后重新获取";
     },
-    ...mapActions(["updatedUserInfo"])
+    ...mapActions(["updatedUserInfo","getBanlace"])
   }
 };
 </script>

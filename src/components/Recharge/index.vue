@@ -5,7 +5,7 @@
         <p class="recharge_title_l">充值USDT</p>
         <p class="recharge_title_r">
           <span>单价：</span>
-          <span class="size">≈7</span>
+          <span class="size">≈{{ otcDetail.buyRate }}</span>
         </p>
       </div>
       <div class="recharge_scroll">
@@ -36,7 +36,9 @@
           />
           <p class="recharge_num_r">
             <span>约需：</span>
-            <span class="color-red">￥{{ (inpVal * 7) | toFixeds(2) }}</span>
+            <span class="color-red"
+              >￥{{ (inpVal * otcDetail.buyRate) | toFixeds(2) }}</span
+            >
           </p>
         </div>
         <div class="recharge_from">

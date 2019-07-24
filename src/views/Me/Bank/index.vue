@@ -4,7 +4,7 @@
     <div class="bank_list">
       <div class="single" v-for="item in bankList" :key="item.id">
         <div class="single_l">
-          <img src="~assets/Images/avatar.jpg" alt="" />
+          <img :src="bankImg(item.type)" alt="" />
           <div class="right">
             <p class="right_title">{{ item.bankName }}</p>
             <p>储蓄卡</p>
@@ -55,6 +55,9 @@ export default {
         console.log(res.data);
         this.bankList = res.data;
       });
+    },
+    bankImg(type) {
+      return require(`../../../assets/Images/bank/${type}.png`);
     },
     //解绑银行卡
     unbind(id) {

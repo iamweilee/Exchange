@@ -29,7 +29,6 @@ export default {
 };
 
 const klineLastBar = data => {
-    console.log("TVkline");
     if (_subs.length) {
         // disregard the initial catchup snapshot of trades for already closed candles
         let sub = _subs[0];

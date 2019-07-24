@@ -73,12 +73,13 @@ export default {
           if (res.status == this.STATUS) {
             this.$lStore.set("token", res.data.token);
             this.updatedUserInfo(res.data);
+            this.getBanlace();
             this.$router.push("/");
           }
         });
       }
     },
-    ...mapActions(["updatedUserInfo"])
+    ...mapActions(["updatedUserInfo", "getBanlace"])
   }
 };
 </script>

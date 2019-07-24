@@ -7,7 +7,7 @@
 
       <div v-if="userInfo" class="group_login">
         <p class="balance">
-          188,12USDT
+          {{ usableBalance | priceFormat }}USDT
           <img
             class="balance_icon"
             src="~assets/Images/home/icon_more_unsel.png"
@@ -26,13 +26,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {};
   },
   computed: {
-    ...mapState(["userInfo"])
+    ...mapState(["userInfo"]),
+    ...mapGetters(["usableBalance"])
   },
   methods: {
     toLogin(userInfo) {

@@ -12,7 +12,6 @@
 import Footer from "components/Footer";
 import { mapActions, mapMutations } from "vuex";
 import WBT from "common/TollClass/socket";
-import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -30,6 +29,9 @@ export default {
     _initPage() {
       this.initSocket();
       this.getSetting();
+      if (this.$lStore.get("token")) {
+        this.getBanlace();
+      }
     },
     //初始化Socket
     initSocket() {
@@ -68,7 +70,8 @@ export default {
           this.$lStore.set("setingData", info);
         }
       });
-    }
+    },
+    ...mapActions(["getBanlace"])
   },
 
   watch: {

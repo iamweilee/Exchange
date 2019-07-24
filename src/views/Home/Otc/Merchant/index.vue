@@ -32,15 +32,15 @@
         <div class="single_m">
           <div class="single_m_l">
             <p>
-              限额：&nbsp;单笔{{ item.sellMinAmount }}-{{
-                item.sellMaxAmount
+              限额：&nbsp;单笔{{ item.buyMinAmount }}-{{
+                item.buyMaxAmount
               }}&nbsp;USDT
             </p>
             <p class="tips">{{ item.accountDesc }}</p>
           </div>
           <div class="single_m_r">
             <p>单价：</p>
-            <p class="price">≈{{ item.buyRate || 6.7 }}</p>
+            <p class="price">≈{{ item.buyRate}}</p>
           </div>
         </div>
         <div class="single_b">
@@ -72,7 +72,7 @@
       </p>
       <p>如买方以法币（人民币）购买出售方提供的数字资产，如USDT</p>
     </van-dialog>
-    <Recharge ref="Recharge" />
+    <Recharge ref="Recharge"/>
   </div>
 </template>
 

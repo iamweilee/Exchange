@@ -11,11 +11,13 @@
     </div>
     <div class="lever_List">
       <ScrollV pulldown pullup @pullDown="pullDown" @pullUp="pullUp">
-        <ul
+        <router-link
+          tag="ul"
           class="lever_List_single border-1px"
           v-for="(item, index) in List"
           :class="index % 2 && 'fall'"
           :key="item.symbol"
+          :to="`/position/${item.symbol}`"
         >
           <li class="left">
             <p class="left_top">
@@ -34,7 +36,7 @@
           <li class="right">
             <button class="rate">+2.88%</button>
           </li>
-        </ul>
+        </router-link>
       </ScrollV>
     </div>
   </div>

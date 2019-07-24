@@ -25,3 +25,7 @@ closeprice-固定数值>止损价>closeprice-0.8*保证金/手数比例
 2)买跌：
 closeprice-0.8*保证金/手数比例<=止盈价<=closeprice-固定数值
 closeprice+固定数值<=止损价<=0.8*保证金/手数比例+closeprice
+
+
+杠杆倍数
+closeprice * 手数比例 / 保证金

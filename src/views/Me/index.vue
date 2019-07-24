@@ -5,10 +5,10 @@
       <div class="me_top_info">
         <router-link tag="div" to="/me/user" class="left">
           <p class="left_avatar">
-            <img :src="userInfo.portrait" alt>
+            <img :src="userInfo.portrait" alt />
           </p>
           <div class="left_user">
-            <p>{{userInfo.nickName}}</p>
+            <p>{{ userInfo.nickName }}</p>
             <p>实盘账户</p>
           </div>
         </router-link>
@@ -17,13 +17,13 @@
         </div>
       </div>
       <div class="back_left">
-        <van-icon class="back_icon" @click="clickLeft" name="arrow-left"/>
+        <van-icon class="back_icon" @click="clickLeft" name="arrow-left" />
       </div>
     </div>
     <div class="me_cont">
       <div class="me_cont_top">
         <p class="title">USDT(余额)</p>
-        <p class="num">26,580.00</p>
+        <p class="num">{{ usableBalance | priceFormat }}</p>
       </div>
       <div class="me_cont_btn">
         <button @click="toUrl('/otc')">立即充币</button>
@@ -33,20 +33,19 @@
     <div class="me_list">
       <van-cell is-link v-for="item in meList" :key="item.id" :to="item.link">
         <template slot="icon">
-          <img class="icon_img" :src="item.icon" alt>
+          <img class="icon_img" :src="item.icon" alt />
         </template>
         <template slot="title">
-          <span class="custom-text">{{item.title}}</span>
+          <span class="custom-text">{{ item.title }}</span>
         </template>
       </van-cell>
     </div>
-    
   </div>
 </template>
 
 <script>
 import { meList } from "common/staticData";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -54,18 +53,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userInfo"])
-  },
-  mounted() {
-    this.getUser();
+    ...mapState(["userInfo"]),
+    ...mapGetters(["usableBalance"])
   },
   components: {},
   methods: {
-    getUser() {
-      this.$http({ url: "/v1/position/list", method: "get",data:{coinCode:"USDT"} }).then(res => {
-        console.log(res);
-      });
-    },
     toUrl(url) {
       this.$router.push(url);
     },

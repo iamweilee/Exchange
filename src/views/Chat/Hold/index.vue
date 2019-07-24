@@ -19,7 +19,7 @@
           </p>
           <p class="top_btn">
             <span :class="isColor(index)">-18.76</span>
-            <button @click.stop="closeOut">平仓</button>
+            <button @click.stop="closeOut(item)">平仓</button>
           </p>
         </li>
         <li class="bot">
@@ -110,10 +110,9 @@ export default {
         }
       });
     },
-    closeOut() {
-      this.showDialog({
-        title: "平仓"
-      });
+    closeOut(item) {
+      item.title = "平仓";
+      this.showDialog(item);
     },
     isBuy(type) {
       if (type % 3) {

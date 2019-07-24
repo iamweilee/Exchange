@@ -5,14 +5,14 @@
         <p class="withdraw_title_l">提币USDT</p>
         <p class="withdraw_title_r">
           <span>单价：</span>
-          <span class="size">≈6.9</span>
+          <span class="size">≈{{ buyRate }}</span>
         </p>
       </div>
       <div class="withdraw_scroll">
         <div class="withdraw_from">
           <div class="withdraw_from_single">
             <p class="label">账户余额：</p>
-            <p>0.00USDT</p>
+            <p>{{ usableBalance | priceFormat }}USDT</p>
           </div>
           <div class="withdraw_from_inp">
             <p class="withdraw_from_inp_left">提币数量：</p>
@@ -82,7 +82,7 @@
         </div>
       </div>
       <div class="withdraw_btn">
-        <button @click="withdrawPost">出售</button>
+        <button @click="withdrawPost" :disabled="isDisabled">出售</button>
       </div>
     </div>
   </van-popup>
@@ -93,9 +93,11 @@ import NavBar from "components/NavBar";
 import radio from "Images/other/icon_radio.png";
 import radios from "Images/other/icon_radios.png";
 import { radioList } from "common/staticData";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      buyRate: 7,
       currentBank: {},
       bankKey: "",
       radioList: radioList,
@@ -107,8 +109,12 @@ export default {
       inpVal: 1000,
       numList: [2000, 1000, 500, 100, 50, "other"],
       otcId: 1,
-      bankList: []
+      bankList: [],
+      isDisabled: false
     };
+  },
+  computed: {
+    ...mapGetters(["usableBalance"])
   },
   mounted() {
     this._initPage();
@@ -123,9 +129,10 @@ export default {
     },
 
     //显示充值弹窗
-    showSelf(id) {
+    showSelf(item) {
       this.show = true;
-      this.otcId = id;
+      this.otcId = item.id;
+      this.buyRate = item.buyRate;
     },
     //选择数量按钮
     checkNum(num) {
@@ -138,6 +145,24 @@ export default {
     //自动聚焦数量点击其他
     inpFocus() {
       this.$refs.inpVal.focus();
+    },
+    verify(type) {
+      this.inpVal = this.inpVal.replace(/[^\d]/g, "");
+      if (
+        this.inpVal < this.otcDetail.sellMinAmount ||
+        this.inpVal > this.otcDetail.sellMaxAmount
+      ) {
+        this.isDisabled = true;
+      }
+    },
+    //是否可以点击充值按钮
+    isClick() {
+      if (
+        this.inpVal < this.otcDetail.sellMinAmount ||
+        this.inpVal > this.otcDetail.sellMaxAmount
+      ) {
+        this.isDisabled = true;
+      }
     },
     //选择银行卡列表
     checkBankHandle(item) {
@@ -158,14 +183,14 @@ export default {
         url: "/v1/position/otc/draw-record-add",
         data: {
           coinAmount: this.inpVal,
-          otcId: "1",
+          otcId: this.otcId,
           userCardId: this.currentBank.id,
           userName: "廉亚龙"
         },
         method: "post"
       }).then(res => {
         if (res.status == this.STATUS) {
-          this.show = false;
+          this.$router.push(`/me/fund/detail/${res.data.id}`);
         }
       });
     },

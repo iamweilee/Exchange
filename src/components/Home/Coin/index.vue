@@ -1,13 +1,19 @@
 <template>
   <div class="coin">
-    <ul class="coin_single" v-for="item in coinList" :key="item.symbol">
+    <router-link
+      tag="ul"
+      class="coin_single"
+      v-for="item in coinList"
+      :to="`/position/${item.symbol.split('/')[0]}`"
+      :key="item.symbol"
+    >
       <li class="trade">{{ item.symbol }}</li>
       <li class="dollar" :class="isColor(item)">{{ item.close }}</li>
       <li class="rate" :class="isColor(item)">
         {{ item == 2 ? "-" : "+" }}52%
       </li>
       <li class="cny">￥52100</li>
-    </ul>
+    </router-link>
   </div>
 </template>
 

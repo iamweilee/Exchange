@@ -3,7 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home";
 import Footer from "./components/Footer";
 import store from "./Store";
-
+import { lStore } from "./common/utli";
 Vue.use(Router);
 
 const router = new Router({
@@ -194,8 +194,8 @@ const router = new Router({
             }
         },
         {
-            path: "/position", //交易
-            name: "position",
+            path: "/position/:coinCode", //交易
+            name: "Position",
             meta: { id: 3 },
             component: () => import("views/positions")
         },
@@ -397,6 +397,9 @@ router.beforeEach((to, from, next) => {
             Id = to.meta.id;
         }
         store.commit("setTabNav", Id);
+    }
+    if (to.name == "Position") {
+        lStore.set("coinCode", to.params.coinCode);
     }
     next();
 });

@@ -263,7 +263,6 @@ function normalDate(oDate) {
     var reg = /\-+/g;
 
     if (dataType(oDate) == "string") {
-        console.log(oDate);
         if (oDate.indexOf("+") == -1) {
             oDate = oDate.split(".")[0]; //解决ie浏览器对yyyy-MM-dd HH:mm:ss.S格式的不兼容
             oDate = oDate.replace(reg, "/"); //解决苹果浏览器对yyyy-MM-dd格式的不兼容性
@@ -377,6 +376,30 @@ function toFixeds(nums, len = 2) {
     }
 }
 
+//千分符
+function toThousands(num) {
+    var re = /\d{1,3}(?=(\d{3})+$)/g;
+    var n1 = num.toString().replace(/^(\d+)((\.\d+)?)$/, function(s, s1, s2) {
+        return s1.replace(re, "$&,") + s2;
+    });
+    return n1;
+}
+//浮点数转换成小数
+function priceFormat(nums, extent = 2) {
+    if (nums || nums === 0) {
+        let re = `/([0-9]+\.?[0-9]{${extent}})[0-9]*/`,
+            regexp = /(?:\.0*|(\.\d+?)0+)$/;
+        nums = scientificToNumber(nums).toString();
+        nums =
+            nums == 0
+                ? nums
+                : nums.replace(eval(re), "$1").replace(regexp, "$1");
+        return toThousands(Number(nums).toFixed(extent));
+    } else {
+        return "--";
+    }
+}
+
 //数组去重
 function distinct(a, b = []) {
     let arr = a.concat(b);
@@ -407,5 +430,7 @@ export {
     weekDay,
     dateFormat,
     toFixeds,
+    toThousands,
+    priceFormat,
     distinct
 };

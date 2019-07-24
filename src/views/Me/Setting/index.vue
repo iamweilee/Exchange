@@ -29,6 +29,7 @@ export default {
         if (res.status == this.STATUS) {
           this.$lStore.remove("token");
           this.updatedUserInfo("");
+          this.updatedBanlace("");
           this.$router.push("/login");
         }
       });
@@ -36,7 +37,7 @@ export default {
     clickLeft() {
       this.$router.push("/me");
     },
-    ...mapActions(["updatedUserInfo"])
+    ...mapActions(["updatedUserInfo", "updatedBanlace"])
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="pos">
     <NavBar
-      title="BTC/USDT"
+      :title="symbol"
       fixed
       showL
       @clickLeft="clickLeft"
@@ -9,31 +9,15 @@
     />
     <van-popup v-model="show" position="top">
       <div class="selectWrap">
-        <h2>BTC/USDT</h2>
+        <h2>{{ symbol }}</h2>
         <ul class="selectList">
-          <li @click="select">
-            <p class="coin">BTC/USDT</p>
-            <p class="price">{{ detailData.close }}</p>
-          </li>
-          <li class="active">
-            <p class="coin">ETH/USDT</p>
-            <p class="price">296.62</p>
-          </li>
-          <li>
-            <p class="coin">ETH/USDT</p>
-            <p class="price">296.62</p>
-          </li>
-          <li>
-            <p class="coin">ETH/USDT</p>
-            <p class="price">296.62</p>
-          </li>
-          <li>
-            <p class="coin">ETH/USDT</p>
-            <p class="price">296.62</p>
-          </li>
-          <li>
-            <p class="coin">ETH/USDT</p>
-            <p class="price">296.62</p>
+          <li
+            v-for="item in List"
+            @click="select(item.symbol)"
+            :key="item.symbol"
+          >
+            <p class="coin">{{ item.symbol }}/USDT</p>
+            <p class="price">{{ item.close }}</p>
           </li>
         </ul>
         <button class="selectBtn">切换至实际盘</button>
@@ -173,8 +157,12 @@
       </div>
     </div>
     <div class="handWrap">
-      <button @click="showOrderHandle(1)">买跌 5794.34</button>
-      <button @click="showOrderHandle(0)">买涨 5798.39</button>
+      <button @click="showOrderHandle(1)">
+        买跌 {{ (detailData.close * 1.008) | toFixeds(2) }}
+      </button>
+      <button @click="showOrderHandle(0)">
+        买涨 {{ (detailData.close * 0.992) | toFixeds(2) }}
+      </button>
     </div>
     <van-popup
       v-model="showOrder"
@@ -182,7 +170,7 @@
       :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }"
     >
       <PlaceOrder
-        coinCode="BTC"
+        :coinCode="$route.params.coinCode"
         :position="position"
         :cloeModle="cloeModle"
         :closePic="detailData.close"
@@ -206,7 +194,7 @@ export default {
       isShow: false,
       Indicator: "closeOther",
       show: false,
-      symbol: "BTC/USDT",
+      symbol: `${this.$route.params.coinCode}/USDT`,
       tabsType: "Capital",
       showOrder: false,
       position: 0, //0买涨，1买跌
@@ -214,12 +202,12 @@ export default {
         left: 0
       },
       detailData: {},
-      Socket: null
+      Socket: null,
+      List: this.$lStore.get("setingData").coinList
     };
   },
   mounted() {
     this._initPage();
-    console.log("position");
   },
   beforeDestroy() {
     this.$EventListener.off("TVdetail", this.renderDetail);
@@ -254,9 +242,18 @@ export default {
     },
     //更新头部价格成交量
     renderDetail(data) {
-      setTimeout(() => {
+      if (data.symbol == this.symbol) {
         this.detailData = data;
-      }, 300);
+      }
+      data.symbol = data.symbol.replace("/USDT", "");
+      let List = this.List;
+      for (let i = 0; i < List.length; i++) {
+        if (List[i].symbol == data.symbol) {
+          List[i] = data;
+          break;
+        }
+      }
+      this.List = [...List];
     },
     //点击tabs
     tabClick(type) {
@@ -272,7 +269,9 @@ export default {
       this.tabsType = type;
     },
     //选择币种
-    select() {},
+    select(coinCode) {
+      this.symbol = `${coinCode}/USDT`;
+    },
     clickLeft() {
       this.$router.push("/");
     },
@@ -288,17 +287,19 @@ export default {
     //socket 时间区间格式化
     resolutionSocket(resolution) {
       let type = typeof resolution,
-        datas = {
-          "btcusdt-ticker": "0",
-          "btcusdt-depth": "0"
-        };
+        coinCode = this.$route.params.coinCode.toLowerCase() + "usdt",
+        datas = {};
+      this.List.forEach(item => {
+        datas[`${item.symbol.toLowerCase()}usdt-ticker`] = 0;
+      });
+      datas[`${coinCode}-depth`] = 0;
       if (type == "number") {
-        datas[`btcusdt-kline-${resolution}m`] = 0;
+        datas[`${coinCode}-kline-${resolution}m`] = 0;
       } else if (type == "string") {
         if (resolution == "1M") {
-          datas[`btcusdt-kline-${resolution}`] = 0;
+          datas[`${coinCode}-kline-${resolution}`] = 0;
         } else {
-          datas[`btcusdt-kline-${resolution.toLowerCase()}`] = 0;
+          datas[`${coinCode}-kline-${resolution.toLowerCase()}`] = 0;
         }
       }
       return datas;
