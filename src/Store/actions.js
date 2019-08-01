@@ -1,7 +1,6 @@
 import * as types from "./mutation-types";
 import { Toast } from "vant";
 import http from "common/Api";
-import { getBanner } from "./../common/http-req";
 const getUserInfo = function(commit) {
     http({
         url: "/v1/user/user_info",
@@ -25,10 +24,22 @@ const getBanlace = function(commit) {
         }
     });
 };
+const sendMsg = function(req) {
+    http({
+        url: "/auth/send_sms_all",
+        data: req,
+        method: "post"
+    }).then(res => {
+        if (res.status == 200) {
+            Toast("验证码已发送！");
+            req.fn();
+        }
+    });
+};
 export default {
     // 不请求直接异步改变
     updatedLang({ commit }, lang) {
-        i18n.locale = "zh";
+        i18n.locale = lang;
         commit(types.SET_LANG, lang);
     },
     updatedUserInfo({ commit }, userInfo) {
@@ -43,5 +54,8 @@ export default {
     },
     getBanlace({ commit }) {
         getBanlace(commit);
+    },
+    sendMsgComm({ commit }, req) {
+        sendMsg(req);
     }
 };

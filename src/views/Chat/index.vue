@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <NavBar title="我的持仓" fixed />
+    <NavBar :title="$t('chat').title" fixed />
     <div class="chat_wrap">
       <div class="chat_wrap_top">
         <div class="card">
@@ -9,20 +9,20 @@
             <p>{{ balance.enableAmount | priceFormat }}</p>
           </div>
           <router-link tag="p" to="/otc" class="card_btn">
-            <button>立即充币</button>
+            <button>{{ $t("chat").rechargeBtn }}</button>
           </router-link>
         </div>
         <ul class="list">
           <li>
-            <p>可用保证金</p>
+            <p>{{ $t("chat").current }}</p>
             <p>{{ balance.currentAmount | priceFormat }}</p>
           </li>
           <li>
-            <p>已用保证金</p>
+            <p>{{ $t("chat").frozen }}</p>
             <p>{{ balance.frozenAmount | priceFormat }}</p>
           </li>
           <li>
-            <p>账户净值</p>
+            <p>{{ $t("chat").total }}</p>
             <p>{{ balance.enableAmount | priceFormat }}</p>
           </li>
         </ul>
@@ -31,13 +31,13 @@
         <div class="tabs">
           <ul class="tabs_wrap">
             <router-link to="/chat" tag="li">
-              <p @click="tabClick(0)">持仓</p>
+              <p @click="tabClick(0)">{{ $t("chat").hold }}</p>
             </router-link>
             <router-link to="/chat/list" tag="li">
-              <p @click="tabClick(1)">挂单</p>
+              <p @click="tabClick(1)">{{ $t("chat").list }}</p>
             </router-link>
             <router-link to="/chat/history" tag="li">
-              <p>历史</p>
+              <p>{{ $t("chat").history }}</p>
             </router-link>
           </ul>
           <div :style="styls" class="tabs_line"></div>
@@ -56,18 +56,28 @@
       :beforeClose="beforeClose"
       class="customDialog"
     >
-      <p class="order">订单编号：{{ dialogData.orderNo }}</p>
-      <ul class="hold_dialog">
+      <p class="order">{{ $t("chat").orderNo }}{{ dialogData.orderNo }}</p>
+      <ul class="hold_dialog" v-if="dialogData.title == '平仓'">
         <li>
-          <p>浮动盈亏</p>
+          <p>{{ $t("chat").floatProfit }}</p>
           <p>+1.92</p>
         </li>
         <li>
-          <p>开仓价</p>
+          <p>{{ $t("chat").dealPrice }}</p>
           <p>{{ dialogData.dealPrice }}</p>
         </li>
         <li>
-          <p>当前价</p>
+          <p>{{ $t("chat").currentPrice }}</p>
+          <p>{{ dialogData.tradePrice }}</p>
+        </li>
+      </ul>
+      <ul class="hold_dialog" v-else>
+        <li>
+          <p>{{ dialogData.targetCoin }}</p>
+          <p>{{ dialogData.tradeAmount }}</p>
+        </li>
+        <li>
+          <p>{{ $t("chat").tradePrice }}</p>
           <p>{{ dialogData.tradePrice }}</p>
         </li>
       </ul>
@@ -115,19 +125,22 @@ export default {
       if (action == "cancel") {
         done();
       } else {
+        let url =
+          this.dialogData.title == "平仓"
+            ? "/v1/leverage/eveningUp"
+            : "/v1/leverage/cancel";
         this.$http({
-          url: "/v1/leverage/eveningUp",
+          url: url,
           data: { orderNo: this.dialogData.orderNo },
           method: "get"
         })
           .then(res => {
-            console.log(res.data);
-            if (res.data == this.STATUS) {
+            if (res.status == this.STATUS) {
               this.$refs.child.refresh(done);
             }
           })
           .catch(err => {
-            console.log(err);
+            this.$toast(err.data.message);
             done(false);
           });
       }

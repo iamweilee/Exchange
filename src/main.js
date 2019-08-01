@@ -65,7 +65,8 @@ const i18n = new VueI18n({
     locale: store.state.lang,
     messages: {
         zh: require("./lang/zh"),
-        en: require("./lang/en")
+        en: require("./lang/en"),
+        zh_tw: require("./lang/zh_tw"),
     }
 });
 window.i18n = i18n;

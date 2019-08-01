@@ -20,39 +20,59 @@
             <p class="price">{{ item.close }}</p>
           </li>
         </ul>
-        <button class="selectBtn">切换至实际盘</button>
-        <button class="closeBtn" @click="show = false">点击收起</button>
+        <button class="selectBtn">{{$t('cutFake')}}</button>
+        <button class="closeBtn" @click="show = false">{{$t('pos').clickHide}}</button>
       </div>
     </van-popup>
     <!-- @click="show=!show" -->
     <div class="pos_top">
       <div class="pos_top_t">
-        <div class="left color-green">{{ detailData.close | toFixeds(2) }}</div>
+        <div class="left">
+          <div class="color-green">{{ detailData.close | priceFormat }}</div>
+          <div class="small">
+            <p>{{ detailData.diff | priceFormat }}</p>
+            <p>{{ detailData.percent | priceFormat }}%</p>
+          </div>
+        </div>
         <ul class="right">
-          <li>高(24H)&nbsp;&nbsp;{{ detailData.high | toFixeds(2) }}</li>
-          <li>低(24H)&nbsp;&nbsp;{{ detailData.low | toFixeds(2) }}</li>
-          <li>量(24H)&nbsp;&nbsp;{{ detailData.amount | toFixeds(2) }}</li>
+          <li>
+            {{ $t("pos").high }}(24H)&nbsp;&nbsp;{{
+              detailData.high | priceFormat
+            }}
+          </li>
+          <li>
+            {{ $t("pos").low }}(24H)&nbsp;&nbsp;{{
+              detailData.low | priceFormat
+            }}
+          </li>
+          <li>
+            {{ $t("pos").amount }}(24H)&nbsp;&nbsp;{{
+              detailData.amount | priceFormat
+            }}
+          </li>
         </ul>
       </div>
       <div class="pos_top_btn">
         <div class="btn_list">
           <button :class="TVInterval == 1 && 'active'" @click="clickBtn(1)">
-            1分
+            1{{ $t("pos").minute }}
           </button>
           <button :class="TVInterval == 5 && 'active'" @click="clickBtn(5)">
-            5分
+            5{{ $t("pos").minute }}
           </button>
           <button :class="TVInterval == 15 && 'active'" @click="clickBtn(15)">
-            15分
+            15{{ $t("pos").minute }}
           </button>
           <button :class="TVInterval == 30 && 'active'" @click="clickBtn(30)">
-            30分
+            30{{ $t("pos").minute }}
           </button>
           <button :class="TVInterval == 60 && 'active'" @click="clickBtn(60)">
-            1时
+            1{{ $t("pos").hour }}
           </button>
-          <button @click="clickBtnMore(true)">更多</button>
-          <button @click="clickBtnMore(false)">指标</button>
+          <button @click="clickBtnMore(true)">{{ $t("pos").more }}</button>
+          <button @click="clickBtnMore(false)">
+            {{ $t("pos").indicator }}
+          </button>
         </div>
         <transition name="moreIndex">
           <div v-if="isShow" class="child_list">
@@ -61,25 +81,25 @@
                 :class="TVInterval == '240' && 'active'"
                 @click="clickBtn(240)"
               >
-                4时
+                4{{ $t("pos").hour }}
               </button>
               <button
                 :class="TVInterval == '1D' && 'active'"
                 @click="clickBtn('1D')"
               >
-                1天
+                1{{ $t("pos").day }}
               </button>
               <button
                 :class="TVInterval == '1W' && 'active'"
                 @click="clickBtn('1W')"
               >
-                1周
+                1{{ $t("pos").week }}
               </button>
               <button
                 :class="TVInterval == '1M' && 'active'"
                 @click="clickBtn('1M')"
               >
-                1月
+                1{{ $t("pos").month }}
               </button>
             </div>
             <div v-show="!isOther">
@@ -117,7 +137,7 @@
                 :class="TVInterval == 'closeOther' && 'active'"
                 @click="clickIndicator('closeOther')"
               >
-                隐藏
+                {{ $t("pos").hide }}
               </button>
             </div>
           </div>
@@ -140,28 +160,28 @@
             :class="tabsType == 'Capital' && 'active'"
             @click="tabClick('Capital')"
           >
-            <p>资金</p>
+            <p>{{ $t("pos").fund }}</p>
           </li>
           <li
             :class="tabsType == 'Intord' && 'active'"
             @click="tabClick('Intord')"
           >
-            <p>简介</p>
+            <p>{{ $t("pos").intord }}</p>
           </li>
         </ul>
         <div :style="styls" class="tabs_line"></div>
       </div>
       <div class="cont">
         <Capital v-if="tabsType == 'Capital'" />
-        <Intord v-if="tabsType == 'Intord'" />
+        <Intord v-if="tabsType == 'Intord'" :intordData="intordData" />
       </div>
     </div>
     <div class="handWrap">
       <button @click="showOrderHandle(1)">
-        买跌 {{ (detailData.close * 1.008) | toFixeds(2) }}
+        {{ $t("pos").buyFall }} {{ (detailData.close * 1.0006) | priceFormat }}
       </button>
       <button @click="showOrderHandle(0)">
-        买涨 {{ (detailData.close * 0.992) | toFixeds(2) }}
+        {{ $t("pos").buyRise }} {{ (detailData.close * 0.9994) | priceFormat }}
       </button>
     </div>
     <van-popup
@@ -174,8 +194,27 @@
         :position="position"
         :cloeModle="cloeModle"
         :closePic="detailData.close"
+        :succeedOrder="succeedOrder"
       />
     </van-popup>
+    <van-dialog
+      v-model="showSucceed"
+      :title="$t('orderSucc')"
+      :beforeClose="beforeClose"
+      :confirmButtonText="$t('seeOrder')"
+      class="customDialog"
+    >
+      <ul class="hold_dialog">
+        <li>
+          <p>{{ succeedData.targetCoin }}</p>
+          <p>{{ succeedData.tradeAmount }}</p>
+        </li>
+        <li>
+          <p>{{ $t("chat").dealPrice }}</p>
+          <p>{{ succeedData.tradePrice }}</p>
+        </li>
+      </ul>
+    </van-dialog>
   </div>
 </template>
 
@@ -195,6 +234,7 @@ export default {
       Indicator: "closeOther",
       show: false,
       symbol: `${this.$route.params.coinCode}/USDT`,
+      intordData: {},
       tabsType: "Capital",
       showOrder: false,
       position: 0, //0买涨，1买跌
@@ -203,7 +243,9 @@ export default {
       },
       detailData: {},
       Socket: null,
-      List: this.$lStore.get("setingData").coinList
+      List: this.$lStore.get("setingData").coinList,
+      showSucceed: false,
+      succeedData: {}
     };
   },
   mounted() {
@@ -224,6 +266,21 @@ export default {
   methods: {
     _initPage() {
       this.initSocket();
+      if (!this.$lStore.get("desc")[this.$route.params.coinCode]) {
+        this.intordData = this.$lStore.get("desc")["BTC"];
+      }
+      console.log(this.intordData);
+    },
+    beforeClose(action, done) {
+      console.log(this.succeedOrder);
+      let path = this.succeedData.tradeType == 1 ? "/chat/list" : "/chat";
+
+      this.$router.push(path);
+      console.log(path);
+    },
+    succeedOrder(req) {
+      this.succeedData = req;
+      this.showSucceed = true;
     },
     //显示下单
     showOrderHandle(position) {

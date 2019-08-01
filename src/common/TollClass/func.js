@@ -285,7 +285,7 @@ function ZhengFu(num) {
 }
 
 function formatSecondsToHM(value) {
-    var secondTime = parseInt(value); // 秒
+    var secondTime = parseInt(value/1000); // 秒
     var minuteTime = 0; // 分
     var hourTime = 0; // 小时
     if (secondTime > 60) {
@@ -308,7 +308,7 @@ function formatSecondsToHM(value) {
         result =
             (minuteTime < 10 ? "0" : "") + parseInt(minuteTime) + ":" + result;
     }
-    if (hourTime >= 0) {
+    if (hourTime > 0) {
         result = (hourTime < 10 ? "0" : "") + parseInt(hourTime) + ":" + result;
     }
     return result;

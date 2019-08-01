@@ -1,7 +1,7 @@
 <template>
   <div class="selectWrap">
     <div class="selectWrap_inp" ref="select" @click="showSel">
-      <input readonly :value="value" />
+      <input readonly :value="value.text" />
       <img
         :class="show && 'rotate'"
         src="~assets/Images/pos/icon_down.png"
@@ -12,11 +12,11 @@
       <ul class="selectWrap_list" v-if="show">
         <li
           v-for="item in values"
-          :key="item"
-          :class="item == value && 'active'"
+          :key="item.value"
+          :class="item.value == value.value && 'active'"
           @click="checkSel($event, item)"
         >
-          {{ item }}
+          {{ item.text }}
         </li>
         <p class="jiao"></p>
       </ul>
@@ -32,7 +32,9 @@ export default {
       type: Array,
       default: () => []
     },
-    value: {}
+    value: {
+      type: Object
+    }
   },
   data() {
     return {

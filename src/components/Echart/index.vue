@@ -40,13 +40,13 @@ export default {
       );
       this.chart.setOption(option, true);
       let _this = this;
-      setInterval(() => {
-        let arr = option.series[0].data;
-        arr[arr.length - 1][0] -= 1;
-        // option.series[0].data.slice(-1)[0] -= 2;
-        console.log(arr[arr.length - 1][0]);
-        _this.chart.setOption(option, true);
-      }, 2000);
+    //   setInterval(() => {
+    //     let arr = option.series[0].data;
+    //     arr[arr.length - 1][0] -= 1;
+    //     // option.series[0].data.slice(-1)[0] -= 2;
+    //     console.log(arr[arr.length - 1][0]);
+    //     _this.chart.setOption(option, true);
+    //   }, 2000);
       //图标根据窗口大小自动缩放
       // window.addEventListener("resize", this.chart.resize);
     }

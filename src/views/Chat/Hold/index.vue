@@ -6,7 +6,7 @@
         tag="ul"
         v-for="(item, index) in List"
         :key="item.orderNo"
-        :to="`/chat/hold/${index}`"
+        :to="`/chat/hold/${item.orderNo}`"
       >
         <li class="top">
           <p class="top_l">
@@ -15,32 +15,42 @@
             <span class="icon">
               <img :src="isBuy(index)" alt />
             </span>
-            <span class="num">×{{ item.tradeAmount / item.stockRate }}手</span>
+            <span class="num"
+              >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
+            >
           </p>
           <p class="top_btn">
-            <span :class="isColor(index)">-18.76</span>
-            <button @click.stop="closeOut(item)">平仓</button>
+            <span
+              :class="isColor(earnings(item, coinPrice[item.targetCoin]))"
+              >{{ earnings(item, coinPrice[item.targetCoin]) }}</span
+            >
+            <button @click.stop="closeOut(item)">
+              {{ $t("chat").closeOut }}
+            </button>
           </p>
         </li>
         <li class="bot">
           <p>
-            <span>{{ item.dealPrice }}</span>
-            <span>开仓价</span>
+            <span>{{ item.tradePrice }}</span>
+            <span>{{ $t("chat").dealPrice }}</span>
           </p>
           <p>
             <span>{{ coinPrice[item.targetCoin] }}</span>
-            <span>当前价</span>
+            <span>{{ $t("chat").currentPrice }}</span>
           </p>
           <p>
             <span>{{ item.stopLoss }}</span>
-            <span>止损价</span>
+            <span>{{ $t("chat").lossPrice }}</span>
           </p>
           <p>
             <span>{{ item.stopProfit }}</span>
-            <span>止盈价</span>
+            <span>{{ $t("chat").profitPrice }}</span>
           </p>
         </li>
       </router-link>
+    </div>
+    <div v-else class="notData">
+      {{ $t("notData") }}
     </div>
   </div>
 </template>
@@ -48,7 +58,7 @@
 <script>
 import iconBuy from "Images/chat/icon_buy.png";
 import iconSale from "Images/chat/icon_sale.png";
-import { distinct } from "common/utli";
+import { distinct, priceFormat } from "common/utli";
 export default {
   props: {
     showDialog: {
@@ -87,6 +97,22 @@ export default {
         this.coinPrice[data.symbol] = data.close;
       }
     },
+    //收益计算
+    /* 买涨 持仓量*行情价-持仓量*成交价
+    买跌 持仓量*成交价-持仓量*行情价 */
+    earnings(item, currentPrice) {
+      let earning = 0;
+      if (item.position == 1) {
+        //买跌
+        earning =
+          item.tradeAmount * item.tradePrice - item.tradeAmount * currentPrice;
+      } else {
+        //买涨
+        earning =
+          item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
+      }
+      return priceFormat(earning);
+    },
     //获取持仓单
     getHoldList() {
       this.$http({
@@ -112,6 +138,7 @@ export default {
     },
     closeOut(item) {
       item.title = "平仓";
+      console.log(item);
       this.showDialog(item);
     },
     isBuy(type) {
@@ -122,26 +149,11 @@ export default {
       }
     },
     refresh(done) {
-      console.log("refresh");
-      this.$http({
-        url: "/v1/leverage/eveningUp",
-        data: { orderNo: "1111111" },
-        method: "get"
-      })
-        .then(res => {
-          done();
-          console.log(res);
-        })
-        .catch(err => {
-          this.$toast(err.data.message);
-          done(false);
-        });
-      //   setTimeout(() => {
-      //     done();
-      //   }, 1000);
+      this.getHoldList();
+      done();
     },
     isColor(num) {
-      if (num % 2) {
+      if (num < 0) {
         return "color-red1";
       } else {
         return "color-green";

@@ -1,45 +1,58 @@
 <template>
   <div class="hdetail">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
+    <NavBar
+      :title="
+        `${orderDetail.tradeCode}${orderDetail.position == 1 ? $t('stopLoss'): $t('stopProfit')}`
+      "
+      fixed
+      showL
+      @clickLeft="clickLeft"
+    />
     <div class="hdetail_title">
       <div class="left">
-        <p>盈亏</p>
-        <button>市价买跌</button>
+        <p>{{$t('chat').profit}}</p>
+        <button>
+          {{ tradeType(orderDetail.tradeType, orderDetail.position) }}
+        </button>
       </div>
       <div class="right">
-        <p>-600.00</p>
-        <p>-671.17(净盈亏)</p>
+        <p :class="isColor(orderDetail.income)">{{ orderDetail.income }}</p>
+        <p>-671.17({{$t('chat').netProfit}})</p>
       </div>
     </div>
     <div class="hdetail_info">
       <ul class="List">
         <li>
-          <p>开仓价</p>
+          <p>{{$t('chat').dealPrice}}</p>
+          <p>{{ orderDetail.dealPrice | priceFormat }}</p>
+        </li>
+        <li>
+          <p>{{$t('chat').closePrice}}</p>
           <p>0.529</p>
         </li>
         <li>
-          <p>开仓价</p>
-          <p>0.529</p>
+          <p>{{$t('chat').lossPrice}}</p>
+          <p>{{ orderDetail.stopLoss | priceFormat }}</p>
         </li>
         <li>
-          <p>止损价</p>
-          <p>0.529</p>
+          <p>{{$t('chat').volume}}</p>
+          <p>
+            {{ orderDetail.tradeAmount / orderDetail.stockRate }}{{$t('hand')}}({{
+              orderDetail.tradeAmount
+            }}个)
+          </p>
         </li>
         <li>
-          <p>交易量</p>
-          <p>1手(35000 个)</p>
-        </li>
-        <li>
-          <p>保证金</p>
-          <p>0.529</p>
+          <p>{{$t('chat').deposit}}</p>
+          <p>{{ orderDetail.deposit }}</p>
         </li>
       </ul>
     </div>
     <div class="dotted"></div>
     <div class="hdetail_intord">
-      <p>开仓时间&nbsp;:&nbsp;2019/06/29 17:58:24</p>
-      <p>平仓时间&nbsp;:&nbsp;2019/06/29 19:01:04</p>
-      <p>订单编号&nbsp;:&nbsp;s6u02prl</p>
+      <p>{{$t('chat').dealTime}}&nbsp;:&nbsp;{{ orderDetail.createTime }}</p>
+      <p>{{$t('chat').closeTime}}&nbsp;:&nbsp;{{ orderDetail.closeTime }}</p>
+      <p>{{$t('chat').orderNo}}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
     </div>
   </div>
 </template>
@@ -49,20 +62,50 @@ import NavBar from "components/NavBar";
 export default {
   data() {
     return {
-      title: "BTC/USDT (止损平仓)"
+      title: "BTC/USDT (止损平仓)",
+      orderDetail: {}
     };
   },
   mounted() {
-    if (this.$route.params.id % 2) {
-      this.title = "BTC/USDT (止损平仓)";
-    } else {
-      this.title = "BTC/USDT (止盈平仓)";
-    }
+    this.getDetail();
   },
   components: {
     NavBar
   },
   methods: {
+    getDetail() {
+      this.$http({
+        url: "/v1/leverage/getOrder",
+        data: { orderNo: this.$route.params.id },
+        method: "get"
+      }).then(res => {
+        console.log(res);
+        if (res.status == this.STATUS) {
+          this.orderDetail = res.data;
+        }
+      });
+    },
+    tradeType(tradeType, position) {
+      let text = "";
+      if (tradeType) {
+        text = "限价";
+      } else {
+        text = "市价";
+      }
+      if (position) {
+        text += "买跌";
+      } else {
+        text += "买涨";
+      }
+      return text;
+    },
+    isColor(price) {
+      if (price > 0) {
+        return "color-green";
+      } else {
+        return "color-red";
+      }
+    },
     clickLeft() {
       this.$router.back();
     }
@@ -99,7 +142,6 @@ export default {
         text-align: right;
         &:first-child {
           font-size: 22px;
-          color: $red;
           margin-bottom: 4px;
         }
       }

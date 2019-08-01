@@ -14,13 +14,13 @@
             alt
           />
         </p>
-        <p class="balance_bot">模拟盘</p>
+        <p class="balance_bot">{{ $t("home").sitesType }}</p>
       </div>
-      <p v-else class="group_notLogin">{{ $t("notLogin") }}</p>
+      <p v-else class="group_notLogin">{{ $t("home").notLogin }}</p>
     </div>
     <router-link tag="div" to="/service" class="right">
       <img src="~assets/Images/home/icon_server.png" alt />
-      <p class="right_size">{{ $t("server") }}</p>
+      <p class="right_size">{{ $t("home").server }}</p>
     </router-link>
   </div>
 </template>

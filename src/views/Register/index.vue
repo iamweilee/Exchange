@@ -1,27 +1,36 @@
 <template>
   <div class="login">
-    <router-link tag="div" to="/login" class="title">登录</router-link>
+    <router-link tag="div" to="/login" class="title">{{
+      $t("loginReg").login
+    }}</router-link>
     <div class="size">
-      <p class="size_top">你好！</p>
+      <p class="size_top">{{ $t("loginReg").niHao }}</p>
       <div class="tab">
-        <p class="tab_size">欢迎加入</p>
+        <p class="tab_size">{{ $t("loginReg").welcomeJoin }}</p>
         <p class="tab_bar">
-          <router-link to="/register">手机注册</router-link>
-          <router-link to="/register/email">邮箱注册</router-link>
+          <router-link to="/register">{{
+            $t("loginReg").phoneReg
+          }}</router-link>
+          <router-link to="/register/email">{{
+            $t("loginReg").emailReg
+          }}</router-link>
         </p>
       </div>
     </div>
     <div class="from">
       <div class="from_wrap">
         <transition :name="transitionName">
-          <router-view ref="from"/>
+          <router-view ref="from" />
         </transition>
       </div>
-
-      <button class="from_btn" :disabled="isClick" @click="subMit">下一步</button>
+      <button class="from_btn" :disabled="isClick" @click="subMit">
+        {{ $t("loginReg").nextStep }}
+      </button>
       <div class="agreement">
-        <span>注册即表示同意</span>
-        <router-link to="/intord/protocol" class="color-blue">《平台服务协议》</router-link>
+        <span>{{ $t("loginReg").regDeal }}</span>
+        <router-link to="/intord/protocol" class="color-blue">{{
+          $t("loginReg").Deal
+        }}</router-link>
       </div>
     </div>
   </div>
@@ -50,7 +59,7 @@ export default {
     subMit() {
       let regData = this.$refs.from.fromData,
         req = {};
-        
+
       if (regData.email) {
         req = {
           emailCode: regData.code,
@@ -66,11 +75,10 @@ export default {
           type: 0
         };
       }
-      this.$lStore.set('req',req)
-    //   this.register(req);
-        this.$router.push(`/register/pwd`);
-    },
-   
+      this.$lStore.set("req", req);
+      //   this.register(req);
+      this.$router.push(`/register/pwd`);
+    }
   },
   watch: {
     $route(to, from) {

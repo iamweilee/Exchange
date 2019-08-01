@@ -42,6 +42,13 @@ const extendTest = {
         },
         //发送验证
         sendMsg() {
+            this.sendMsgComm({
+                loginName: this.emailPhone,
+                codeType: 7,
+                fn: this.timerHandle
+            });
+        },
+        timerHandle() {
             this.isSend = true;
             let _this = this,
                 num = 10;
@@ -54,10 +61,11 @@ const extendTest = {
                 } else {
                     this.sendBtnText = num + "S后重新获取";
                 }
+                console.log("获取验证码");
             }, 1000);
             this.sendBtnText = num + "S后重新获取";
         },
-        ...mapActions(["getUserInfo"])
+        ...mapActions(["getUserInfo", "sendMsgComm"])
     }
 };
 export default extendTest;

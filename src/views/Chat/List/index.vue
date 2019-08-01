@@ -1,45 +1,58 @@
 <template>
   <div class="hold">
-    <ul class="hold_single" v-for="(item, index) in List" :key="index">
-      <li class="top">
-        <p class="top_l">
-          <span class="big">ETH</span>
-          <span class="small">USDT</span>
-          <span class="icon">
-            <img :src="isBuy(index)" alt />
-          </span>
-          <span class="num">×1手</span>
-        </p>
-        <p class="top_btn">
-          <span :class="isColor(index)">-18.76</span>
-          <button @click="closeOut">撤单</button>
-        </p>
-      </li>
-      <li class="bot">
-        <p>
-          <span>5.7605</span>
-          <span>挂单价</span>
-        </p>
-        <p>
-          <span>--</span>
-          <span>当前价</span>
-        </p>
-        <p>
-          <span>5.6605</span>
-          <span>止损价</span>
-        </p>
-        <p>
-          <span>6.0002</span>
-          <span>止盈价</span>
-        </p>
-      </li>
-    </ul>
+    <div v-if="entrustIng.length">
+      <ul
+        class="hold_single"
+        v-for="(item, index) in entrustIng"
+        :key="item.orderNo"
+      >
+        <li class="top">
+          <p class="top_l">
+            <span class="big">{{ item.targetCoin }}</span>
+            <span class="small">{{ item.sourceCoin }}</span>
+            <span class="icon">
+              <img :src="isBuy(index)" alt />
+            </span>
+            <span class="num"
+              >×{{ item.tradeAmount / item.stockRate
+              }}{{ $t("hand") }}</span
+            >
+          </p>
+          <p class="top_btn">
+            <span :class="isColor(index)">-18.76</span>
+            <button @click="closeOut(item)">{{ $t("chat").cancelOrder }}</button>
+          </p>
+        </li>
+        <li class="bot">
+          <p>
+            <span>{{ item.tradePrice }}</span>
+            <span>{{ $t("chat").tradePrice }}</span>
+          </p>
+          <p>
+            <span>{{ coinPrice[item.targetCoin] }}</span>
+            <span>{{ $t("chat").currentPrice }}</span>
+          </p>
+          <p>
+            <span>{{ item.stopLoss }}</span>
+            <span>{{ $t("chat").lossPrice }}</span>
+          </p>
+          <p>
+            <span>{{ item.stopProfit }}</span>
+            <span>{{ $t("chat").profitPrice }}</span>
+          </p>
+        </li>
+      </ul>
+    </div>
+    <div v-else class="notData">
+      {{ $t("notData") }}
+    </div>
   </div>
 </template>
 
 <script>
 import iconBuy from "Images/chat/icon_buy.png";
 import iconSale from "Images/chat/icon_sale.png";
+import { distinct } from "common/utli";
 export default {
   props: {
     showDialog: {
@@ -49,7 +62,8 @@ export default {
   },
   data() {
     return {
-      List: new Array(10)
+      entrustIng: [],
+      coinPrice: {}
     };
   },
   mounted() {
@@ -58,21 +72,47 @@ export default {
   methods: {
     _initPage() {
       this.getEntrustIng();
+      this.$EventListener.on("TVdetail", this.Detail);
+    },
+    sendMsg(coinArr) {
+      let datas = {};
+      coinArr.forEach(item => {
+        datas[`${item.toLowerCase()}usdt-ticker`] = 0;
+      });
+      this.$EventListener.fire("SendMsg", datas);
+    },
+    Detail(data) {
+      data.symbol = data.symbol.replace("/USDT", "");
+      if (this.coinPrice[data.symbol]) {
+        this.coinPrice[data.symbol] = data.close;
+      }
     },
     //获取持仓单
     getEntrustIng() {
       this.$http({
         url: "/v1/leverage/entrustIng",
-        data: { position: 0, tradeType: 0 },
         method: "get"
       }).then(res => {
-        console.log(res.data);
+        if (res.status == this.STATUS) {
+          this.entrustIng = res.data;
+          let arr = [],
+            obj = {};
+          for (let i = 0; i < res.data.length; i++) {
+            arr.push(res.data[i].targetCoin);
+          }
+          arr = distinct(arr);
+          for (let j = 0; j < arr.length; j++) {
+            obj[arr[j]] = "--";
+          }
+          this.coinPrice = obj;
+          console.log(arr, obj);
+          this.sendMsg(arr);
+        }
       });
     },
-    closeOut() {
-      this.showDialog({
-        title: "撤单"
-      });
+    closeOut(item) {
+      item.title = "撤单";
+      this.showDialog(item);
     },
     isBuy(type) {
       if (type % 3) {
@@ -82,10 +122,8 @@ export default {
       }
     },
     refresh(done) {
-      console.log("refresh");
-      setTimeout(() => {
-        done();
-      }, 1000);
+      this.getEntrustIng();
+      done();
     },
 
     isColor(num) {

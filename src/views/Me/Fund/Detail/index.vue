@@ -25,7 +25,7 @@
             <p class="big">￥{{ detail.rmbValue | toFixeds }}CNY</p>
           </li>
           <li class="cardTop_right">
-            <p>19:33</p>
+            <p>{{ downTime }}</p>
             <p>{{ detail.status | statusType }}</p>
           </li>
         </ul>
@@ -52,22 +52,22 @@
         <li>
           <p>收款人姓名</p>
           <p
-            v-clipboard:copy="`王云`"
+            v-clipboard:copy="detail.otcUserName"
             v-clipboard:success="onSuccess"
             v-clipboard:error="onError"
           >
-            王云
+            {{ detail.otcUserName }}
             <button class="copy">复制</button>
           </p>
         </li>
         <li>
           <p>农业银行</p>
           <p
-            v-clipboard:copy="`6221885061021380686`"
+            v-clipboard:copy="detail.otcBankAccount"
             v-clipboard:success="onSuccess"
             v-clipboard:error="onError"
           >
-            6221885061021380686
+            {{ detail.otcBankAccount }}
             <button class="copy">复制</button>
           </p>
         </li>
@@ -75,7 +75,14 @@
     </div>
     <p class="detail_tips">支付宝转账时请备注您的姓名，否则无法到账</p>
     <div class="detail_btn">
-      <button class="cancel">取消订单</button>
+      <button
+        class="cancel"
+        v-debounce="{
+          fn: cancelOrder
+        }"
+      >
+        取消订单
+      </button>
       <button
         v-debounce="{
           fn: accountPaid
@@ -89,11 +96,13 @@
 
 <script>
 import NavBar from "components/NavBar";
-import { debuglog } from "util";
+import { numTime, formatSeconds } from "common/utli";
 export default {
   data() {
     return {
-      detail: {}
+      detail: {},
+      downTime: "",
+      Timer: null
     };
   },
   components: {
@@ -117,7 +126,7 @@ export default {
         method: "put"
       }).then(res => {
         if (res.status == this.STATUS) {
-          console.log(res);
+          this.detail.status = "2";
         }
       });
     },
@@ -129,8 +138,34 @@ export default {
       }).then(res => {
         if (res.status == this.STATUS) {
           this.detail = res.data;
+          this.timeEnd(res.data.createTime);
         }
       });
+    },
+    //取消订单
+    cancelOrder() {
+      this.$http({
+        url: `/v1/position/otc/recharge-record-cancel/${this.$route.params.id}`,
+        method: "put"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.$router.push(`/me/fund/status/${this.$route.params.id}`);
+        }
+      });
+    },
+    //倒计时
+    timeEnd(creatDate) {
+      let endDate = new Date(creatDate).getTime() + 1000 * 60 * 20;
+      this.Timer = setInterval(() => {
+        let newDate = new Date().getTime();
+        if (endDate - newDate > 0) {
+          let Time = formatSeconds(endDate - newDate);
+          this.downTime = Time;
+        } else {
+          clearTimeout(this.Timer);
+          this.$router.push(`/me/fund/status/${this.$route.params.id}`);
+        }
+      }, 1000);
     },
     clickLeft() {
       this.$router.back();

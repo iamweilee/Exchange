@@ -1,11 +1,21 @@
 <template>
   <div class="phone">
     <div class="inp_group border-1px">
-      <input type="text" placeholder="输入邮箱账号" v-model="fromData.email">
+      <input
+        type="text"
+        :placeholder="$t('loginReg').emailPlaceholder"
+        v-model="fromData.email"
+      />
     </div>
     <div class="inp_group border-1px">
-      <input type="text" placeholder="输入邮箱验证码" v-model="fromData.code">
-      <button class="inp_group_right" :disabled="isSend" @click="sendMsg">{{sendBtnText}}</button>
+      <input
+        type="text"
+        :placeholder="$t('loginReg').codePlaceholder"
+        v-model="fromData.code"
+      />
+      <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
+        {{ sendBtnText }}
+      </button>
     </div>
   </div>
 </template>
@@ -19,17 +29,28 @@ export default {
       timer: null,
       fromData: {
         email: "",
-        code: "123456"
+        code: ""
       }
     };
   },
   components: {},
   methods: {
+    //获取验证码
+    getCode() {
+      this.$http({
+        url: "/auth/send_sms_all",
+        data: { codeType: 2, loginName: this.fromData.email },
+        method: "post"
+      }).then(res => {
+        console.log(res);
+      });
+    },
     //发送验证
     sendMsg() {
       this.isSend = true;
       let _this = this,
         num = 10;
+      this.getCode();
       _this.timer = setInterval(() => {
         num--;
         if (num <= 0) {

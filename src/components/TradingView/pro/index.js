@@ -42,7 +42,7 @@ export default {
         };
 
         if (symbolName.match(/USD|EUR|JPY|AUD|GBP|KRW|CNY|USDT/)) {
-            symbol_stub.pricescale = 100;
+            symbol_stub.pricescale = Math.pow(10,4);
         }
         setTimeout(function() {
             onSymbolResolvedCallback(symbol_stub);

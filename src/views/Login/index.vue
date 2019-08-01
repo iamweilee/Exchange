@@ -1,34 +1,38 @@
 <template>
   <div class="login">
-    <router-link tag="div" to="/register" class="title">注册</router-link>
+    <router-link tag="div" to="/register" class="title">{{
+      $t("loginReg").reg
+    }}</router-link>
     <div class="size">
-      <p class="size_top">你好！</p>
+      <p class="size_top">{{ $t("loginReg").niHao }}</p>
       <div class="tab">
-        <p class="tab_size">欢迎回来</p>
+        <p class="tab_size">{{ $t("loginReg").welcome }}</p>
       </div>
     </div>
     <div class="from">
       <div class="inp_group border-1px">
         <input
           type="text"
-          placeholder="输入手机号/邮箱账号"
+          :placeholder="$t('loginReg').regPlaceholder"
           v-model="loginData.loginName"
         />
       </div>
       <div class="inp_group border-1px">
         <input
           type="text"
-          placeholder="输入验证码"
+          :placeholder="$t('loginReg').codePlaceholder"
           v-model="loginData.mobileCode"
         />
         <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
           {{ sendBtnText }}
         </button>
       </div>
-      <button class="from_btn" @click="login">登录</button>
-      <router-link tag="p" to="/login/pwd" class="from_check"
-        >密码登录</router-link
-      >
+      <button class="from_btn" @click="login">
+        {{ $t("loginReg").login }}
+      </button>
+      <router-link tag="p" to="/login/pwd" class="from_check">{{
+        $t("loginReg").pwdLogin
+      }}</router-link>
     </div>
   </div>
 </template>
@@ -48,9 +52,7 @@ export default {
       loginData: { loginName: "", mobileCode: "", emailCode: "", type: 1 }
     };
   },
-  mounted() {
-    
-  },
+  mounted() {},
   components: {},
   methods: {
     login() {
@@ -69,11 +71,22 @@ export default {
         }
       });
     },
+    //获取验证码
+    getCode() {
+      this.$http({
+        url: "/auth/send_sms_all",
+        data: { codeType: 1, loginName: this.loginData.loginName },
+        method: "post"
+      }).then(res => {
+        console.log(res);
+      });
+    },
     //发送验证
     sendMsg() {
       this.isSend = true;
       let _this = this,
         num = 10;
+      this.getCode();
       _this.timer = setInterval(() => {
         num--;
         if (num <= 0) {
@@ -86,7 +99,7 @@ export default {
       }, 1000);
       this.sendBtnText = num + "S后重新获取";
     },
-    ...mapActions(["updatedUserInfo","getBanlace"])
+    ...mapActions(["updatedUserInfo", "getBanlace"])
   }
 };
 </script>

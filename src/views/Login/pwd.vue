@@ -1,31 +1,33 @@
 <template>
   <div class="login">
-    <router-link tag="div" to="/register" class="title">注册</router-link>
+    <router-link tag="div" to="/register" class="title">{{
+      $t("loginReg").reg
+    }}</router-link>
     <div class="size">
-      <p class="size_top">你好！</p>
+      <p class="size_top">{{ $t("loginReg").niHao }}</p>
       <div class="tab">
-        <p class="tab_size">欢迎回来</p>
+        <p class="tab_size">{{ $t("loginReg").welcome }}</p>
       </div>
     </div>
     <div class="from">
       <div class="inp_group border-1px">
         <input
           type="text"
-          placeholder="输入手机号/邮箱账号"
+          :placeholder="$t('loginReg').regPlaceholder"
           v-model="loginData.loginName"
         />
       </div>
       <div class="inp_group border-1px">
         <input
           type="password"
-          placeholder="输入密码"
+          :placeholder="$t('loginReg').pwdPlaceholder"
           v-model="loginData.loginPwd"
           @keyup.enter="login"
         />
       </div>
-      <button class="from_btn" @click="login">登录</button>
+      <button class="from_btn" @click="login">{{ $t("loginReg").login }}</button>
       <router-link tag="p" to="/login" class="from_check"
-        >验证码登录</router-link
+        >{{ $t("loginReg").codeLogin }}</router-link
       >
     </div>
   </div>

@@ -2,25 +2,60 @@
   <div class="setting">
     <NavBar title="账户设置" fixed showL @clickLeft="clickLeft" />
     <div class="setting_list">
-      <van-cell is-link to="/me/user" title="个人资料"></van-cell>
-      <van-cell is-link title="语言" value="简体中文"></van-cell>
-      <van-cell is-link title="PC登录码" value="7wcs3"></van-cell>
-      <van-cell is-link to="/me/setting/about" title="关于我们"></van-cell>
-      <van-cell is-link title="意见反馈"></van-cell>
+      <van-cell
+        is-link
+        to="/me/user"
+        :title="$t('meSeting').personalData"
+      ></van-cell>
+      <van-cell
+        is-link
+        :title="$t('meSeting').lang"
+        :value="defaultData[0].text"
+        @click="showPicker"
+      ></van-cell>
+      <van-cell is-link :title="$t('meSeting').codePc" value="7wcs3"></van-cell>
+      <van-cell
+        is-link
+        to="/me/setting/about"
+        :title="$t('meSeting').about"
+      ></van-cell>
+      <van-cell is-link :title="$t('meSeting').feedback"></van-cell>
     </div>
-    <p class="setting_logout" @click="loginOut">退出登录</p>
+    <p class="setting_logout" @click="loginOut">
+      {{ $t("meSeting").loginOut }}
+    </p>
+    <vue-pickers
+      :show="show"
+      :columns="columns"
+      :defaultData="defaultData"
+      :selectData="pickData"
+      @cancel="close"
+      @confirm="confirmFn"
+    ></vue-pickers>
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
+import vuePickers from "components/customPick";
 import { mapActions } from "vuex";
 export default {
   data() {
-    return {};
+    return {
+      show: false,
+      defaultData: [{ text: "中文简体", value: "zh" }],
+      pickData: {
+        data1: [
+          { text: "简体中文", value: "zh" },
+          { text: "繁體中文", value: "zh_tw" }
+        ]
+      },
+      columns: 1
+    };
   },
   components: {
-    NavBar
+    NavBar,
+    vuePickers
   },
   methods: {
     loginOut() {
@@ -34,10 +69,23 @@ export default {
         }
       });
     },
+    showPicker() {
+      this.show = true;
+    },
+    close() {
+      this.show = false;
+    },
+    //pick 点击确认按钮
+    confirmFn(val) {
+      console.log(val);
+      this.defaultData = [val.select1];
+      this.updatedLang(val.select1.value);
+      this.show = false;
+    },
     clickLeft() {
       this.$router.push("/me");
     },
-    ...mapActions(["updatedUserInfo", "updatedBanlace"])
+    ...mapActions(["updatedUserInfo", "updatedBanlace", "updatedLang"])
   }
 };
 </script>

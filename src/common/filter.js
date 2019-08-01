@@ -10,31 +10,34 @@ function avatarFun(Img) {
     }
 }
 function statusType(status, detail) {
-    if (detail) {
+    if (status) {
+        status = status.toString();
+        if (detail) {
+            switch (status) {
+                case "1":
+                    return "申请中";
+                case "2":
+                    return "申请中";
+                case "3":
+                    return "已成功";
+                case "4":
+                    return "已失效";
+                case "9":
+                    return "已失效";
+            }
+        }
         switch (status) {
             case "1":
                 return "申请中";
             case "2":
-                return "申请中";
+                return "付款审核中";
             case "3":
-                return "已成功";
+                return "审核成功";
             case "4":
-                return "已失效";
+                return "审核失败";
             case "9":
                 return "已失效";
         }
-    }
-    switch (status) {
-        case "1":
-            return "申请中";
-        case "2":
-            return "付款审核中";
-        case "3":
-            return "审核成功";
-        case "4":
-            return "审核失败";
-        case "9":
-            return "已失效";
     }
 }
 Vue.filter("numberFormat", numberFormat); //数字格式化

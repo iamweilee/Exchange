@@ -2,17 +2,17 @@
   <div class="legal container">
     <router-link to="/otc" tag="div" class="legal_left">
       <h2>
-        <span>法币</span>
-        <span class="color-blue">交易</span>
+        <span>{{ $t("home").legal }}</span>
+        <span class="color-blue">{{ $t("home").deal }}</span>
       </h2>
-      <p class="size">OTC交易&nbsp;支持多种支付方式</p>
+      <p class="size">{{ $t("home").legalIntrord }}</p>
       <p class="legal_btn">
-        立即充值
-        <img src="~assets/Images/home/btn_more.png" alt>
+        {{ $t("home").recharge }}
+        <img src="~assets/Images/home/btn_more.png" alt />
       </p>
     </router-link>
     <div class="legal_right">
-      <img src="~assets/Images/home/Bitmap.png" alt>
+      <img src="~assets/Images/home/Bitmap.png" alt />
     </div>
   </div>
 </template>

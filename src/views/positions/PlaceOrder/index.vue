@@ -28,15 +28,11 @@
         <div class="from_single" v-if="isMarket()">
           <div class="from_single_label">
             <p>挂单价格</p>
-            <p>
-              价格≥{{ orderPic(1) | toFixeds }}&nbsp;或&nbsp;价格≤{{
-                orderPic(0) | toFixeds
-              }}
-            </p>
+            <p>价格≥{{ orderPic(1) }}&nbsp;或&nbsp;价格≤{{ orderPic(0) }}</p>
           </div>
           <div class="from_single_cont">
             <div class="box" @click="allCustom = true">
-              <input type="number" :value="inpPrice | toFixeds" />
+              <input type="number" v-model="inpPrice" />
               <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
               <img class="add" src="~assets/Images/pos/icon_add.png" alt />
             </div>
@@ -45,7 +41,7 @@
         <div class="from_single">
           <div class="from_single_label">
             <p>手数</p>
-            <p>价值{{ checkHand * valRate }}个{{ coinCode }}</p>
+            <p>价值{{ orderData.tradeAmount }}个{{ coinCode }}</p>
           </div>
           <div class="from_single_cont">
             <div class="hand">
@@ -65,7 +61,7 @@
             <p>保证金(USDT)</p>
             <p>
               可用&nbsp;{{ usableBalance | priceFormat }}&nbsp;USDT，杠杆约{{
-                ((closePic * valRate) / checkCash) | toFixeds
+                orderData.leverage
               }}X
             </p>
           </div>
@@ -86,7 +82,7 @@
         <div class="from_single" v-if="isSpecialty()">
           <div class="from_single_label big">
             <div class="left">
-              止盈止损
+              {{ $t("stopProfit") + $t("stopLoss") }}
             </div>
             <p>
               <van-switch
@@ -99,13 +95,12 @@
           </div>
           <div class="from_single_cont" v-show="isLoss">
             <div class="from_single_cont_single">
-              <div class="left">止损价</div>
+              <div class="left">{{$t('chat').lossPrice}}</div>
               <div class="box small">
                 <input
                   type="text"
                   :value="
-                    ((checkCash * checkHand * 0.8) / valRate +
-                      closePic * 1.0008)
+                    ((checkCash * checkHand * 0.8) / valRate + closePic)
                       | toFixeds
                   "
                 />
@@ -116,24 +111,19 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≥<em>{{
-                    ((checkCash * checkHand * 0.8) / valRate +
-                      closePic * 1.0008)
-                      | toFixeds
-                  }}</em>
+                  ≥<em>{{ (closePic * 1.002) | toFixeds }}</em>
                   预计亏损约
                   <em>{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
               </div>
             </div>
             <div class="from_single_cont_single">
-              <div class="left">止盈价</div>
+              <div class="left">{{$t('chat').profitPrice}}</div>
               <div class="box small">
                 <input
                   type="text"
                   :value="
-                    (closePic * 1.0008 -
-                      (checkCash * checkHand * 0.8) / valRate)
+                    (closePic - (checkCash * checkHand * 0.8) / valRate)
                       | toFixeds
                   "
                 />
@@ -144,11 +134,7 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size">
-                  ≤<em>{{
-                    (closePic * 1.0008 -
-                      (checkCash * checkHand * 0.8) / valRate)
-                      | toFixeds
-                  }}</em>
+                  ≤<em>{{ (closePic * 0.998) | toFixeds }}</em>
                   预计盈利约
                   <em>{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
@@ -159,7 +145,7 @@
         <div class="from_single" v-if="isSpecialty()">
           <div class="from_single_label big">
             <div class="left">
-              持仓过夜
+              {{$t("night")}}
               <p class="icon_size">
                 <img src="~assets/Images/other/icon_night.png" alt />持仓到6:00
               </p>
@@ -178,7 +164,7 @@
           <div class="from_single_label big" @click="freeShow = !freeShow">
             <p>交易综合费</p>
             <p class="selectSingle">
-              7.10（已优惠）<img
+              {{ orderData.poundageAmount }}（已优惠0）<img
                 :class="freeShow && 'rotate'"
                 src="~assets/Images/pos/icon_down.png"
                 alt
@@ -187,14 +173,17 @@
           </div>
           <div class="from_single_free" v-show="freeShow">
             <p>原价</p>
-            <p>7.10</p>
+            <p>
+              {{ orderData.poundageAmount }}
+            </p>
           </div>
         </div>
       </div>
     </div>
     <div class="submit_btn">
       <button :class="position && 'active'" @click="placeOrder(closePic)">
-        {{ this.btnText() }}{{ closePic }}
+        <!-- <button :class="position && 'active'" @click="showSucceed = true"> -->
+        {{ this.btnText() }}{{ inpPrice }}
       </button>
     </div>
   </div>
@@ -204,7 +193,6 @@
 import Select from "components/Select";
 import { mapState, mapGetters } from "vuex";
 import { toFixeds } from "common/utli";
-import { setTimeout } from "timers";
 export default {
   props: {
     closePic: {
@@ -224,23 +212,30 @@ export default {
       default: () => {
         console.log("close");
       }
+    },
+    succeedOrder: {
+      type: Function,
+      default: () => {
+        console.log("success");
+      }
     }
   },
   data() {
     return {
       inpPrice: 0,
-      checkHand: 2,
-      valRate: 1,
-      checkCash: 200,
+      checkHand: 2, //选择手数
+      valRate: 1, //手数比
+      checkCash: 200, //保证金
       handList: this.$lStore.get("setingData").nums,
       cashList: [],
-      values: ["市价", "挂单"],
-      value: "挂单",
-      freeShow: false,
-      isNight: false,
-      isLoss: false,
+      values: [{ text: "市价", value: 0 }, { text: "挂单", value: 1 }],
+      value: { text: "市价", value: 0 },
+      freeShow: false, //点击保证金
+      isNight: false, //是否过夜
+      isLoss: false, //是否设置盈损
       title: "快捷",
-      allCustom: false
+      allCustom: false,
+      orderData: {}
     };
   },
   computed: {
@@ -257,63 +252,80 @@ export default {
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;
-      this.inpPrice = this.closePic;
+      this.inpPrice = toFixeds(this.closePic * 1.0006);
+      this.initData(this.closePic);
+    },
+    initData(closePic) {
+      let req = {
+        isDelay: 0, //是否过夜 0否 1是
+        position: this.position, //交易方向0-涨 1-跌
+        poundageAmount: 0, //手续费
+        sourceCoin: "USDT", //交易货币
+        targetCoin: this.coinCode, //目标货币
+        tradeCode: `${this.coinCode}/USDT`, //交易对
+        tradeType: this.value.value, //0-市价 1-限价
+        userId: this.userInfo.userId
+      };
+      //是否过夜 0否 1是
+      req.isDelay = this.isNight ? 1 : 0;
+      //手数比例
+      req.stockRate = this.valRate;
+      //保证金
+      req.deposit = this.checkHand * this.checkCash;
+      //委托量
+      req.tradeAmount = this.checkHand * this.valRate;
+      //委托价
+      req.tradePrice = req.tradeType
+        ? this.inpPrice
+        : toFixeds(closePic * 1.0006);
+      //杠杆倍数
+      req.leverage = toFixeds((closePic * this.valRate) / this.checkCash);
+      //手续费
+      req.poundageAmount = toFixeds(
+        (closePic * req.tradeAmount - req.deposit) * 0.003
+      );
+      let priceCom = 0;
+      //限价
+      if (req.tradeType == 1) {
+        priceCom = this.inpPrice;
+      } else {
+        //市价
+        priceCom = closePic;
+      }
+      //止盈
+      req.stopProfit = toFixeds(priceCom - (0.8 * req.deposit) / this.valRate);
+      //止损
+      req.stopLoss = toFixeds(priceCom + (0.8 * req.deposit) / this.valRate);
+
+      this.orderData = req;
+      return req;
     },
     btnText() {
       switch (this.position) {
         case 0:
-          return `${this.value}买涨 `;
+          return `${this.value.text}买涨 `;
         case 1:
-          return `${this.value}买跌 `;
+          return `${this.value.text}买跌 `;
       }
     },
     //下单函数
     placeOrder(closePic) {
-      console.log(closePic);
-      let req = {
-        //   dealAmount: 12,//成交量
-        //   dealPrice: 198,//成交价
-        deposit: this.checkHand * this.checkCash, //保证金
-        isDelay: 0, //是否过夜 0否 1是
-        // leverage: 19, //杠杆倍数
-        position: 0, //交易方向0-涨 1-跌
-        poundageAmount: 18.4, //手续费
-        //   matUserId: 1,//垫资账户id
-        sourceCoin: "USDT", //交易货币
-        stockRate: this.valRate, //手数比例
-        // stopLoss: 190, //止损
-        // stopProfit: 206, //止盈
-        targetCoin: this.coinCode, //目标货币
-        tradeAmount: this.checkHand * this.valRate, //委托量
-        // tradePrice: 198, //委托价
-        tradeCode: `${this.coinCode}/USDT`, //交易对
-        tradeType: 0, //0-市价 1-限价
-        userId: this.userInfo.userId
-      };
-      //   ((closePic * checkHand * valRate) / (checkCash * checkHand))
-
-      req.leverage = toFixeds((closePic * this.valRate) / this.checkCash, 4);
-      //   req.poundageAmount = toFixeds(0.8 * 10 + closePic);
-      req.tradePrice = toFixeds(closePic * 1.008, 4);
-      //止盈
-      req.stopProfit = toFixeds(
-        closePic + (0.8 * this.checkCash * this.checkHand) / this.valRate,
-        4
-      );
-      //止损
-      req.stopLoss = toFixeds(
-        closePic - (0.8 * this.checkCash * this.checkHand) / this.valRate,
-        4
-      );
-
-      console.log(req);
-        this.$http({
-          url: "/v1/leverage/market/submit",
-          data: req,
-          method: "post"
-        }).then(res => {
-          console.log(res);
-        });
+      let req = this.initData(closePic);
+      //   console.log(JSON.stringify(req));
+      let url =
+        this.value.value == 1
+          ? "/v1/leverage/limited/submit"
+          : "/v1/leverage/market/submit";
+      this.$http({
+        url: url,
+        data: req,
+        method: "post"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.succeedOrder(req);
+        }
+        console.log(res);
+      });
     },
     //获取socket数据
     detail(data) {
@@ -321,7 +333,7 @@ export default {
     },
     //判断  市价  挂单
     isMarket() {
-      switch (this.value) {
+      switch (this.value.text) {
         case "挂单":
           return true;
         case "市价":
@@ -344,9 +356,9 @@ export default {
     // 下单价格限制
     orderPic(position) {
       if (position) {
-        return this.closePic * 1.008;
+        return toFixeds(this.closePic * 1.0006);
       } else {
-        return this.closePic * 0.992;
+        return toFixeds(this.closePic * 0.9994);
       }
     },
     handClick(item, type) {
@@ -355,8 +367,10 @@ export default {
   },
   watch: {
     closePic(val) {
+      this.initData(val);
       if (!this.allCustom) {
-        this.inpPrice = val;
+        console.log(val);
+        this.inpPrice = toFixeds(val * 1.0006);
       }
     }
   }

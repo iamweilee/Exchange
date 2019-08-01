@@ -1,12 +1,12 @@
 <template>
   <div class="lever">
-    <NavBar title="杠杆" fixed hideBorder />
+    <NavBar :title="$t('tabNav').lever" fixed hideBorder />
 
     <div class="lever_title">
       <ul class="List">
-        <li>交易品种</li>
-        <li>价格</li>
-        <li>涨跌幅</li>
+        <li>{{ $t("lever").title1 }}</li>
+        <li>{{ $t("lever").title2 }}</li>
+        <li>{{ $t("lever").title3 }}</li>
       </ul>
     </div>
     <div class="lever_List">
@@ -31,10 +31,10 @@
           </li>
           <li class="middle">
             <p class="usdt">{{ item.close }}</p>
-            <p class="cny">￥39058.88</p>
+            <p class="cny">￥{{ item.cny | priceFormat }}</p>
           </li>
           <li class="right">
-            <button class="rate">+2.88%</button>
+            <button class="rate">+{{ item.percent | priceFormat }}%</button>
           </li>
         </router-link>
       </ScrollV>
@@ -70,6 +70,8 @@ export default {
     _initPage() {
       this.$EventListener.on("TVdetail", this.Detail);
       this.sendMsg();
+      this.getCoinInfo1();
+      this.getCoinInfo();
     },
     sendMsg() {
       let datas = {};
@@ -88,6 +90,19 @@ export default {
         }
       }
       this.List = [...List];
+    },
+    getCoinInfo() {
+      this.$http({
+        url: "/tradeInfo/allTradeInfo",
+        method: "get"
+      }).then();
+    },
+    getCoinInfo1() {
+      this.$http({
+        url: "/tradeInfo/getByCoinCode",
+        data: { coinCode: "USDT" },
+        method: "get"
+      }).then();
     },
     pullDown(scroll) {
       setTimeout(() => {

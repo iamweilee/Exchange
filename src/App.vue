@@ -29,8 +29,11 @@ export default {
     _initPage() {
       this.initSocket();
       this.getSetting();
-      if (this.$lStore.get("token")) {
+      if (this.$lStore.get("token") && !this.$lStore.get("balance")) {
         this.getBanlace();
+      }
+      if (!this.$lStore.get("desc")) {
+        this.getCoinDesc();
       }
     },
     //初始化Socket
@@ -43,6 +46,19 @@ export default {
     SendMsg(datas) {
       setTimeout(() => {
         this.Socket.Send(JSON.stringify(datas));
+      });
+    },
+    getCoinDesc() {
+      this.$http({ url: "/coin/get_coin_desc", method: "get" }).then(res => {
+        console.log(res);
+        let desc = {};
+        res.data.map(item => {
+          console.log(item);
+          let obj = {};
+          desc[item.coinCode] = item;
+        });
+        console.log(desc);
+        this.$lStore.set("desc", desc);
       });
     },
     getSetting() {

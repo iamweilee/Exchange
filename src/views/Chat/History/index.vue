@@ -1,54 +1,53 @@
 <template>
   <div class="history">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
+    <NavBar
+      :title="$t('chat').historyTitle"
+      fixed
+      showL
+      @clickLeft="clickLeft"
+    />
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        :offset="80"
-        finished-text="没有更多了"
-        @load="onLoad"
+      <router-link
+        class="history_single"
+        v-for="item in historyList"
+        :to="`/chat/history/${item.orderNo}`"
+        :key="item.orderNo"
       >
-        <router-link
-          class="history_single"
-          v-for="(item,index) in List"
-          :to="`/chat/history/${index}`"
-          :key="index"
-        >
-          <li class="top">
-            <p class="top_l">
-              <span class="big">ETH</span>
-              <span class="small">USDT</span>
-              <span class="icon">
-                <img :src="isBuy(index)" alt />
-              </span>
-              <span class="num">×1手</span>
-            </p>
-            <p class="top_btn">
-              <span :class="isColor(index)">-18.76</span>
-              <button>已平仓</button>
-            </p>
-          </li>
-          <span class="bot">
-            <p class="line-1px">
-              <span>5.7605</span>
-              <span>开仓价</span>
-            </p>
-            <p class="line-1px">
-              <span>--</span>
-              <span>当前价</span>
-            </p>
-            <p class="line-1px">
-              <span>5.6605</span>
-              <span>止损价</span>
-            </p>
-            <p>
-              <span>6.0002</span>
-              <span>止盈价</span>
-            </p>
-          </span>
-        </router-link>
-      </van-list>
+        <li class="top">
+          <p class="top_l">
+            <span class="big">{{ item.targetCoin }}</span>
+            <span class="small">{{ item.sourceCoin }}</span>
+            <span class="icon">
+              <img :src="isBuy(item.position)" alt />
+            </span>
+            <span class="num"
+              >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
+            >
+          </p>
+          <p class="top_btn">
+            <span :class="isColor(item.income)">{{ item.income }}</span>
+            <button>{{ isStatus(item.status) }}</button>
+          </p>
+        </li>
+        <span class="bot">
+          <p class="line-1px">
+            <span>{{ item.tradePrice }}</span>
+            <span>{{ $t("chat").dealPrice }}</span>
+          </p>
+          <p class="line-1px">
+            <span>{{ item.closePrice }}</span>
+            <span>{{ $t("chat").closePrice }}</span>
+          </p>
+          <p class="line-1px">
+            <span>{{ item.stopLoss }}</span>
+            <span>{{ $t("chat").lossPrice }}</span>
+          </p>
+          <p>
+            <span>{{ item.stopProfit }}</span>
+            <span>{{ $t("chat").profitPrice }}</span>
+          </p>
+        </span>
+      </router-link>
     </van-pull-refresh>
     <!-- <div class="not_data">没有更多数据</div> -->
   </div>
@@ -63,26 +62,47 @@ export default {
   data() {
     return {
       title: "历史记录（模拟盘）",
-      List: new Array(10),
+      historyList: [],
       loading: false,
       finished: false,
       isLoading: false
     };
   },
   components: { NavBar },
+  mounted() {
+    this.getHistory();
+  },
   methods: {
     clickLeft() {
       this.$router.push("/chat");
     },
+    getHistory() {
+      this.$http({ url: "/v1/leverage/hisOrderList", method: "get" }).then(
+        res => {
+          console.log(res);
+          if (res.status == this.STATUS) {
+            this.historyList = res.data;
+          }
+        }
+      );
+    },
     isBuy(type) {
-      if (type % 3) {
+      if (type) {
         return iconBuy;
       } else {
         return iconSale;
       }
     },
+    isStatus(status) {
+      switch (status) {
+        case 6:
+          return `已${this.$t("chat").cancelOrder}`;
+        case 7:
+          return `已${this.$t("chat").closeOut}`;
+      }
+    },
     isColor(num) {
-      if (num % 2) {
+      if (num < 0) {
         return "color-red1";
       } else {
         return "color-green";
