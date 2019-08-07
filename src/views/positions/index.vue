@@ -17,18 +17,26 @@
             :key="item.symbol"
           >
             <p class="coin">{{ item.symbol }}/USDT</p>
-            <p class="price">{{ item.close }}</p>
+            <p class="price">
+              {{ item.close | priceFormat(coinPrecision[coinCode].tickSize) }}
+            </p>
           </li>
         </ul>
-        <button class="selectBtn">{{$t('cutFake')}}</button>
-        <button class="closeBtn" @click="show = false">{{$t('pos').clickHide}}</button>
+        <button class="selectBtn">{{ $t("cutFake") }}</button>
+        <button class="closeBtn" @click="show = false">
+          {{ $t("pos").clickHide }}
+        </button>
       </div>
     </van-popup>
     <!-- @click="show=!show" -->
-    <div class="pos_top">
+    <div class="pos_top" v-if="detailData.close">
       <div class="pos_top_t">
         <div class="left">
-          <div class="color-green">{{ detailData.close | priceFormat }}</div>
+          <div class="color-green">
+            {{
+              detailData.close || priceFormat(coinPrecision[coinCode].tickSize)
+            }}
+          </div>
           <div class="small">
             <p>{{ detailData.diff | priceFormat }}</p>
             <p>{{ detailData.percent | priceFormat }}%</p>
@@ -37,17 +45,17 @@
         <ul class="right">
           <li>
             {{ $t("pos").high }}(24H)&nbsp;&nbsp;{{
-              detailData.high | priceFormat
+              detailData.high | priceFormat(coinPrecision[coinCode].tickSize)
             }}
           </li>
           <li>
             {{ $t("pos").low }}(24H)&nbsp;&nbsp;{{
-              detailData.low | priceFormat
+              detailData.low | priceFormat(coinPrecision[coinCode].tickSize)
             }}
           </li>
           <li>
             {{ $t("pos").amount }}(24H)&nbsp;&nbsp;{{
-              detailData.amount | priceFormat
+              parseInt(detailData.amount)
             }}
           </li>
         </ul>
@@ -69,7 +77,7 @@
           <button :class="TVInterval == 60 && 'active'" @click="clickBtn(60)">
             1{{ $t("pos").hour }}
           </button>
-          <button @click="clickBtnMore(true)">{{ $t("pos").more }}</button>
+          <button @click="clickBtnMore(true)">{{ $t("more") }}</button>
           <button @click="clickBtnMore(false)">
             {{ $t("pos").indicator }}
           </button>
@@ -172,16 +180,27 @@
         <div :style="styls" class="tabs_line"></div>
       </div>
       <div class="cont">
-        <Capital v-if="tabsType == 'Capital'" />
+        <Capital
+          v-if="tabsType == 'Capital'"
+          :coinPrecision="coinPrecision[coinCode]"
+        />
         <Intord v-if="tabsType == 'Intord'" :intordData="intordData" />
       </div>
     </div>
     <div class="handWrap">
       <button @click="showOrderHandle(1)">
-        {{ $t("pos").buyFall }} {{ (detailData.close * 1.0006) | priceFormat }}
+        {{ $t("pos").buyFall }}
+        {{
+          (detailData.close * 1.0006)
+            | priceFormat(coinPrecision[coinCode].tickSize)
+        }}
       </button>
       <button @click="showOrderHandle(0)">
-        {{ $t("pos").buyRise }} {{ (detailData.close * 0.9994) | priceFormat }}
+        {{ $t("pos").buyRise }}
+        {{
+          (detailData.close * 0.9994)
+            | priceFormat(coinPrecision[coinCode].tickSize)
+        }}
       </button>
     </div>
     <van-popup
@@ -195,9 +214,11 @@
         :cloeModle="cloeModle"
         :closePic="detailData.close"
         :succeedOrder="succeedOrder"
+        :coinPrecision="coinPrecision[coinCode].tickSize"
       />
     </van-popup>
     <van-dialog
+      closeOnClickOverlay
       v-model="showSucceed"
       :title="$t('orderSucc')"
       :beforeClose="beforeClose"
@@ -228,12 +249,14 @@ import { klineLastBar } from "components/TradingView/pro/stream";
 export default {
   data() {
     return {
-      TVInterval: this.$lStore.get("TVInterval") || 5,
+      TVInterval: this.$lStore.get("TVInterval") || 15,
+      coinPrecision: this.$lStore.get("coinPrecision"),
       isOther: true,
       isShow: false,
       Indicator: "closeOther",
       show: false,
       symbol: `${this.$route.params.coinCode}/USDT`,
+      coinCode: this.$route.params.coinCode,
       intordData: {},
       tabsType: "Capital",
       showOrder: false,
@@ -268,15 +291,18 @@ export default {
       this.initSocket();
       if (!this.$lStore.get("desc")[this.$route.params.coinCode]) {
         this.intordData = this.$lStore.get("desc")["BTC"];
+      } else {
+        this.intordData = this.$lStore.get("desc")[this.$route.params.coinCode];
       }
-      console.log(this.intordData);
+      this.coinCode = this.$route.params.coinCode;
     },
     beforeClose(action, done) {
-      console.log(this.succeedOrder);
-      let path = this.succeedData.tradeType == 1 ? "/chat/list" : "/chat";
-
-      this.$router.push(path);
-      console.log(path);
+      if (action == "confirm") {
+        let path = this.succeedData.tradeType == 1 ? "/chat/list" : "/chat";
+        this.$router.push(path);
+      } else {
+        done();
+      }
     },
     succeedOrder(req) {
       this.succeedData = req;
@@ -327,7 +353,9 @@ export default {
     },
     //选择币种
     select(coinCode) {
+      this.$router.push(`/position/${coinCode}`);
       this.symbol = `${coinCode}/USDT`;
+      this._initPage();
     },
     clickLeft() {
       this.$router.push("/");

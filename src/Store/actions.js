@@ -39,7 +39,7 @@ const sendMsg = function(req) {
 export default {
     // 不请求直接异步改变
     updatedLang({ commit }, lang) {
-        i18n.locale = lang;
+        i18n.locale = lang[0].value;
         commit(types.SET_LANG, lang);
     },
     updatedUserInfo({ commit }, userInfo) {

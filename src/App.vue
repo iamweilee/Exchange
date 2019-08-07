@@ -42,6 +42,7 @@ export default {
       allSocket.initWs();
       this.$EventListener.on("SendMsg", this.SendMsg);
       this.Socket = allSocket;
+      this.getInfo();
     },
     SendMsg(datas) {
       setTimeout(() => {
@@ -87,6 +88,34 @@ export default {
         }
       });
     },
+    getInfo() {
+      this.$http({
+        url: "/tradeInfo/allTradeInfo",
+        method: "get"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          // n
+          //   console.log(res.data[0]);
+          let List = res.data[0].USDT,
+            coinPrecision = {};
+
+          List.map(item => {
+            let coinCode = item.tradeCode.replace("/USDT", "");
+
+            item.tickSize = item.tickSize.toString().split(".")[1].length;
+            item.stepSize = item.stepSize.toString().split(".")[1].length;
+            item.minPrice = item.minPrice.toString().split(".")[1].length;
+            item.minQty = item.minQty.toString().split(".")[1].length;
+            item.stockNum = item.stockNum.split(",");
+            item.depositLevel = item.depositLevel.split(",");
+
+            coinPrecision[coinCode] = item;
+          });
+          this.$lStore.set("coinPrecision", coinPrecision);
+        }
+      });
+    },
+
     ...mapActions(["getBanlace"])
   },
 

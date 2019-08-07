@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -35,34 +36,16 @@ export default {
   },
   components: {},
   methods: {
-    //获取验证码
-    getCode() {
-      this.$http({
-        url: "/auth/send_sms_all",
-        data: { codeType: 2, loginName: this.fromData.email },
-        method: "post"
-      }).then(res => {
-        console.log(res);
-      });
-    },
     //发送验证
     sendMsg() {
-      this.isSend = true;
-      let _this = this,
-        num = 10;
-      this.getCode();
-      _this.timer = setInterval(() => {
-        num--;
-        if (num <= 0) {
-          clearInterval(_this.timer);
-          this.isSend = false;
-          this.sendBtnText = "获取验证码";
-        } else {
-          this.sendBtnText = num + "S后重新获取";
-        }
-      }, 1000);
-      this.sendBtnText = num + "S后重新获取";
-    }
+      let _this = this;
+      this.sendMsgComm({
+        loginName: _this.fromData.email,
+        codeType: 2,
+        fn: _this.$timeSet.bind("regEmail", _this)
+      });
+    },
+    ...mapActions(["sendMsgComm"])
   }
 };
 </script>

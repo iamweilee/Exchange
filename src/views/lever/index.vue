@@ -9,32 +9,34 @@
         <li>{{ $t("lever").title3 }}</li>
       </ul>
     </div>
-    <div class="lever_List">
+    <div class="lever_List" v-if="List.length">
       <ScrollV pulldown pullup @pullDown="pullDown" @pullUp="pullUp">
         <router-link
           tag="ul"
           class="lever_List_single border-1px"
-          v-for="(item, index) in List"
-          :class="index % 2 && 'fall'"
+          v-for="item in List"
+          :class="isFall(item.percent) && 'fall'"
           :key="item.symbol"
-          :to="`/position/${item.symbol}`"
+          :to="`/position/${item.coinCode}`"
         >
           <li class="left">
             <p class="left_top">
-              <span class="big">{{ item.symbol }}</span>
-              <span class="small">比特币</span>
-              <span class="icon" v-show="!(index % 3)">
+              <span class="big">{{ item.coinCode }}</span>
+              <span class="small">{{ item.alias }}</span>
+              <span class="icon" v-show="item.hot">
                 <img src="~assets/Images/lever/icon_hot.png" alt />
               </span>
             </p>
-            <p class="left_bot">行情稳，可操盘</p>
+            <p class="left_bot">{{ item.desc }}</p>
           </li>
           <li class="middle">
-            <p class="usdt">{{ item.close }}</p>
+            <p class="usdt">
+              {{ item.close | priceFormat(item.tickSize) }}
+            </p>
             <p class="cny">￥{{ item.cny | priceFormat }}</p>
           </li>
           <li class="right">
-            <button class="rate">+{{ item.percent | priceFormat }}%</button>
+            <button class="rate">{{ item.percent | toRate }}%</button>
           </li>
         </router-link>
       </ScrollV>
@@ -49,7 +51,8 @@ import { connect } from "net";
 export default {
   data() {
     return {
-      List: this.$lStore.get("setingData").coinList,
+      List: [],
+      coinPrecision: this.$lStore.get("coinPrecision"),
       loading: false,
       finished: false,
       isLoading: false
@@ -69,23 +72,22 @@ export default {
   methods: {
     _initPage() {
       this.$EventListener.on("TVdetail", this.Detail);
-      this.sendMsg();
-      this.getCoinInfo1();
       this.getCoinInfo();
     },
-    sendMsg() {
+    sendMsg(List) {
       let datas = {};
-      this.List.forEach(item => {
-        datas[`${item.symbol.toLowerCase()}usdt-ticker`] = 0;
+      List.forEach(item => {
+        datas[`${item.pair}-ticker`] = 0;
       });
       this.$EventListener.fire("SendMsg", datas);
     },
     Detail(data) {
-      data.symbol = data.symbol.replace("/USDT", "");
       let List = this.List;
-      for (let i = 0; i < List.length; i++) {
-        if (List[i].symbol == data.symbol) {
-          List[i] = data;
+      for (let i = List.length - 1; i >= 0; i--) {
+        if (List[i].pair == data.pair) {
+          List[i].close = data.close;
+          List[i].cny = data.cny;
+          List[i].percent = data.percent;
           break;
         }
       }
@@ -93,16 +95,27 @@ export default {
     },
     getCoinInfo() {
       this.$http({
-        url: "/tradeInfo/allTradeInfo",
+        url: "/v1/kline/findQuotationList",
         method: "get"
-      }).then();
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          let List = res.data;
+          for (let i = List.length - 1; i >= 0; i--) {
+            let coinCode = List[i].symbol.replace("/USDT", "");
+            List[i].coinCode = coinCode;
+            List[i].tickSize = this.coinPrecision[coinCode].tickSize;
+          }
+          this.sendMsg(List);
+          this.List = List;
+        }
+      });
     },
-    getCoinInfo1() {
-      this.$http({
-        url: "/tradeInfo/getByCoinCode",
-        data: { coinCode: "USDT" },
-        method: "get"
-      }).then();
+    isFall(percent) {
+      if (percent < 0) {
+        return true;
+      } else {
+        return false;
+      }
     },
     pullDown(scroll) {
       setTimeout(() => {

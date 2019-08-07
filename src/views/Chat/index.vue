@@ -87,7 +87,7 @@
 
 <script>
 import NavBar from "components/NavBar";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -115,6 +115,7 @@ export default {
       if (this.$route.name == "ChatList") {
         this.tabClick(1);
       }
+      this.getBanlace();
     },
     tabClick(index) {
       this.styls = {
@@ -137,6 +138,7 @@ export default {
           .then(res => {
             if (res.status == this.STATUS) {
               this.$refs.child.refresh(done);
+              this.getBanlace();
             }
           })
           .catch(err => {
@@ -146,7 +148,8 @@ export default {
       }
 
       return false;
-    }
+    },
+    ...mapActions(["getBanlace"])
   },
   watch: {
     $route(to, from) {

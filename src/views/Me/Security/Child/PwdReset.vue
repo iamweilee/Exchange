@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -87,22 +88,14 @@ export default {
     },
     //发送验证
     sendMsg() {
-      this.isSend = true;
-      let _this = this,
-        num = 10;
-      _this.timer = setInterval(() => {
-        num--;
-        if (num <= 0) {
-          clearInterval(_this.timer);
-          this.isSend = false;
-          this.sendBtnText = "获取验证码";
-        } else {
-          this.sendBtnText = num + "S后重新获取";
-        }
-      }, 1000);
-
-      this.sendBtnText = num + "S后重新获取";
-    }
+      let _this = this;
+      this.sendMsgComm({
+        loginName: this.emailPhone,
+        codeType: 7,
+        fn: _this.$timeSet.bind("edit", _this)
+      });
+    },
+    ...mapActions(["sendMsgComm"])
   }
 };
 </script>

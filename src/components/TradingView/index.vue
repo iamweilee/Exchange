@@ -194,8 +194,8 @@ export default {
           backgroundColor: "#1b212d",
           foregroundColor: "#1b212d"
         },
-        custom_css_url: "bundles/coustom.css",
-        indicators_file_name: "customIndex.js"
+        // custom_css_url: "bundles/coustom.css",
+        // indicators_file_name: "customIndex.js"
       };
       const tvWidget = new TradingView.widget(widgetOptions);
       this.tvWidget = tvWidget;

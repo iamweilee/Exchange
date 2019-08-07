@@ -15,6 +15,7 @@ var WBT = function(obj) {
     //接口地址url
     // this.url = config.ip || protocol + host + port;
     this.url = ENV.getENV()[config.url];
+    this.timer = null;
     //socket对象
     this.socket;
     //心跳状态  为false时不能执行操作 等待重连
@@ -112,11 +113,13 @@ WBT.prototype.handleEvent = function(message) {
 };
 //发送消息
 WBT.prototype.Send = function(data) {
-    if (this.socket && this.socket.readyState == 1) {
-        this.socket.send(data);
-    } else {
-        console.log("ERROR: Socket 连接故障");
-    }
+    var timer = setInterval(() => {
+        if (this.socket.readyState == 1) {
+            console.log(this.socket.readyState);
+            this.socket.send(data);
+            clearInterval(timer);
+        }
+    }, 300);
 };
 //事务处理 根据action
 WBT.prototype.handleAction = {
@@ -130,5 +133,10 @@ WBT.prototype.handleAction = {
         _comm.$EventListener.fire("TVdepth", data);
     }
 };
-
+function sendIf(socket, data) {
+    console.log(socket.readyState);
+    if (socket && socket.readyState == 1) {
+        socket.send(data);
+    }
+}
 export default WBT;

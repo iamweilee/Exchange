@@ -93,7 +93,7 @@ import NavBar from "components/NavBar";
 import radio from "Images/other/icon_radio.png";
 import radios from "Images/other/icon_radios.png";
 import { radioList } from "common/staticData";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -190,6 +190,7 @@ export default {
         method: "post"
       }).then(res => {
         if (res.status == this.STATUS) {
+          this.getBanlace();
           this.$router.push(`/me/fund/detail/${res.data.id}`);
         }
       });
@@ -206,7 +207,8 @@ export default {
 
     clickLeft() {
       this.$router.push("/otc");
-    }
+    },
+    ...mapActions(["getBanlace"])
   }
 };
 </script>

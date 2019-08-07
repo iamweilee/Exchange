@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+import "babel-polyfill";
 import Vue from "vue";
 import App from "./App.vue";
 import "./common/extend";
@@ -62,11 +62,11 @@ Vue.use(VueI18n)
     .use(Dialog)
     .use(VueClipboard);
 const i18n = new VueI18n({
-    locale: store.state.lang,
+    locale: store.state.lang[0].value,
     messages: {
         zh: require("./lang/zh"),
         en: require("./lang/en"),
-        zh_tw: require("./lang/zh_tw"),
+        zh_tw: require("./lang/zh_tw")
     }
 });
 window.i18n = i18n;

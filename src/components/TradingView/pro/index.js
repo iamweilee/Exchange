@@ -1,11 +1,11 @@
 import historyProvider from "./historyProvider";
-import stream from './stream'
+import stream from "./stream";
+import { lStore } from "common/utli";
 const supportedResolutions = ["1", "5", "15", "30", "60", "D", "W", "M"];
 
 const config = {
     supported_resolutions: supportedResolutions
 };
-
 
 export default {
     onReady: cb => {
@@ -23,7 +23,11 @@ export default {
         // expects a symbolInfo object in response
         console.log("======resolveSymbol running", symbolName);
         // console.log('resolveSymbol:',{symbolName})
-        var split_data = symbolName.split(/[:/]/);
+        var split_data = symbolName.split(/[:/]/),
+            pricescale = Math.pow(
+                10,
+                lStore.get("coinPrecision")[split_data[0]].tickSize
+            );
         // console.log({split_data})
         var symbol_stub = {
             name: symbolName,
@@ -31,7 +35,6 @@ export default {
             session: "24x7",
             timezone: "Etc/UTC",
             ticker: symbolName,
-            exchange: "bitou",
             minmov: 1,
             pricescale: 100,
             has_intraday: true,
@@ -40,10 +43,7 @@ export default {
             volume_precision: 8,
             data_status: "streaming"
         };
-
-        if (symbolName.match(/USD|EUR|JPY|AUD|GBP|KRW|CNY|USDT/)) {
-            symbol_stub.pricescale = Math.pow(10,4);
-        }
+        symbol_stub.pricescale = pricescale;
         setTimeout(function() {
             onSymbolResolvedCallback(symbol_stub);
             console.log("Resolving that symbol....");
@@ -68,8 +68,6 @@ export default {
         //     ).toISOString()} and ${new Date(to * 1000).toISOString()}`
         // );
 
-        
-
         historyProvider
             .getBars(symbolInfo, resolution, from, to, firstDataRequest)
             .then(bars => {
@@ -92,12 +90,18 @@ export default {
         onResetCacheNeededCallback
     ) => {
         console.log("=====subscribeBars runnning");
-        stream.subscribeBars(symbolInfo, resolution, onRealtimeCallback, subscribeUID, onResetCacheNeededCallback)
+        stream.subscribeBars(
+            symbolInfo,
+            resolution,
+            onRealtimeCallback,
+            subscribeUID,
+            onResetCacheNeededCallback
+        );
     },
     unsubscribeBars: subscriberUID => {
         console.log("=====unsubscribeBars running");
 
-        stream.unsubscribeBars(subscriberUID)
+        stream.unsubscribeBars(subscriberUID);
     },
     calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => {
         //optional

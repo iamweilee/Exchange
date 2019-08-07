@@ -1,18 +1,14 @@
-const IS_PROD = ["production", "prod"].includes(process.env.NODE_ENV);
-
-// console.log("process.env.NODE_ENV:" + process.env.NODE_ENV);
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-    .BundleAnalyzerPlugin;
 const path = require("path");
-const CompressionWebpackPlugin = require("compression-webpack-plugin");
-const productionGzipExtensions = ["js", "css"];
 const resolve = dir => path.resolve(__dirname, dir);
+const IS_PROD = ["production", "prod"].includes(process.env.NODE_ENV);
+console.log(IS_PROD);
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const autoprefixer = require("autoprefixer");
 const pxtorem = require("postcss-pxtorem");
 module.exports = {
     publicPath: "./", // 默认'/'，部署应用包时的基本 URL
     outputDir: "dist", // 'dist', 生产环境构建文件的目录
+    productionSourceMap: !IS_PROD,
     // CSS 相关选项
     css: {
         // 将组件内的 CSS 提取到一个单独的 CSS 文件 (只用在生产环境中)
@@ -29,7 +25,7 @@ module.exports = {
                 modifyVars: {
                     red: "#03a9f4",
                     blue: "#3eaf7c",
-                    orange: "#ff0000",
+                    orange: "#ff0000"
                 }
             },
             postcss: {
@@ -67,32 +63,22 @@ module.exports = {
     configureWebpack: config => {
         if (IS_PROD) {
             const plugins = [];
+            // plugins.push(
+            //   new PurgecssPlugin({
+            //     paths: glob.sync([
+            //       path.join(__dirname, "./src/index.html"),
+            //       path.join(__dirname, "./**/*.vue"),
+            //       path.join(__dirname, "./src/**/*.js")
+            //     ])
+            //   })
+            // );
             plugins.push(
                 new UglifyJsPlugin({
                     uglifyOptions: {
                         compress: {
-                            warnings: true,
+                            // warnings: true,
                             drop_console: true,
-                            drop_debugger: true,
-                            pure_funcs: ["console.log"] //移除console
-                        },
-                        mangle: false,
-                        output: {
-                            beautify: true //压缩注释
-                        }
-                    },
-                    sourceMap: false,
-                    parallel: true
-                })
-            );
-            //去掉 console.log
-            plugins.push(
-                new UglifyJsPlugin({
-                    uglifyOptions: {
-                        compress: {
-                            warnings: true,
-                            drop_console: true,
-                            drop_debugger: true,
+                            drop_debugger: false,
                             pure_funcs: ["console.log"] //移除console
                         }
                     },

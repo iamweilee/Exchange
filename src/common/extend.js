@@ -28,6 +28,28 @@ function ScrollTop(anim = true) {
         document.documentElement.scrollTop = 0;
     }
 }
+function timerHandle(self) {
+    self.isSend = true;
+    let num = 10;
+    self.timer = setInterval(() => {
+        num--;
+        if (num <= 0) {
+            clearInterval(self.timer);
+            self.isSend = false;
+            self.sendBtnText = "获取验证码";
+        } else {
+            self.sendBtnText = num + "S后重新获取";
+        }
+        console.log("获取验证码");
+    }, 1000);
+    self.sendBtnText = num + "S后重新获取";
+}
+
+// amount(num){
+//     if(num<1000){
+
+//     }
+// }
 Vue.prototype.$ScrollTop = ScrollTop;
 Vue.prototype.$lStore = lStore;
 Vue.prototype.$sStore = sStore;
@@ -37,6 +59,7 @@ Vue.prototype.$EventListener = EventListener({});
 Vue.prototype.$addEvent = addEvent;
 Vue.prototype.$removeEvent = removeEvent;
 Vue.prototype.$md5 = md5;
+Vue.prototype.$timeSet = timerHandle;
 Vue.prototype.STATUS = 200;
 Vue.directive("debounce", {
     bind(el, { value }) {

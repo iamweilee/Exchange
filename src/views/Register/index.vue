@@ -68,9 +68,10 @@ export default {
           type: 1
         };
       } else if (regData.phone) {
+        debugger;
         req = {
           mobileCode: regData.code,
-          loginName: regData.email,
+          loginName: regData.phone,
           loginPwd: regData.pwd,
           type: 0
         };

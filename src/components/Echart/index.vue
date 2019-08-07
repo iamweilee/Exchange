@@ -8,7 +8,6 @@
   <script>
 import echarts from "echarts";
 import option from "./option";
-import { setInterval } from "timers";
 
 export default {
   name: "quotation",

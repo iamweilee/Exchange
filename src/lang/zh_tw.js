@@ -50,6 +50,9 @@ module.exports = {
         howOpen: "如何開戶",
         experHow: "立刻開戶試玩"
     },
+    guide:{
+        title:"新手引导"
+    },
     lever: {
         title1: "交易品種",
         title2: "價格",

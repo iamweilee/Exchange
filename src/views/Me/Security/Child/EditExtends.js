@@ -42,10 +42,11 @@ const extendTest = {
         },
         //发送验证
         sendMsg() {
+            let _this = this;
             this.sendMsgComm({
                 loginName: this.emailPhone,
                 codeType: 7,
-                fn: this.timerHandle
+                fn: _this.$timeSet.bind("edit", _this)
             });
         },
         timerHandle() {

@@ -50,13 +50,27 @@ module.exports = {
         howOpen: "如何开户",
         experHow: "立刻开户试玩"
     },
+    guide: {
+        title: "新手引导",
+        subTitle: "操作指南",
+        subTitle1: "常见问题",
+        pageIntord: "平台开户指南，教您轻松了解",
+        intord1: "开户",
+        intord2: "指标",
+        intord3: "杠杆",
+        intord4: "充值",
+        intord5: "等操作",
+        intord6: "这里是关于",
+        intord7: "本平台",
+        intord8: "的一些常见问题"
+    },
     lever: {
         title1: "交易品种",
         title2: "价格",
         title3: "涨跌幅"
     },
     pos: {
-        clickHide:"点击收起",
+        clickHide: "点击收起",
         high: "高",
         low: "底",
         amount: "量",
@@ -67,11 +81,11 @@ module.exports = {
         month: "月",
         more: "更多",
         indicator: "指标",
-        hide:"隐藏",
-        fund:"资金",
-        intord:"简介",
-        buyRise:"买涨",
-        buyFall:"买跌",
+        hide: "隐藏",
+        fund: "资金",
+        intord: "简介",
+        buyRise: "买涨",
+        buyFall: "买跌"
     },
     chat: {
         title: "我的持仓",
@@ -179,8 +193,9 @@ module.exports = {
     freeSyn: "综合交易费",
     rise: "涨",
     fall: "跌",
-    orderSucc:"下单成功",
-    seeOrder:"查看订单",
+    orderSucc: "下单成功",
+    seeOrder: "查看订单",
     cutFake: "切换至实际盘",
-    cutReal:"模拟盘"
+    cutReal: "模拟盘",
+    more: "更多"
 };

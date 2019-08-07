@@ -6,17 +6,22 @@
       <li class="price">价格(USDT)</li>
       <li class="num">数量</li>
       <li class="type">卖盘</li>
-    </ul>.
+    </ul>
+    .
     <div class="capital_list" v-if="List.length">
-      <ul class="capital_single" v-for="(item,index) in List" :key="index">
-        <li class="type">{{6-index}}</li>
-        <li class="num">{{item.bidsNum|toFixeds(4)}}</li>
-        <li class="price">
-          <p>{{item.bidsPrice|toFixeds}}</p>
-          <p>{{item.asksPrice|toFixeds}}</p>
+      <ul class="capital_single" v-for="(item, index) in List" :key="index">
+        <li class="type">{{ 6 - index }}</li>
+        <li class="num">
+          {{ item.bidsNum | toFixeds(coinPrecision.stepSize) }}
         </li>
-        <li class="num">{{item.asksNum|toFixeds(4)}}</li>
-        <li class="type">{{6-index}}</li>
+        <li class="price">
+          <p>{{ item.bidsPrice | toFixeds(coinPrecision.tickSize) }}</p>
+          <p>{{ item.asksPrice | toFixeds(coinPrecision.tickSize) }}</p>
+        </li>
+        <li class="num">
+          {{ item.asksNum | toFixeds(coinPrecision.stepSize) }}
+        </li>
+        <li class="type">{{ 6 - index }}</li>
       </ul>
     </div>
   </div>
@@ -24,6 +29,12 @@
 
 <script>
 export default {
+  props: {
+    coinPrecision: {
+      type: Object,
+      default: {}
+    }
+  },
   data() {
     return {
       List: []
@@ -39,6 +50,7 @@ export default {
   methods: {
     _initPage() {
       this.$EventListener.on("TVdepth", this.rederDepth);
+      console.log(this.coinPrecision,'6666666666666');
     },
     rederDepth(data) {
       let bids = data.bids,

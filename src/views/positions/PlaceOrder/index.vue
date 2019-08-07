@@ -46,7 +46,7 @@
           <div class="from_single_cont">
             <div class="hand">
               <button
-                v-for="item in handList"
+                v-for="item in coinDetail[coinCode].stockNum"
                 :key="item"
                 :class="item == checkHand && 'active'"
                 @click="handClick(item, 'checkHand')"
@@ -68,7 +68,7 @@
           <div class="from_single_cont">
             <div class="hand cash">
               <button
-                v-for="item in cashList"
+                v-for="item in coinDetail[coinCode].depositLevel"
                 :key="item"
                 :class="item == checkCash && 'active'"
                 @click="handClick(item, 'checkCash')"
@@ -86,57 +86,54 @@
             </div>
             <p>
               <van-switch
-                v-model="isLoss"
+                v-model="isLossProfit"
                 active-color="#2D9FFE"
                 inactive-color="#DEDEDE"
                 size="0.5rem"
               />
             </p>
           </div>
-          <div class="from_single_cont" v-show="isLoss">
+          <div class="from_single_cont" v-show="isLossProfit">
             <div class="from_single_cont_single">
-              <div class="left">{{$t('chat').lossPrice}}</div>
-              <div class="box small">
-                <input
-                  type="text"
-                  :value="
-                    ((checkCash * checkHand * 0.8) / valRate + closePic)
+              <div class="left">{{ $t("chat").lossPrice }}</div>
+              <div class="box small" @click="isLoss = true">
+                <!-- :value="
+                    (Number(inpPrice) +
+                      (checkCash * checkHand * 0.8) / valRate)
                       | toFixeds
-                  "
-                />
+                  " -->
+                <input type="text" v-model="inpLoss" />
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
                   alt
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
-                <p class="box-size">
-                  ≥<em>{{ (closePic * 1.002) | toFixeds }}</em>
+                <p class="box-size" @click.stop>
+                  ≥<em>{{ (inpPrice * 1.002) | toFixeds }}</em>
                   预计亏损约
                   <em>{{ checkCash * checkHand * 0.8 }}</em>
                 </p>
               </div>
             </div>
             <div class="from_single_cont_single">
-              <div class="left">{{$t('chat').profitPrice}}</div>
-              <div class="box small">
-                <input
-                  type="text"
-                  :value="
-                    (closePic - (checkCash * checkHand * 0.8) / valRate)
+              <div class="left">{{ $t("chat").profitPrice }}</div>
+              <div class="box small" @click="isProfit = true">
+                <!-- :value="
+                    (inpPrice - (checkCash * checkHand * 0.8) / valRate)
                       | toFixeds
-                  "
-                />
+                  " -->
+                <input type="text" v-model="inpProfit" />
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
                   alt
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
-                <p class="box-size">
-                  ≤<em>{{ (closePic * 0.998) | toFixeds }}</em>
+                <p class="box-size" @click.stop>
+                  ≤<em>{{ (inpPrice * 0.998) | toFixeds }}</em>
                   预计盈利约
-                  <em>{{ checkCash * checkHand * 0.8 }}</em>
+                  <em>{{ exLossProfit(inpPrice, inpProfit) }}</em>
                 </p>
               </div>
             </div>
@@ -145,7 +142,7 @@
         <div class="from_single" v-if="isSpecialty()">
           <div class="from_single_label big">
             <div class="left">
-              {{$t("night")}}
+              {{ $t("night") }}
               <p class="icon_size">
                 <img src="~assets/Images/other/icon_night.png" alt />持仓到6:00
               </p>
@@ -181,7 +178,7 @@
       </div>
     </div>
     <div class="submit_btn">
-      <button :class="position && 'active'" @click="placeOrder(closePic)">
+      <button :class="position && 'active'" @click="placeOrder(inpPrice)">
         <!-- <button :class="position && 'active'" @click="showSucceed = true"> -->
         {{ this.btnText() }}{{ inpPrice }}
       </button>
@@ -191,7 +188,7 @@
 
 <script>
 import Select from "components/Select";
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import { toFixeds } from "common/utli";
 export default {
   props: {
@@ -207,10 +204,14 @@ export default {
       type: [String, Number],
       required: true
     },
+    coinPrecision: {
+      type: [String, Number],
+      required: true
+    },
     cloeModle: {
       type: Function,
       default: () => {
-        console.log("close");
+        console.log("cloeModle");
       }
     },
     succeedOrder: {
@@ -222,19 +223,23 @@ export default {
   },
   data() {
     return {
-      inpPrice: 0,
+      inpPrice: 0, //下单价格
+      inpLoss: 0, //止损价格
+      inpProfit: 0, //止盈价格
       checkHand: 2, //选择手数
       valRate: 1, //手数比
       checkCash: 200, //保证金
-      handList: this.$lStore.get("setingData").nums,
+      coinDetail: this.$lStore.get("coinPrecision"),
       cashList: [],
       values: [{ text: "市价", value: 0 }, { text: "挂单", value: 1 }],
       value: { text: "市价", value: 0 },
       freeShow: false, //点击保证金
       isNight: false, //是否过夜
-      isLoss: false, //是否设置盈损
+      isLossProfit: false, //是否设置盈损
       title: "快捷",
-      allCustom: false,
+      allCustom: false, //是否自己填入下单价格
+      isProfit: false, //是否自己填入止盈价格
+      isLoss: false, //是否自己填入止损价格
       orderData: {}
     };
   },
@@ -248,14 +253,15 @@ export default {
   components: { Select },
   methods: {
     _initPage() {
-      let setingData = this.$lStore.get("setingData");
+      let setingData = this.$lStore.get("setingData"),
+        tradePrice = toFixeds(this.closePic * 1.0006, this.coinPrecision);
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;
-      this.inpPrice = toFixeds(this.closePic * 1.0006);
-      this.initData(this.closePic);
+      this.setLossProfit(tradePrice);
+      this.initData(tradePrice);
     },
-    initData(closePic) {
+    initData(tradePrice) {
       let req = {
         isDelay: 0, //是否过夜 0否 1是
         position: this.position, //交易方向0-涨 1-跌
@@ -275,27 +281,20 @@ export default {
       //委托量
       req.tradeAmount = this.checkHand * this.valRate;
       //委托价
-      req.tradePrice = req.tradeType
-        ? this.inpPrice
-        : toFixeds(closePic * 1.0006);
+      req.tradePrice = tradePrice;
       //杠杆倍数
-      req.leverage = toFixeds((closePic * this.valRate) / this.checkCash);
+      req.leverage = toFixeds((tradePrice * this.valRate) / this.checkCash);
       //手续费
       req.poundageAmount = toFixeds(
-        (closePic * req.tradeAmount - req.deposit) * 0.003
+        (tradePrice * req.tradeAmount - req.deposit) * 0.003
       );
-      let priceCom = 0;
-      //限价
-      if (req.tradeType == 1) {
-        priceCom = this.inpPrice;
-      } else {
-        //市价
-        priceCom = closePic;
-      }
+
       //止盈
-      req.stopProfit = toFixeds(priceCom - (0.8 * req.deposit) / this.valRate);
+      req.stopProfit = toFixeds(
+        tradePrice - (0.8 * req.deposit) / this.valRate
+      );
       //止损
-      req.stopLoss = toFixeds(priceCom + (0.8 * req.deposit) / this.valRate);
+      req.stopLoss = toFixeds(tradePrice + (0.8 * req.deposit) / this.valRate);
 
       this.orderData = req;
       return req;
@@ -309,9 +308,9 @@ export default {
       }
     },
     //下单函数
-    placeOrder(closePic) {
-      let req = this.initData(closePic);
-      //   console.log(JSON.stringify(req));
+    placeOrder(tradePrice) {
+      let req = this.initData(tradePrice);
+      console.log(JSON.stringify(req));
       let url =
         this.value.value == 1
           ? "/v1/leverage/limited/submit"
@@ -323,6 +322,7 @@ export default {
       }).then(res => {
         if (res.status == this.STATUS) {
           this.succeedOrder(req);
+          this.getBanlace();
         }
         console.log(res);
       });
@@ -363,14 +363,42 @@ export default {
     },
     handClick(item, type) {
       this[type] = item;
-    }
+    },
+    setLossProfit(tradePrice) {
+      this.inpPrice = tradePrice;
+      //   console.log(this.isLoss, this.isProfit);
+      if (!this.isLoss) {
+        this.inpLoss = toFixeds(
+          tradePrice + (this.checkCash * this.checkHand * 0.8) / this.valRate,
+          this.coinPrecision
+        );
+      }
+      if (!this.isProfit) {
+        this.inpProfit = toFixeds(
+          tradePrice - (this.checkCash * this.checkHand * 0.8) / this.valRate,
+          this.coinPrecision
+        );
+      }
+    },
+    //预计盈亏
+    exLossProfit(tradePrice, price) {
+      //保证金
+      let deposit = this.checkHand * this.checkCash,
+        bili = tradePrice / deposit,
+        chazhi = Math.abs(tradePrice - price),
+        bili1 = chazhi / bili,
+        leverage = (this.closePic * this.valRate) / this.checkCash;
+      // console.log(bili,chazhi,bili1,leverage)
+      return toFixeds(bili1 * leverage);
+    },
+    ...mapActions(["getBanlace"])
   },
   watch: {
     closePic(val) {
       this.initData(val);
       if (!this.allCustom) {
-        console.log(val);
-        this.inpPrice = toFixeds(val * 1.0006);
+        let tradePrice = toFixeds(val * 1.0006, this.coinPrecision);
+        this.setLossProfit(tradePrice);
       }
     }
   }

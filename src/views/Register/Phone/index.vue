@@ -36,6 +36,7 @@
 <script>
 import country from "common/country.json";
 import vuePickers from "components/customPick";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -72,37 +73,17 @@ export default {
       this.defaultData = [val.select1];
       this.show = false;
     },
-    //获取验证码
-    getCode() {
-      this.$http({
-        url: "/auth/send_sms_all",
-        data: {
-          codeType: 2,
-          loginName: this.fromData.email,
-          areaCode: this.defaultData.value
-        },
-        method: "post"
-      }).then(res => {
-        console.log(res);
-      });
-    },
     //发送验证
     sendMsg() {
-      this.isSend = true;
-      let _this = this,
-        num = 10;
-      _this.timer = setInterval(() => {
-        num--;
-        if (num <= 0) {
-          clearInterval(_this.timer);
-          this.isSend = false;
-          this.sendBtnText = "获取验证码";
-        } else {
-          this.sendBtnText = num + "S后重新获取";
-        }
-      }, 1000);
-      this.sendBtnText = num + "S后重新获取";
-    }
+      let _this = this;
+      this.sendMsgComm({
+        loginName: this.fromData.phone,
+        codeType: 2,
+        areaCode: this.defaultData.value,
+        fn: _this.$timeSet.bind("regPhone", _this)
+      });
+    },
+    ...mapActions(["sendMsgComm"])
   }
 };
 </script>

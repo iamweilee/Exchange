@@ -282,7 +282,7 @@ function numTime(val) {
 
 //秒转分秒
 function formatSeconds(value) {
-    var secondTime = parseInt(value/1000); // 秒
+    var secondTime = parseInt(value / 1000); // 秒
     var minuteTime = 0; // 分
     var hourTime = 0; // 小时
     if (secondTime > 60) {
@@ -418,6 +418,15 @@ function toFixeds(nums, len = 2) {
         return "--";
     }
 }
+//科学计数法
+function toRate(rate, len = 2) {
+    let prefix = "";
+    if (rate > 0) {
+        prefix = "+";
+    }
+    return prefix + Number(rate).toFixed(len);
+   
+}
 
 //千分符
 function toThousands(num) {
@@ -437,12 +446,52 @@ function priceFormat(nums, extent = 2) {
             nums == 0
                 ? nums
                 : nums.replace(eval(re), "$1").replace(regexp, "$1");
+        return Number(nums).toFixed(extent);
+    } else {
+        return "--";
+    }
+}
+////浮点数转换成小数
+function coinPrice(nums, extent = "BTC") {
+    extent = lStore.get("coinPrecision")[extent];
+    if (nums || nums === 0) {
+        let re = `/([0-9]+\.?[0-9]{${extent}})[0-9]*/`,
+            regexp = /(?:\.0*|(\.\d+?)0+)$/;
+        nums = scientificToNumber(nums).toString();
+        nums =
+            nums == 0
+                ? nums
+                : nums.replace(eval(re), "$1").replace(regexp, "$1");
         return toThousands(Number(nums).toFixed(extent));
     } else {
         return "--";
     }
 }
-
+function nFormatter(num, digits) {
+    const si = [
+        { value: 1, symbol: "" },
+        { value: 1e3, symbol: "K" },
+        { value: 1e6, symbol: "M" },
+        { value: 1e9, symbol: "G" },
+        { value: 1e12, symbol: "T" },
+        { value: 1e15, symbol: "P" },
+        { value: 1e18, symbol: "E" }
+    ];
+    const rx = /\.0+$|(\.[0-9]*[1-9])0+$/,
+        re = `/([0-9]+\.[0-9]{${digits}})[0-9]*/`;
+    let i;
+    for (i = si.length - 1; i > 0; i--) {
+        if (num >= si[i].value) {
+            break;
+        }
+    }
+    return (
+        (num / si[i].value)
+            .toString()
+            .replace(eval(re), "$1")
+            .replace(rx, "$1") + si[i].symbol
+    );
+}
 //数组去重
 function distinct(a, b = []) {
     let arr = a.concat(b);
@@ -475,7 +524,9 @@ export {
     weekDay,
     dateFormat,
     toFixeds,
+    toRate,
     toThousands,
     priceFormat,
+    coinPrice,
     distinct
 };

@@ -22,6 +22,7 @@
           type="text"
           :placeholder="$t('loginReg').codePlaceholder"
           v-model="loginData.mobileCode"
+          @keyup.enter="login"
         />
         <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
           {{ sendBtnText }}
@@ -71,35 +72,18 @@ export default {
         }
       });
     },
-    //获取验证码
-    getCode() {
-      this.$http({
-        url: "/auth/send_sms_all",
-        data: { codeType: 1, loginName: this.loginData.loginName },
-        method: "post"
-      }).then(res => {
-        console.log(res);
-      });
-    },
     //发送验证
     sendMsg() {
-      this.isSend = true;
-      let _this = this,
-        num = 10;
-      this.getCode();
-      _this.timer = setInterval(() => {
-        num--;
-        if (num <= 0) {
-          clearInterval(_this.timer);
-          this.isSend = false;
-          this.sendBtnText = "获取验证码";
-        } else {
-          this.sendBtnText = num + "S后重新获取";
-        }
-      }, 1000);
-      this.sendBtnText = num + "S后重新获取";
+      let _this = this;
+      this.sendMsgComm({
+        loginName: this.loginData.loginName,
+        codeType: 1,
+        areaCode: "86",
+        fn: _this.$timeSet.bind("regPhone", _this)
+      });
     },
-    ...mapActions(["updatedUserInfo", "getBanlace"])
+
+    ...mapActions(["updatedUserInfo", "getBanlace", "sendMsgComm"])
   }
 };
 </script>

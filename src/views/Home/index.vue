@@ -51,7 +51,6 @@ export default {
     },
     _initPage() {
       this.getBanner();
-      this.getInfo();
       this.sendMsg();
       this.$EventListener.on("TVdetail", this.Detail);
     },
@@ -88,16 +87,7 @@ export default {
         }
       });
     },
-    getInfo() {
-      this.$http({
-        url: "/tradeInfo/allTradeInfo",
-        method: "get"
-      }).then(res => {
-        if (res.status == this.STATUS) {
-        }
-      });
-    },
-
+    
     getInviteList() {
       this.$http({
         url: "/user_recommend_detail/childlist",

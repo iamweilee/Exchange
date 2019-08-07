@@ -32,7 +32,7 @@
         :disabled="isClick"
         class="from_btn"
         v-debounce="{
-          fn: editPhone.bind(arguments,phoneData)
+          fn: editPhone.bind(arguments, phoneData)
         }"
       >
         完成

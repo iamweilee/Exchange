@@ -10,7 +10,7 @@
       <van-cell
         is-link
         :title="$t('meSeting').lang"
-        :value="defaultData[0].text"
+        :value="lang[0].text"
         @click="showPicker"
       ></van-cell>
       <van-cell is-link :title="$t('meSeting').codePc" value="7wcs3"></van-cell>
@@ -27,7 +27,7 @@
     <vue-pickers
       :show="show"
       :columns="columns"
-      :defaultData="defaultData"
+      :defaultData="lang"
       :selectData="pickData"
       @cancel="close"
       @confirm="confirmFn"
@@ -38,12 +38,11 @@
 <script>
 import NavBar from "components/NavBar";
 import vuePickers from "components/customPick";
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   data() {
     return {
       show: false,
-      defaultData: [{ text: "中文简体", value: "zh" }],
       pickData: {
         data1: [
           { text: "简体中文", value: "zh" },
@@ -53,10 +52,14 @@ export default {
       columns: 1
     };
   },
+  computed: {
+    ...mapState(["lang"])
+  },
   components: {
     NavBar,
     vuePickers
   },
+
   methods: {
     loginOut() {
       this.$http({ url: "/v1/user/login_out", method: "post" }).then(res => {
@@ -78,8 +81,8 @@ export default {
     //pick 点击确认按钮
     confirmFn(val) {
       console.log(val);
-      this.defaultData = [val.select1];
-      this.updatedLang(val.select1.value);
+      let defaultData = [val.select1];
+      this.updatedLang(defaultData);
       this.show = false;
     },
     clickLeft() {

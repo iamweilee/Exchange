@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { numberFormat } from "./TollClass/func";
-import { toFixeds, dateFormat, priceFormat } from "./utli";
+import { toFixeds, toRate, dateFormat, priceFormat, coinPrice } from "./utli";
 import avatar from "Images/avatar.jpg";
 function avatarFun(Img) {
     if (Img) {
@@ -40,9 +40,12 @@ function statusType(status, detail) {
         }
     }
 }
+
 Vue.filter("numberFormat", numberFormat); //数字格式化
 Vue.filter("toFixeds", toFixeds); //保留小数
+Vue.filter("toRate", toRate); //保留小数
 Vue.filter("dateFormat", dateFormat);
 Vue.filter("priceFormat", priceFormat);
+Vue.filter("coinPrice", coinPrice);
 Vue.filter("avatarFun", avatarFun);
 Vue.filter("statusType", statusType);
