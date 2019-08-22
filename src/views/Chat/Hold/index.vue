@@ -64,6 +64,10 @@ export default {
     showDialog: {
       type: Function,
       required: true
+    },
+    tradeType: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -75,14 +79,12 @@ export default {
   mounted() {
     this._initPage();
   },
-  beforeDestroy() {
-    this.$EventListener.off("TVdetail", this.Detail);
+  destroyed() {
     this.$EventListener.fire("SendMsg", {});
   },
   methods: {
     _initPage() {
       this.getHoldList();
-      this.$EventListener.on("TVdetail", this.Detail);
     },
     sendMsg(coinArr) {
       let datas = {};
@@ -115,9 +117,10 @@ export default {
     },
     //获取持仓单
     getHoldList() {
+      let url = this.tradeType ? "/v1/leverage/holdList" : "/v1/mock/hold_list";
       this.$http({
-        url: "/v1/leverage/holdList",
-        data: { position: 0, tradeType: 0 },
+        url: url,
+        data: { tradeType: 0 },
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {
@@ -138,7 +141,6 @@ export default {
     },
     closeOut(item) {
       item.title = "平仓";
-      console.log(item);
       this.showDialog(item);
     },
     isBuy(type) {

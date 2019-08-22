@@ -44,49 +44,26 @@
         </div>
         <div class="cont">
           <transition :name="transitionName">
-            <router-view ref="child" :showDialog="showDialog" />
+            <router-view ref="child" :tradeType="tradeType" :showDialog="showDialog" />
           </transition>
         </div>
       </div>
     </div>
-    <van-dialog
-      v-model="show"
-      :title="`确认${dialogData.title}`"
-      show-cancel-button
-      :beforeClose="beforeClose"
-      class="customDialog"
-    >
-      <p class="order">{{ $t("chat").orderNo }}{{ dialogData.orderNo }}</p>
-      <ul class="hold_dialog" v-if="dialogData.title == '平仓'">
-        <li>
-          <p>{{ $t("chat").floatProfit }}</p>
-          <p>+1.92</p>
-        </li>
-        <li>
-          <p>{{ $t("chat").dealPrice }}</p>
-          <p>{{ dialogData.dealPrice }}</p>
-        </li>
-        <li>
-          <p>{{ $t("chat").currentPrice }}</p>
-          <p>{{ dialogData.tradePrice }}</p>
-        </li>
-      </ul>
-      <ul class="hold_dialog" v-else>
-        <li>
-          <p>{{ dialogData.targetCoin }}</p>
-          <p>{{ dialogData.tradeAmount }}</p>
-        </li>
-        <li>
-          <p>{{ $t("chat").tradePrice }}</p>
-          <p>{{ dialogData.tradePrice }}</p>
-        </li>
-      </ul>
-    </van-dialog>
+    <!-- 平仓和撤单弹窗 -->
+    <!-- :currentPrice="currentPrice" -->
+    <CloseOut
+      ref="CloseOut"
+      :dialogDataNull="dialogDataNull"
+      :dialogData="dialogData"
+      :currentPrice="currentPrice"
+      :tradeType="tradeType"
+    />
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
+import CloseOut from "components/CloseOut";
 import { mapState, mapActions } from "vuex";
 export default {
   data() {
@@ -94,60 +71,47 @@ export default {
       active: 0,
       styls: { left: 0 },
       transitionName: "slide-left",
-      show: false,
-      dialogData: {}
+      dialogData: {},
+      currentPrice: 0
     };
   },
   computed: {
-    ...mapState(["balance"])
+    ...mapState(["balance", "tradeType"])
   },
   mounted() {
     this._initPage();
   },
-  components: { NavBar },
+  destroyed() {
+    this.$EventListener.off("TVdetail", this.Detail);
+  },
+  components: { NavBar, CloseOut },
   methods: {
     showDialog(data) {
+      data.cb = this.$refs.child.refresh;
       this.dialogData = data;
-      this.show = true;
-      console.log(data);
+      this.$refs.CloseOut.show = true;
+    },
+    dialogDataNull() {
+      this.dialogData = {};
     },
     _initPage() {
+      this.$EventListener.on("TVdetail", this.Detail);
       if (this.$route.name == "ChatList") {
         this.tabClick(1);
       }
       this.getBanlace();
     },
+    Detail(data) {
+      if (this.dialogData.tradeCode == data.symbol) {
+        // console.log(data.symbol);
+        this.currentPrice = data.close;
+      }
+      this.$refs.child.Detail(data);
+    },
     tabClick(index) {
       this.styls = {
         left: index * 33 + "%"
       };
-    },
-    beforeClose(action, done) {
-      if (action == "cancel") {
-        done();
-      } else {
-        let url =
-          this.dialogData.title == "平仓"
-            ? "/v1/leverage/eveningUp"
-            : "/v1/leverage/cancel";
-        this.$http({
-          url: url,
-          data: { orderNo: this.dialogData.orderNo },
-          method: "get"
-        })
-          .then(res => {
-            if (res.status == this.STATUS) {
-              this.$refs.child.refresh(done);
-              this.getBanlace();
-            }
-          })
-          .catch(err => {
-            this.$toast(err.data.message);
-            done(false);
-          });
-      }
-
-      return false;
     },
     ...mapActions(["getBanlace"])
   },

@@ -2,8 +2,8 @@
   <div class="intord">
     <ul class="intord_list">
       <li class="title">
-        <p class="big">{{ intordData.coinName }}</p>
-        <p class="small">{{ intordData.coinCode }}</p>
+        <p class="big">{{ intordData.coinFullName }}</p>
+        <!-- <p class="small">{{ intordData.coinCode }}</p> -->
       </li>
       <li>
         <p class="label">发行时间</p>

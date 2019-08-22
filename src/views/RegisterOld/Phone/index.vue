@@ -1,10 +1,15 @@
 <template>
   <div class="phone">
     <div class="inp_group border-1px">
+      <p class="inp_group_left" @click="show = !show">
+        <span>{{ defaultData[0].value }}</span>
+        <img src="~Images/regLogin/icon_tel.png" alt />
+      </p>
       <input
         type="text"
-        :placeholder="$t('loginReg').emailPlaceholder"
-        v-model="fromData.email"
+        class="pl"
+        :placeholder="$t('loginReg').phonePlaceholder"
+        v-model="fromData.phone"
       />
     </div>
     <div class="inp_group border-1px">
@@ -17,19 +22,21 @@
         {{ sendBtnText }}
       </button>
     </div>
-    <div class="inp_group border-1px">
-      <input
-        type="password"
-        placeholder="输入账户密码"
-        v-model="fromData.pwd"
-      />
-    </div>
+    <vue-pickers
+      :show="show"
+      :columns="columns"
+      :defaultData="defaultData"
+      :selectData="pickData"
+      @cancel="close"
+      @confirm="confirmFn"
+    ></vue-pickers>
   </div>
 </template>
 
 <script>
+import country from "common/country.json";
+import vuePickers from "components/customPick";
 import { mapActions } from "vuex";
-import { isEmail } from "common/TollClass/func";
 export default {
   data() {
     return {
@@ -37,26 +44,43 @@ export default {
       sendBtnText: "获取验证码",
       timer: null,
       fromData: {
-        email: "",
-        code: "123456",
-        pwd: ""
-      }
+        phone: "",
+        code: "123456"
+      },
+      defaultData: [{ text: "86(中国)", value: "86" }],
+      pickData: {},
+      columns: 1,
+      show: false
     };
   },
-  components: {},
+  mounted() {
+    let arr = country.map(item => {
+      return { text: item.code + "(" + item.country + ")", value: item.code };
+    });
+    let obj = {
+      data1: arr
+    };
+    this.pickData = obj;
+    console.log(obj);
+  },
+  components: { vuePickers },
   methods: {
+    close() {
+      this.show = false;
+    },
+    //pick 点击确认按钮
+    confirmFn(val) {
+      this.defaultData = [val.select1];
+      this.show = false;
+    },
     //发送验证
     sendMsg() {
-      let _this = this,
-        errEmail = isEmail(_this.fromData.email);
-      if (errEmail) {
-        this.$toast(errEmail);
-        return;
-      }
+      let _this = this;
       this.sendMsgComm({
-        loginName: _this.fromData.email,
+        loginName: this.fromData.phone,
         codeType: 2,
-        fn: _this.$timeSet.bind("regEmail", _this)
+        areaCode: this.defaultData.value,
+        fn: _this.$timeSet.bind("regPhone", _this)
       });
     },
     ...mapActions(["sendMsgComm"])
@@ -68,7 +92,6 @@ export default {
 @import '~assets/stylus/variable.styl';
 .phone {
   width: 100%;
-  padding: 0 28px;
   .inp_group {
     border-1px($color12, 100%);
     height: 72px;

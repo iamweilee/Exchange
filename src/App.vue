@@ -35,6 +35,7 @@ export default {
       if (!this.$lStore.get("desc")) {
         this.getCoinDesc();
       }
+      //   this.getSymbolOffset();
     },
     //初始化Socket
     initSocket() {
@@ -88,30 +89,39 @@ export default {
         }
       });
     },
-    getInfo() {
+
+    getSymbolOffset(List) {
       this.$http({
-        url: "/tradeInfo/allTradeInfo",
+        url: "/v1/leverage/symbolOffset",
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {
-          // n
-          //   console.log(res.data[0]);
-          let List = res.data[0].USDT,
+          let Obj = res.data,
             coinPrecision = {};
-
           List.map(item => {
             let coinCode = item.tradeCode.replace("/USDT", "");
-
             item.tickSize = item.tickSize.toString().split(".")[1].length;
             item.stepSize = item.stepSize.toString().split(".")[1].length;
             item.minPrice = item.minPrice.toString().split(".")[1].length;
             item.minQty = item.minQty.toString().split(".")[1].length;
             item.stockNum = item.stockNum.split(",");
             item.depositLevel = item.depositLevel.split(",");
-
+            item.offset = Obj[coinCode];
             coinPrecision[coinCode] = item;
           });
           this.$lStore.set("coinPrecision", coinPrecision);
+        }
+      });
+    },
+    //获取币种详情
+    getInfo() {
+      this.$http({
+        url: "/tradeInfo/allTradeInfo",
+        method: "get"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          let List = res.data[0].USDT;
+          this.getSymbolOffset(List);
         }
       });
     },

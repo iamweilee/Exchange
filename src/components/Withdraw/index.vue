@@ -20,8 +20,10 @@
               class="withdraw_from_inp_middle"
               type="text"
               placeholder="最小可售20 USDT"
+              v-model="inpVal"
+              v-debounce="{ fn: verify, method: 'input' }"
             />
-            <p class="withdraw_from_inp_right">全部提出</p>
+            <p class="withdraw_from_inp_right" @click="allPrice">全部提出</p>
           </div>
           <div class="withdraw_from_deal" @click="isCheckBox = !isCheckBox">
             <p class="checkbox">
@@ -37,11 +39,11 @@
               ，实现30分钟内提币到账！
             </p>
           </div>
-          <div class="withdraw_from_single bank">
+          <div class="withdraw_from_single bank" v-if="bankList.length">
             <p class="label">收款账户：</p>
             <div class="bankList">
               <van-collapse v-model="bankKey" accordion>
-                <van-collapse-item name="bankList" v-if="bankList.length">
+                <van-collapse-item name="bankList">
                   <template slot="title">
                     <p>{{ currentBank.bankName }}</p>
                     <p>{{ currentBank.bankAccount }}</p>
@@ -70,6 +72,11 @@
                 </van-collapse-item>
               </van-collapse>
             </div>
+          </div>
+          <div class="withdraw_add" v-else>
+            <button @click="toAddBank">
+              <van-icon class="plus_icon" name="plus" /> 添加银行卡
+            </button>
           </div>
         </div>
         <div class="withdraw_tips">
@@ -106,11 +113,12 @@ export default {
       checkRdio: 1,
       isCheckBox: true,
       show: false,
-      inpVal: 1000,
+      inpVal: null,
       numList: [2000, 1000, 500, 100, 50, "other"],
       otcId: 1,
       bankList: [],
-      isDisabled: false
+      isDisabled: false,
+      otcDetail: {}
     };
   },
   computed: {
@@ -127,12 +135,13 @@ export default {
     _initPage() {
       this.getBankList();
     },
-
+    toAddBank() {
+      this.$router.push("/me/bank/add");
+    },
     //显示充值弹窗
     showSelf(item) {
       this.show = true;
-      this.otcId = item.id;
-      this.buyRate = item.buyRate;
+      this.otcDetail = item;
     },
     //选择数量按钮
     checkNum(num) {
@@ -146,23 +155,26 @@ export default {
     inpFocus() {
       this.$refs.inpVal.focus();
     },
-    verify(type) {
+    verify() {
       this.inpVal = this.inpVal.replace(/[^\d]/g, "");
-      if (
-        this.inpVal < this.otcDetail.sellMinAmount ||
-        this.inpVal > this.otcDetail.sellMaxAmount
-      ) {
-        this.isDisabled = true;
-      }
+      this.isClick(this.inpVal);
     },
     //是否可以点击充值按钮
-    isClick() {
+    isClick(inpVal) {
       if (
-        this.inpVal < this.otcDetail.sellMinAmount ||
-        this.inpVal > this.otcDetail.sellMaxAmount
+        inpVal < this.otcDetail.sellMinAmount ||
+        inpVal > this.otcDetail.sellMaxAmount
       ) {
         this.isDisabled = true;
+        this.$toast("提现数量不符");
+      } else {
+        this.isDisabled = false;
       }
+    },
+    //全部提现
+    allPrice() {
+      this.inpVal = this.usableBalance;
+      this.isClick(this.inpVal);
     },
     //选择银行卡列表
     checkBankHandle(item) {

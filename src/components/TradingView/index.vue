@@ -5,6 +5,7 @@
 <script>
 // import Datafeed from "./api/index";
 import Datafeed from "./pro/index";
+import { dateFormatUTC } from "common/utli";
 function getLanguageFromURL() {
   const regex = new RegExp("[\\?&]lang=([^&#]*)");
   const results = regex.exec(window.location.search);
@@ -102,6 +103,18 @@ export default {
           type: "black",
           tools: [{ name: "Regression Trend" }]
         },
+        customFormatters: {
+          timeFormatter: {
+            format: function(date) {
+              return dateFormatUTC(date, "hh:mm:ss");
+            }
+          },
+          dateFormatter: {
+            format: function(date) {
+              return dateFormatUTC(date, "yyyy-MM-dd");
+            }
+          }
+        },
         disabled_features: [
           "use_localstorage_for_settings",
           "show_trading_notifications_history",
@@ -193,7 +206,7 @@ export default {
         loading_screen: {
           backgroundColor: "#1b212d",
           foregroundColor: "#1b212d"
-        },
+        }
         // custom_css_url: "bundles/coustom.css",
         // indicators_file_name: "customIndex.js"
       };

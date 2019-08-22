@@ -1,4 +1,5 @@
 import Vue from "vue";
+const _comm = new Vue();
 import { numberFormat } from "./TollClass/func";
 import { toFixeds, toRate, dateFormat, priceFormat, coinPrice } from "./utli";
 import avatar from "Images/avatar.jpg";
@@ -41,6 +42,14 @@ function statusType(status, detail) {
     }
 }
 
+function isMock(tradeType) {
+    if (tradeType) {
+        return "cutReal";
+    } else {
+        return "cutFake";
+    }
+}
+
 Vue.filter("numberFormat", numberFormat); //数字格式化
 Vue.filter("toFixeds", toFixeds); //保留小数
 Vue.filter("toRate", toRate); //保留小数
@@ -49,3 +58,4 @@ Vue.filter("priceFormat", priceFormat);
 Vue.filter("coinPrice", coinPrice);
 Vue.filter("avatarFun", avatarFun);
 Vue.filter("statusType", statusType);
+Vue.filter("isMock", isMock);

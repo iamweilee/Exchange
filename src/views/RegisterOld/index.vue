@@ -23,24 +23,20 @@
           <router-view ref="from" />
         </transition>
       </div>
-      <div class="from_p">
-        <button class="from_btn" :disabled="isClick" @click="subMit">
-          {{ $t("loginReg").reg }}
-        </button>
-        <div class="agreement">
-          <span>{{ $t("loginReg").regDeal }}</span>
-          <router-link to="/intord/protocol" class="color-blue">{{
-            $t("loginReg").Deal
-          }}</router-link>
-        </div>
+      <button class="from_btn" :disabled="isClick" @click="subMit">
+        {{ $t("loginReg").nextStep }}
+      </button>
+      <div class="agreement">
+        <span>{{ $t("loginReg").regDeal }}</span>
+        <router-link to="/intord/protocol" class="color-blue">{{
+          $t("loginReg").Deal
+        }}</router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { isEmail, isPwd, isPhone, isCode } from "common/TollClass/func";
 export default {
   data() {
     return {
@@ -50,7 +46,7 @@ export default {
     };
   },
   mounted() {
-    // console.log(this.$md5("123456"));
+    console.log(this.$md5("123456"));
     // this.register();
   },
   components: {},
@@ -62,66 +58,28 @@ export default {
     },
     subMit() {
       let regData = this.$refs.from.fromData,
-        Name = this.$route.name,
-        req = {
-          loginPwd: regData.pwd
-        },
-        errPwd = isPwd(regData.pwd),
-        errCode = isCode(regData.code);
-      if (Name == "Phone") {
-        let errPhone = isPhone(regData.phone);
-        req = {
-          mobileCode: regData.code,
-          loginName: regData.phone,
-          type: 0
-        };
-        if (errPhone) {
-          this.$toast(errPhone);
-          return;
-        }
-      } else if (Name == "Email") {
-        let errEmail = isEmail(regData.email);
+        req = {};
+
+      if (regData.email) {
         req = {
           emailCode: regData.code,
           loginName: regData.email,
+          loginPwd: regData.pwd,
           type: 1
         };
-        if (errEmail) {
-          this.$toast(errEmail);
-          return;
-        }
+      } else if (regData.phone) {
+        debugger;
+        req = {
+          mobileCode: regData.code,
+          loginName: regData.phone,
+          loginPwd: regData.pwd,
+          type: 0
+        };
       }
-      if (errCode) {
-        this.$toast(errCode);
-        return;
-      } else if (errPwd) {
-        this.$toast(errPwd);
-        return;
-      } else {
-        req.loginPwd = this.$md5(regData.pwd);
-        // req.userCode = "7m95t";
-        // console.log(req);
-        this.register(req);
-      }
-    },
-    register(req) {
-      this.$http({
-        url: "/auth/register",
-        method: "post",
-        data: req,
-        pro: true
-      }).then(res => {
-        let data = res.data;
-        if (res.status == this.STATUS) {
-          this.$toast("恭喜你注册成功");
-          this.$lStore.set("token", res.data.token);
-          this.updatedUserInfo(res.data);
-          this.getBanlace();
-          this.$router.push("/");
-        }
-      });
-    },
-    ...mapActions(["updatedUserInfo", "getBanlace"])
+      this.$lStore.set("req", req);
+      //   this.register(req);
+      this.$router.push(`/register/pwd`);
+    }
   },
   watch: {
     $route(to, from) {
@@ -177,13 +135,10 @@ export default {
     }
   }
   .from {
-    padding: 14px 0;
+    padding: 14px 28px;
     &_wrap {
-      height: 220px;
+      height: 150px;
       width: 100%;
-    }
-    &_p {
-      padding: 0 28px;
     }
     &_btn {
       margin-top: 50px;

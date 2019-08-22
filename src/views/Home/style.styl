@@ -67,6 +67,22 @@
                     color: $color6;
                 }
             }
+            .van-popup {
+                background-color: transparent;
+            }
+            .mock_select {
+                padding: 10px 0;
+                width: 100%;
+                min-height: 170px;
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                button {
+                    margin-top: 20px;
+                    background-color: $write;
+                    color: $blue;
+                }
+            }
         }
         // Swipe
         .swipe {
@@ -146,6 +162,16 @@
                 justify-content: space-between;
                 flex-direction: column;
                 align-items: center;
+                &.red {
+                    .dollar, .rate {
+                        color: $red1;
+                    }
+                }
+                &.green {
+                    .dollar, .rate {
+                        color: $green;
+                    }
+                }
                 .trade {
                     font-size: 14px;
                     color: @color3;

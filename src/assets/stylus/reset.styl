@@ -99,28 +99,28 @@ input {
     zoom: 1;
 }
 .color-white {
-    color: $write;
+    color: $write !important;
 }
 .color-red {
-    color: $red;
+    color: $red !important;
 }
 .color-red1 {
-    color: $red1;
+    color: $red1 !important;
 }
 .color-green {
-    color: $green;
+    color: $green !important;
 }
 .color-blue {
-    color: $blue;
+    color: $blue !important;
 }
 .color3 {
-    color: $color3;
+    color: $color3 !important;
 }
 .color6 {
-    color: $color6;
+    color: $color6 !important;
 }
 .color9 {
-    color: $color9;
+    color: $color9 !important;
 }
 // 隐藏谷歌验证码
 .grecaptcha-badge {
@@ -239,4 +239,22 @@ input {
     padding-top: 10px;
     margin-bottom: 10px;
     border-bottom: 1px dashed $colorEd;
+}
+.notData {
+    text-align: center;
+    padding: 50px 0;
+    font-size: 16px;
+    color: $color6;
+}
+.big_btn {
+    width: 84%;
+    height: 44px;
+    background-size: 100% 100%;
+    border: none;
+    font-size: 16px;
+    line-height: 44px;
+    border-radius: 4px;
+    &:disabled {
+        opacity: 0.8;
+    }
 }

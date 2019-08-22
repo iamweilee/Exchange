@@ -29,6 +29,7 @@ export default {
   data() {
     return {
       bannerList: [],
+      coinPrecision: this.$lStore.get("coinPrecision"),
       coinList: [
         { symbol: "BTC/USDT" },
         { symbol: "ETH/USDT" },
@@ -67,6 +68,8 @@ export default {
       let List = this.coinList;
       for (let i = 0; i < List.length; i++) {
         if (List[i].symbol == data.symbol) {
+          let coinCode = List[i].symbol.replace("/USDT", "");
+          data.tickSize = this.coinPrecision[coinCode].tickSize;
           List[i] = data;
           break;
         }
@@ -87,7 +90,7 @@ export default {
         }
       });
     },
-    
+
     getInviteList() {
       this.$http({
         url: "/user_recommend_detail/childlist",

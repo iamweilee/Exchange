@@ -84,6 +84,7 @@
         取消订单
       </button>
       <button
+        v-if="detail.type == '0'"
         v-debounce="{
           fn: accountPaid
         }"
@@ -138,14 +139,19 @@ export default {
       }).then(res => {
         if (res.status == this.STATUS) {
           this.detail = res.data;
-          this.timeEnd(res.data.createTime);
+          this.timeEnd(res.data.updateTime);
         }
       });
     },
     //取消订单
     cancelOrder() {
+      let url =
+        this.detail.type == "0"
+          ? "recharge-record-cancel"
+          : "draw-record-cancel";
+
       this.$http({
-        url: `/v1/position/otc/recharge-record-cancel/${this.$route.params.id}`,
+        url: `/v1/position/otc/${url}/${this.$route.params.id}`,
         method: "put"
       }).then(res => {
         if (res.status == this.STATUS) {

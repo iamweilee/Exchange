@@ -76,7 +76,8 @@ function updateBar(data, sub) {
         // update lastBar candle!
         if (data.low < lastBar.low) {
             lastBar.low = data.low;
-        } else if (data.high > lastBar.high) {
+        }
+        if (data.high > lastBar.high) {
             lastBar.high = data.high;
         }
         lastBar.volume = data.amount;

@@ -6,13 +6,12 @@
       v-for="item in coinList"
       :to="`/position/${item.symbol.split('/')[0]}`"
       :key="item.symbol"
+      :class="isColor(item.percent)"
     >
       <li class="trade">{{ item.symbol }}</li>
-      <li class="dollar" :class="isColor(item)">{{ item.close }}</li>
-      <li class="rate" :class="isColor(item)">
-        {{ item == 2 ? "-" : "+" }}52%
-      </li>
-      <li class="cny">￥52100</li>
+      <li class="dollar">{{ item.close | priceFormat(item.tickSize) }}</li>
+      <li class="rate">{{ item.percent | toRate }}%</li>
+      <li class="cny">￥{{ item.cny | priceFormat }}</li>
     </router-link>
   </div>
 </template>
@@ -26,21 +25,15 @@ export default {
     }
   },
   data() {
-    return {
-      List: [
-        { symbol: "BTC/USDT" },
-        { symbol: "ETH/USDT" },
-        { symbol: "EOS/USDT" }
-      ]
-    };
+    return {};
   },
 
   methods: {
     isColor(pric) {
-      if (pric == 2) {
-        return "color-red";
+      if (pric > 0) {
+        return "green";
       } else {
-        return "color-green";
+        return "red";
       }
     }
   }

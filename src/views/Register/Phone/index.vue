@@ -22,6 +22,13 @@
         {{ sendBtnText }}
       </button>
     </div>
+    <div class="inp_group border-1px">
+      <input
+        type="password"
+        placeholder="输入账户密码"
+        v-model="fromData.pwd"
+      />
+    </div>
     <vue-pickers
       :show="show"
       :columns="columns"
@@ -37,6 +44,7 @@
 import country from "common/country.json";
 import vuePickers from "components/customPick";
 import { mapActions } from "vuex";
+import { isPhone } from "common/TollClass/func";
 export default {
   data() {
     return {
@@ -45,7 +53,8 @@ export default {
       timer: null,
       fromData: {
         phone: "",
-        code: "123456"
+        code: "123456",
+        pwd: ""
       },
       defaultData: [{ text: "86(中国)", value: "86" }],
       pickData: {},
@@ -75,11 +84,16 @@ export default {
     },
     //发送验证
     sendMsg() {
-      let _this = this;
+      let _this = this,
+        errPhone = isPhone(_this.fromData.phone);
+      if (errPhone) {
+        this.$toast(errPhone);
+        return
+      }
       this.sendMsgComm({
         loginName: this.fromData.phone,
         codeType: 2,
-        areaCode: this.defaultData.value,
+        areaCode: this.defaultData[0].value,
         fn: _this.$timeSet.bind("regPhone", _this)
       });
     },
@@ -92,6 +106,7 @@ export default {
 @import '~assets/stylus/variable.styl';
 .phone {
   width: 100%;
+  padding: 0 28px;
   .inp_group {
     border-1px($color12, 100%);
     height: 72px;

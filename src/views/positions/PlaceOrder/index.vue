@@ -204,8 +204,8 @@ export default {
       type: [String, Number],
       required: true
     },
-    coinPrecision: {
-      type: [String, Number],
+    coinData: {
+      type: Object,
       required: true
     },
     cloeModle: {
@@ -240,11 +240,12 @@ export default {
       allCustom: false, //是否自己填入下单价格
       isProfit: false, //是否自己填入止盈价格
       isLoss: false, //是否自己填入止损价格
-      orderData: {}
+      orderData: {},
+      coinPrecision: 2
     };
   },
   computed: {
-    ...mapState(["userInfo"]),
+    ...mapState(["userInfo", "tradeType"]),
     ...mapGetters(["usableBalance"])
   },
   mounted() {
@@ -254,7 +255,8 @@ export default {
   methods: {
     _initPage() {
       let setingData = this.$lStore.get("setingData"),
-        tradePrice = toFixeds(this.closePic * 1.0006, this.coinPrecision);
+        tradePrice = this.orderPic(this.closePic);
+      this.coinPrecision = this.coinData.tickSize;
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;
@@ -291,10 +293,14 @@ export default {
 
       //止盈
       req.stopProfit = toFixeds(
-        tradePrice - (0.8 * req.deposit) / this.valRate
+        tradePrice - (0.8 * req.deposit) / this.valRate,
+        this.coinPrecision
       );
       //止损
-      req.stopLoss = toFixeds(tradePrice + (0.8 * req.deposit) / this.valRate);
+      req.stopLoss = toFixeds(
+        tradePrice + (0.8 * req.deposit) / this.valRate,
+        this.coinPrecision
+      );
 
       this.orderData = req;
       return req;
@@ -309,12 +315,20 @@ export default {
     },
     //下单函数
     placeOrder(tradePrice) {
-      let req = this.initData(tradePrice);
-      console.log(JSON.stringify(req));
-      let url =
-        this.value.value == 1
-          ? "/v1/leverage/limited/submit"
-          : "/v1/leverage/market/submit";
+      let req = this.initData(tradePrice),
+        url = "";
+      if (this.tradeType) {
+        url =
+          this.value.value == 1
+            ? "/v1/leverage/limited/submit"
+            : "/v1/leverage/market/submit";
+      } else {
+        url =
+          this.value.value == 1
+            ? "/v1/mock/limit_trade"
+            : "/v1/mock/market_trade";
+      }
+
       this.$http({
         url: url,
         data: req,
@@ -356,15 +370,28 @@ export default {
     // 下单价格限制
     orderPic(position) {
       if (position) {
-        return toFixeds(this.closePic * 1.0006);
+        return toFixeds(
+          this.closePic + this.coinData.offset,
+          this.coinPrecision
+        );
       } else {
-        return toFixeds(this.closePic * 0.9994);
+        return toFixeds(
+          this.closePic - this.coinData.offset,
+          this.coinPrecision
+        );
       }
     },
     handClick(item, type) {
       this[type] = item;
     },
     setLossProfit(tradePrice) {
+      if (this.value.value == 1) {
+        if (this.position == 1) {
+          tradePrice = tradePrice + this.coinData.offset;
+        } else {
+          tradePrice = tradePrice - this.coinData.offset;
+        }
+      }
       this.inpPrice = tradePrice;
       //   console.log(this.isLoss, this.isProfit);
       if (!this.isLoss) {
@@ -380,6 +407,7 @@ export default {
         );
       }
     },
+
     //预计盈亏
     exLossProfit(tradePrice, price) {
       //保证金
@@ -397,8 +425,8 @@ export default {
     closePic(val) {
       this.initData(val);
       if (!this.allCustom) {
-        let tradePrice = toFixeds(val * 1.0006, this.coinPrecision);
-        this.setLossProfit(tradePrice);
+        // let tradePrice = toFixeds(val * 1.0006, this.coinPrecision);
+        this.setLossProfit(val);
       }
     }
   }

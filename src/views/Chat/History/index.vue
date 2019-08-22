@@ -6,7 +6,11 @@
       showL
       @clickLeft="clickLeft"
     />
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+    <van-pull-refresh
+      v-model="isLoading"
+      @refresh="onRefresh"
+      v-if="historyList.length"
+    >
       <router-link
         class="history_single"
         v-for="item in historyList"
@@ -50,6 +54,9 @@
       </router-link>
     </van-pull-refresh>
     <!-- <div class="not_data">没有更多数据</div> -->
+    <div v-else class="notData">
+      {{ $t("notData") }}
+    </div>
   </div>
 </template>
 
@@ -57,7 +64,7 @@
 import NavBar from "components/NavBar";
 import iconBuy from "Images/chat/icon_buy.png";
 import iconSale from "Images/chat/icon_sale.png";
-import { setTimeout } from "timers";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -68,6 +75,9 @@ export default {
       isLoading: false
     };
   },
+  computed: {
+    ...mapState(["tradeType"])
+  },
   components: { NavBar },
   mounted() {
     this.getHistory();
@@ -77,14 +87,18 @@ export default {
       this.$router.push("/chat");
     },
     getHistory() {
-      this.$http({ url: "/v1/leverage/hisOrderList", method: "get" }).then(
-        res => {
-          console.log(res);
-          if (res.status == this.STATUS) {
-            this.historyList = res.data;
-          }
+      // /v1/leverageHis/history?pageNo=1&pageSize=10
+      let url = this.tradeType ? "/v1/leverageHis/history" : "/v1/mock/history_list";
+      this.$http({
+        url: url,
+        data: { pageNo: 1, pageSize: 10 },
+        method: "get"
+      }).then(res => {
+        console.log(res);
+        if (res.status == this.STATUS) {
+          this.historyList = res.data.list;
         }
-      );
+      });
     },
     isBuy(type) {
       if (type) {

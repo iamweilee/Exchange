@@ -41,7 +41,7 @@
             >
           </p>
         </div>
-        <div class="recharge_from">
+        <div class="recharge_from" v-if="bankList.length">
           <div class="recharge_from_single">
             <p class="label">付款人姓名：</p>
             <input
@@ -116,6 +116,11 @@
             <p class="color-blue" @click.stop="toIntrod()">《OTC交易协议》</p>
           </div>
         </div>
+        <div class="recharge_add" v-else>
+          <button @click="toAddBank">
+            <van-icon class="plus_icon" name="plus" /> 添加银行卡
+          </button>
+        </div>
         <div class="recharge_tips">
           <h2>注意事项</h2>
           <p>
@@ -179,6 +184,9 @@ export default {
       this.show = true;
       this.otcDetail = item;
     },
+    toAddBank() {
+      this.$router.push("/me/bank/add");
+    },
     //选择数量按钮
     checkNum(num) {
       if (num == "other") {
@@ -191,22 +199,20 @@ export default {
     inpFocus() {
       this.$refs.inpVal.focus();
     },
-    verify(type) {
+    verify() {
       this.inpVal = this.inpVal.replace(/[^\d]/g, "");
-      if (
-        this.inpVal < this.otcDetail.sellMinAmount ||
-        this.inpVal > this.otcDetail.sellMaxAmount
-      ) {
-        this.isDisabled = true;
-      }
+      this.isClick(this.inpVal);
     },
     //是否可以点击充值按钮
-    isClick() {
+    isClick(inpVal) {
       if (
-        this.inpVal < this.otcDetail.sellMinAmount ||
-        this.inpVal > this.otcDetail.sellMaxAmount
+        inpVal < this.otcDetail.buyMinAmount ||
+        inpVal > this.otcDetail.buyMaxAmount
       ) {
         this.isDisabled = true;
+        this.$toast("充值数量不符");
+      } else {
+        this.isDisabled = false;
       }
     },
     //选择银行卡列表
@@ -224,21 +230,25 @@ export default {
     },
     //充值接口
     recharge() {
-      this.$http({
-        url: "/v1/position/otc/recharge-record-add",
-        data: {
-          coinAmount: this.inpVal,
-          otcId: this.otcDetail.id,
-          userCardId: this.currentBank.id,
-          userName: "廉亚龙"
-        },
-        method: "post"
-      }).then(res => {
-        if (res.status == this.STATUS) {
-          this.$router.push(`/me/fund/detail/${res.data.id}`);
-          //   this.show = false;
-        }
-      });
+      if (this.currentBank.id) {
+        this.$http({
+          url: "/v1/position/otc/recharge-record-add",
+          data: {
+            coinAmount: this.inpVal,
+            otcId: this.otcDetail.id,
+            userCardId: this.currentBank.id,
+            userName: "廉亚龙"
+          },
+          method: "post"
+        }).then(res => {
+          if (res.status == this.STATUS) {
+            this.$router.push(`/me/fund/detail/${res.data.id}`);
+            //   this.show = false;
+          }
+        });
+      } else {
+        this.$toast("请添加银行卡！");
+      }
     },
     //获取银行卡列表
     getBankList() {

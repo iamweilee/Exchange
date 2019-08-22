@@ -1,7 +1,7 @@
 <template>
   <div class="pos">
     <NavBar
-      :title="symbol"
+      :title="`${symbol}${tradeType ? '' : `(${$t('real')})`}`"
       fixed
       showL
       @clickLeft="clickLeft"
@@ -9,7 +9,7 @@
     />
     <van-popup v-model="show" position="top">
       <div class="selectWrap">
-        <h2>{{ symbol }}</h2>
+        <h2>{{ `${symbol}${tradeType ? "" : `(${$t("real")})`}` }}</h2>
         <ul class="selectList">
           <li
             v-for="item in List"
@@ -22,7 +22,9 @@
             </p>
           </li>
         </ul>
-        <button class="selectBtn">{{ $t("cutFake") }}</button>
+        <button class="selectBtn" @click="setTradeType(!tradeType)">
+          {{ $t(isMock(tradeType)) }}
+        </button>
         <button class="closeBtn" @click="show = false">
           {{ $t("pos").clickHide }}
         </button>
@@ -38,7 +40,7 @@
             }}
           </div>
           <div class="small">
-            <p>{{ detailData.diff | priceFormat }}</p>
+            <p>{{ detailData.diff }}</p>
             <p>{{ detailData.percent | priceFormat }}%</p>
           </div>
         </div>
@@ -214,7 +216,7 @@
         :cloeModle="cloeModle"
         :closePic="detailData.close"
         :succeedOrder="succeedOrder"
-        :coinPrecision="coinPrecision[coinCode].tickSize"
+        :coinData="coinPrecision[coinCode]"
       />
     </van-popup>
     <van-dialog
@@ -246,6 +248,7 @@ import Intord from "./Intord";
 import PlaceOrder from "./PlaceOrder";
 import TradingView from "components/TradingView";
 import { klineLastBar } from "components/TradingView/pro/stream";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -270,6 +273,9 @@ export default {
       showSucceed: false,
       succeedData: {}
     };
+  },
+  computed: {
+    ...mapState(["tradeType"])
   },
   mounted() {
     this._initPage();
@@ -401,7 +407,15 @@ export default {
     //选择指标类型
     clickIndicator(type) {
       this.$refs.trading[type]();
-    }
+    },
+    isMock(tradeType) {
+      if (tradeType) {
+        return "cutReal";
+      } else {
+        return "cutFake";
+      }
+    },
+    ...mapActions(["setTradeType"])
   }
 };
 </script>

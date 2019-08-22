@@ -7,21 +7,30 @@
 
   <script>
 import echarts from "echarts";
-import option from "./option";
-
+import { createOpt, splitData } from "./option";
+import { dateFormatUTC } from "common/utli";
+import { setInterval, clearInterval } from "timers";
 export default {
-  name: "quotation",
+  props: {
+    tradeCode: {
+      type: String
+    }
+  },
   data() {
     return {
-      chart: null
+      chart: null,
+      timer: null,
+      optionData: null
     };
   },
   mounted() {
     //初始化 ECharts 实例，不能在created生命周期内初始化，因为那时候DOM还没有渲染，是找不到元素的
-    this.initChart();
+    // this.initChart();
+    this._initPage();
   },
-  beforeDestroy() {
+  destroyed() {
     //组件销毁前先销毁 ECharts 实例
+    clearInterval(this.timer);
     if (!this.chart) {
       return;
     }
@@ -29,7 +38,64 @@ export default {
     this.chart = null;
   },
   methods: {
-    initChart() {
+    _initPage() {
+      let _this = this;
+      this.timer = setInterval(() => {
+        if (_this.tradeCode) {
+          _this.getKLine();
+          clearInterval(_this.timer);
+        }
+      }, 500);
+    },
+    getKLine() {
+      this.$http({
+        url: "/v1/kline/findList",
+        method: "get",
+        data: {
+          currency: this.tradeCode,
+          base: "USDT",
+          openTime: Date.parse(new Date()) / 1000,
+          interval: "15m", //resolution
+          pageSize: 120
+        }
+      }).then(res => {
+        let lineArr = [];
+        lineArr = res.data.map(el => {
+          // 数据意义：开盘(open)，收盘(close)，最低(lowest)，最高(highest)
+          return [
+            dateFormatUTC(el.openTime, "dd hh:mm"),
+            el.open,
+            el.close,
+            el.low,
+            el.high,
+            el.openTime
+          ];
+        });
+        this.initChart(splitData(lineArr));
+        this.$EventListener.on("TVkline", this.setKlineData);
+      });
+    },
+    // amount: 91.9370512035309
+    // close: 10138.37
+    // count: 1214
+    // high: 10155.55
+    // id: 1566116100
+    // kType: "15m"
+    // low: 10130.84
+    // open: 10147.65
+    // pair: "btcusdt"
+    // symbol: "BTC/USDT"
+    // ts: 1566116911345
+    // type: "kline"
+    // vol: 932911.769471187
+    setKlineData(data) {
+      let arr = [data.open, data.close, data.low, data.high, data.ts];
+      this.getData(arr);
+      //   console.log(arr);
+    },
+    initChart(data) {
+      let option = createOpt(data);
+      this.optionData = option;
       // 基于准备好的dom，初始化echarts实例,移动端建议使用 svg模式
       this.chart = echarts.init(
         document.getElementById("echarts")
@@ -39,15 +105,37 @@ export default {
       );
       this.chart.setOption(option, true);
       let _this = this;
-    //   setInterval(() => {
-    //     let arr = option.series[0].data;
-    //     arr[arr.length - 1][0] -= 1;
-    //     // option.series[0].data.slice(-1)[0] -= 2;
-    //     console.log(arr[arr.length - 1][0]);
-    //     _this.chart.setOption(option, true);
-    //   }, 2000);
-      //图标根据窗口大小自动缩放
-      // window.addEventListener("resize", this.chart.resize);
+      console.log(option.series[0].data[0]);
+      setInterval(() => {
+        // console.log(option.series[0].data);
+        //     let arr = option.series[0].data;
+        //     arr[arr.length - 1][0] -= 1;
+        //     // option.series[0].data.slice(-1)[0] -= 2;
+        //     console.log(arr[arr.length - 1][0]);
+        //     _this.chart.setOption(option, true);
+      }, 2000);
+      //   图标根据窗口大小自动缩放
+      window.addEventListener("resize", this.chart.resize);
+    },
+    getData(data) {
+      let allArr = this.optionData.series[0].data,
+        arr = allArr[allArr.length - 1];
+      //   console.log(arr[arr.length - 1]);
+      var rounded = data[4];
+      var lastBarSec = Number(arr[4]) + 15 * 60000;
+      if (rounded > lastBarSec) {
+        arr = data;
+      } else {
+        if (data[2] < arr[2]) {
+          arr[2] = data[2];
+        }
+        if (data[3] > arr[3]) {
+          arr[3] = data[3];
+        }
+        arr[1] = data[1];
+        console.log(arr,this.optionData.series);
+      }
+      //   this.chart.setOption(this.optionData, true);
     }
   }
 };

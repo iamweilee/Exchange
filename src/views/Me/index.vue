@@ -9,11 +9,11 @@
           </p>
           <div class="left_user">
             <p>{{ userInfo.nickName }}</p>
-            <p>实盘账户</p>
+            <p>{{ tradeType ? $t("real") : $t("fake") }}账户</p>
           </div>
         </router-link>
-        <div class="right">
-          <button class="right_btn">切换至模拟盘</button>
+        <div class="right" @click="setTradeType(!tradeType)">
+          <button class="right_btn">{{ $t(isMock(tradeType)) }}</button>
         </div>
       </div>
       <div class="back_left">
@@ -45,7 +45,7 @@
 
 <script>
 import { meList } from "common/staticData";
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -53,7 +53,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userInfo"]),
+    ...mapState(["userInfo", "tradeType"]),
     ...mapGetters(["usableBalance"])
   },
   components: {},
@@ -63,7 +63,15 @@ export default {
     },
     clickLeft() {
       this.$router.push("/");
-    }
+    },
+    isMock(tradeType) {
+      if (tradeType) {
+        return "cutReal";
+      } else {
+        return "cutFake";
+      }
+    },
+    ...mapActions(["setTradeType"])
   }
 };
 </script>

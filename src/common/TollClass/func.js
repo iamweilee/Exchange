@@ -137,20 +137,20 @@ function isEmail(str, err) {
         if (!isTrue) {
             return err ? err : "邮箱格式有误！";
         }
+        return false;
     } else {
         return "邮箱不能为空";
     }
-    return false;
 }
 function isAccount(str) {
     if (str.trim()) {
         if (isEmail(str) && isPhone(str)) {
             return "账号为手机号或邮箱！";
         }
+        return false;
     } else {
         return "账号不能为空";
     }
-    return false;
 }
 
 function isPwd(str, err) {
@@ -161,46 +161,62 @@ function isPwd(str, err) {
         if (!isTrue) {
             return err ? err : "密码为6-20位数字，字母，下划线";
         }
+        return false;
     } else {
         return "密码不能为空";
     }
-    return false;
 }
 function isCode(str, err) {
-    //验证码
-    var reg = /^\d{6}$/;
-    let isTrue = reg.test(str);
-    if (!isTrue) {
-        return err ? err : "验证码为6位数字";
+    if (str.trim()) {
+        //验证码
+        var reg = /^\d{6}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "验证码为6位数字";
+        }
+        return false;
+    } else {
+        return "验证码不能为空";
     }
-    return false;
 }
 function isBankCode(str, err) {
-    //银行卡
-    var reg = /^([1-9]{1})(\d{14,18})$/;
-    let isTrue = reg.test(str);
-    if (!isTrue) {
-        return err ? err : "银行卡号为15-19位数字";
+    if (str.trim()) {
+        //银行卡
+        var reg = /^([1-9]{1})(\d{14,18})$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "银行卡号为15-19位数字";
+        }
+        return false;
+    } else {
+        return "银行卡号不能为空";
     }
-    return false;
 }
 function isShenfenCard(str, err) {
-    //身份证
-    var reg = /(^\d{15,18}$)|(^\d{17}(\d|X|x)$)/;
-    let isTrue = reg.test(str);
-    if (!isTrue) {
-        return err ? err : "身份证号为15-18位数字";
+    if (str.trim()) {
+        //身份证
+        var reg = /(^\d{15,18}$)|(^\d{17}(\d|X|x)$)/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "身份证号为15-18位数字";
+        }
+        return false;
+    } else {
+        return "身份证号不能为空";
     }
-    return false;
 }
 function isPhone(str, err) {
-    //手机号
-    var reg = /^1[23456789]\d{9}$/;
-    let isTrue = reg.test(str);
-    if (!isTrue) {
-        return err ? err : "手机号码有误，请重填";
+    if (str.trim()) {
+        //手机号
+        var reg = /^1[23456789]\d{9}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "手机号码有误，请重填";
+        }
+        return false;
+    } else {
+        return "手机号不能为空";
     }
-    return false;
 }
 function isNum(str, err) {
     //全数字
@@ -285,7 +301,7 @@ function ZhengFu(num) {
 }
 
 function formatSecondsToHM(value) {
-    var secondTime = parseInt(value/1000); // 秒
+    var secondTime = parseInt(value / 1000); // 秒
     var minuteTime = 0; // 分
     var hourTime = 0; // 小时
     if (secondTime > 60) {

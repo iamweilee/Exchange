@@ -2,7 +2,9 @@
   <div class="hdetail">
     <NavBar
       :title="
-        `${orderDetail.tradeCode}${orderDetail.position == 1 ? $t('stopLoss'): $t('stopProfit')}`
+        `${orderDetail.tradeCode}${
+          orderDetail.position == 1 ? $t('stopLoss') : $t('stopProfit')
+        }`
       "
       fixed
       showL
@@ -10,55 +12,55 @@
     />
     <div class="hdetail_title">
       <div class="left">
-        <p>{{$t('chat').profit}}</p>
+        <p>{{ $t("chat").profit }}</p>
         <button>
-          {{ tradeType(orderDetail.tradeType, orderDetail.position) }}
+          {{ tradeHandle(orderDetail.tradeType, orderDetail.position) }}
         </button>
       </div>
       <div class="right">
         <p :class="isColor(orderDetail.income)">{{ orderDetail.income }}</p>
-        <p>-671.17({{$t('chat').netProfit}})</p>
+        <p>-671.17({{ $t("chat").netProfit }})</p>
       </div>
     </div>
     <div class="hdetail_info">
       <ul class="List">
         <li>
-          <p>{{$t('chat').dealPrice}}</p>
+          <p>{{ $t("chat").dealPrice }}</p>
           <p>{{ orderDetail.dealPrice | priceFormat }}</p>
         </li>
         <li>
-          <p>{{$t('chat').closePrice}}</p>
+          <p>{{ $t("chat").closePrice }}</p>
           <p>0.529</p>
         </li>
         <li>
-          <p>{{$t('chat').lossPrice}}</p>
+          <p>{{ $t("chat").lossPrice }}</p>
           <p>{{ orderDetail.stopLoss | priceFormat }}</p>
         </li>
         <li>
-          <p>{{$t('chat').volume}}</p>
+          <p>{{ $t("chat").volume }}</p>
           <p>
-            {{ orderDetail.tradeAmount / orderDetail.stockRate }}{{$t('hand')}}({{
-              orderDetail.tradeAmount
-            }}个)
+            {{ orderDetail.tradeAmount / orderDetail.stockRate
+            }}{{ $t("hand") }}({{ orderDetail.tradeAmount }}个)
           </p>
         </li>
         <li>
-          <p>{{$t('chat').deposit}}</p>
+          <p>{{ $t("chat").deposit }}</p>
           <p>{{ orderDetail.deposit }}</p>
         </li>
       </ul>
     </div>
     <div class="dotted"></div>
     <div class="hdetail_intord">
-      <p>{{$t('chat').dealTime}}&nbsp;:&nbsp;{{ orderDetail.createTime }}</p>
-      <p>{{$t('chat').closeTime}}&nbsp;:&nbsp;{{ orderDetail.closeTime }}</p>
-      <p>{{$t('chat').orderNo}}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
+      <p>{{ $t("chat").dealTime }}&nbsp;:&nbsp;{{ orderDetail.createTime }}</p>
+      <p>{{ $t("chat").closeTime }}&nbsp;:&nbsp;{{ orderDetail.closeTime }}</p>
+      <p>{{ $t("chat").orderNo }}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
     </div>
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -69,13 +71,18 @@ export default {
   mounted() {
     this.getDetail();
   },
+  computed: {
+    ...mapState(["tradeType"])
+  },
   components: {
     NavBar
   },
   methods: {
     getDetail() {
+        let url = this.tradeType ? "/v1/leverage/getOrder" : "/v1/mock/order_history_detail";
+        
       this.$http({
-        url: "/v1/leverage/getOrder",
+        url: url,
         data: { orderNo: this.$route.params.id },
         method: "get"
       }).then(res => {
@@ -85,7 +92,7 @@ export default {
         }
       });
     },
-    tradeType(tradeType, position) {
+    tradeHandle(tradeType, position) {
       let text = "";
       if (tradeType) {
         text = "限价";

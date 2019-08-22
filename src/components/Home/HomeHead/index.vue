@@ -6,7 +6,7 @@
       </p>
 
       <div v-if="userInfo" class="group_login">
-        <p class="balance">
+        <p class="balance" @click.stop="show = true">
           {{ usableBalance | priceFormat }}USDT
           <img
             class="balance_icon"
@@ -14,7 +14,9 @@
             alt
           />
         </p>
-        <p class="balance_bot">{{ $t("home").sitesType }}</p>
+        <p class="balance_bot" v-if="!tradeType" @click.stop="mockCheck">
+          {{ $t("real") }}
+        </p>
       </div>
       <p v-else class="group_notLogin">{{ $t("home").notLogin }}</p>
     </div>
@@ -22,27 +24,56 @@
       <img src="~assets/Images/home/icon_server.png" alt />
       <p class="right_size">{{ $t("home").server }}</p>
     </router-link>
+    <van-popup v-model="show" position="bottom">
+      <div class="mock_select">
+        <button class="big_btn" @click="mockCheck">
+          {{ $t(isMock(tradeType)) }}
+        </button>
+        <button class="big_btn" @click="close">
+          {{ $t("cancel") }}
+        </button>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
+
 export default {
   data() {
-    return {};
+    return {
+      show: false
+    };
   },
   computed: {
-    ...mapState(["userInfo"]),
+    ...mapState(["userInfo", "tradeType"]),
     ...mapGetters(["usableBalance"])
   },
+
   methods: {
+    mockCheck() {
+      this.setTradeType(!this.tradeType);
+      this.close();
+    },
+    close() {
+      this.show = false;
+    },
     toLogin(userInfo) {
       if (userInfo) {
         this.$router.push("/me");
       } else {
         this.$router.push("/login");
       }
-    }
+    },
+    isMock(tradeType) {
+      if (tradeType) {
+        return "cutReal";
+      } else {
+        return "cutFake";
+      }
+    },
+    ...mapActions(["setTradeType"])
   }
 };
 </script>

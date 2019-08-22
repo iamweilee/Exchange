@@ -383,6 +383,45 @@ function dateFormat(mydate, ft) {
     }
     return fmt;
 }
+function dateFormatUTC(mydate, ft) {
+    if (!mydate) {
+        return "--";
+    }
+    var fmt = ft || "yyyy-MM-dd hh:mm:ss",
+        reg = /^\d+$/g;
+    if (reg.test(mydate)) {
+        mydate = mydate - 0;
+    }
+
+    var oDate = normalDate(mydate);
+    var date = {
+        "M+": oDate.getUTCMonth() + 1, //月份
+        "d+": oDate.getUTCDate(), //日
+        "h+": oDate.getUTCHours(), //小时
+        "m+": oDate.getUTCMinutes(), //分
+        "s+": oDate.getUTCSeconds() //秒
+    };
+
+    if (/(y+)/.test(fmt)) {
+        //RegExp.$1(正则表达式的第一个匹配，一共有99个匹配)
+        fmt = fmt.replace(
+            RegExp.$1,
+            (oDate.getFullYear() + "").substr(4 - RegExp.$1.length)
+        );
+    }
+
+    for (var attr in date) {
+        if (new RegExp("(" + attr + ")").test(fmt)) {
+            fmt = fmt.replace(
+                RegExp.$1,
+                RegExp.$1.length == 1
+                    ? date[attr]
+                    : ("00" + date[attr]).substring((date[attr] + "").length)
+            );
+        }
+    }
+    return fmt;
+}
 
 function NumRes(num) {
     if (Number(num) < 10) {
@@ -423,9 +462,12 @@ function toRate(rate, len = 2) {
     let prefix = "";
     if (rate > 0) {
         prefix = "+";
+    } else if ((rate == 0 || rate < 0)) {
+        prefix = "";
+    } else {
+        return "--";
     }
     return prefix + Number(rate).toFixed(len);
-   
 }
 
 //千分符
@@ -523,6 +565,7 @@ export {
     formatSeconds,
     weekDay,
     dateFormat,
+    dateFormatUTC,
     toFixeds,
     toRate,
     toThousands,

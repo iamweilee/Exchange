@@ -24,7 +24,7 @@
             method: 'input'
           }"
         />
-        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
+        <button class="inp_group_right" :disabled="isSend" @click="sendMsg('new')">
           {{ sendBtnText }}
         </button>
       </div>
@@ -52,9 +52,6 @@ export default {
       Edit1: Edit1[this.$route.params.type],
       phoneData: this.$lStore.get("phoneData") || { mobile: "", mobileCode: "" }
     };
-  },
-  beforeDestroy() {
-    this.$lStore.remove("phoneData");
   },
   methods: {
     clickLeft() {

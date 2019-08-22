@@ -17,19 +17,11 @@
         {{ sendBtnText }}
       </button>
     </div>
-    <div class="inp_group border-1px">
-      <input
-        type="password"
-        placeholder="输入账户密码"
-        v-model="fromData.pwd"
-      />
-    </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import { isEmail } from "common/TollClass/func";
 export default {
   data() {
     return {
@@ -38,8 +30,7 @@ export default {
       timer: null,
       fromData: {
         email: "",
-        code: "123456",
-        pwd: ""
+        code: ""
       }
     };
   },
@@ -47,12 +38,7 @@ export default {
   methods: {
     //发送验证
     sendMsg() {
-      let _this = this,
-        errEmail = isEmail(_this.fromData.email);
-      if (errEmail) {
-        this.$toast(errEmail);
-        return;
-      }
+      let _this = this;
       this.sendMsgComm({
         loginName: _this.fromData.email,
         codeType: 2,
@@ -68,7 +54,6 @@ export default {
 @import '~assets/stylus/variable.styl';
 .phone {
   width: 100%;
-  padding: 0 28px;
   .inp_group {
     border-1px($color12, 100%);
     height: 72px;

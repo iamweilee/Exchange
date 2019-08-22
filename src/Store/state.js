@@ -4,6 +4,6 @@ export default {
     tabNav: lStore.get("tabNav") || 1,
     TVInterval: lStore.get("TVInterval") || 5,
     userInfo: lStore.get("userInfo") || "",
-    Socket: lStore.get("Socket") || null,
-    balance: lStore.get("balance") || {}
+    balance: lStore.get("balance") || {},
+    tradeType: lStore.get("tradeType") || false
 };

@@ -1,4 +1,5 @@
 import * as types from "./mutation-types";
+import state from "./state";
 import { Toast } from "vant";
 import http from "common/Api";
 const getUserInfo = function(commit) {
@@ -13,10 +14,11 @@ const getUserInfo = function(commit) {
 };
 
 const getBanlace = function(commit) {
+    console.log(state.tradeType);
     http({
         url: "/v1/position/list",
         method: "get",
-        data: { coinCode: "USDT" }
+        data: { coinCode: state.tradeType ? "USDT" : "USDT_MOCK" }
     }).then(res => {
         if (res.status == 200) {
             let banlance = res.data[0];
@@ -47,6 +49,10 @@ export default {
     },
     updatedBanlace({ commit }, Banlace) {
         commit(types.SET_BALANCE, Banlace);
+    },
+    setTradeType({ commit }, tradeType) {
+        commit(types.SET_TRADETYPE, tradeType);
+        getBanlace(commit);
     },
     //通过ajax 异步请求
     getUserInfo({ commit }) {

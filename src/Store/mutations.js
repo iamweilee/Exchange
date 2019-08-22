@@ -25,9 +25,12 @@ export default {
         lStore.set("tabNav", val);
         state.tabNav = val;
     },
-    setSocket(state, allSocket) {
-        debugger;
-        // lStore.set("Socket", allSocket);
-        state.Socket = allSocket;
+    [types.SET_TRADETYPE](state, tradeType) {
+        if (tradeType) {
+            lStore.set("tradeType", tradeType);
+        } else {
+            lStore.set("tradeType", false);
+        }
+        state.tradeType = tradeType;
     }
 };

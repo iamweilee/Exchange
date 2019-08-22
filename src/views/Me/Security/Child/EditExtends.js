@@ -37,15 +37,22 @@ const extendTest = {
                         this.$router.back();
                     }
                     this.getUserInfo();
+                    this.$lStore.remove("phoneData");
                 }
             });
         },
         //发送验证
-        sendMsg() {
-            let _this = this;
+        sendMsg(type) {
+            let _this = this,
+                loginName = this.emailPhone,
+                codeType = this.pageType == "email" ? 6 : 5;
+            if (type == "new") {
+                loginName = this.phoneData[this.pageType];
+            }
             this.sendMsgComm({
-                loginName: this.emailPhone,
-                codeType: 7,
+                loginName: loginName,
+                areaCode: _this.userInfo.areaCode,
+                codeType: codeType,
                 fn: _this.$timeSet.bind("edit", _this)
             });
         },

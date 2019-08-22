@@ -1,1 +1,18 @@
-我们的愿景是致力创建并维护成一个集数字资产行情工具+智能内容社区推送+讨论社区+智能理财于一体的全球区块链投融资数据综合生态平台。
+- 模拟限价   /v1/mock/limit_trade
+- 模拟市价 /v1/mock/market_trade
+- 模拟撤单 /v1/mock/cancel
+- 模拟挂单列表 /v1/mock/entrust_list
+- 模拟持仓列表 /v1/mock/hold_list
+- 挂单详情 /v1/mock/entrust/detail
+- 持仓详情 /v1/mock/hold/detail
+
+
+/v1/mock/order_detail?orderNo=xxx
+/v1/mock/history_list?pageNo=1&pageSize=10
+/v1/mock/order_history_detail?orderNo=xxx
+模拟平仓  /v1/mock/eveningUp
+
+
+//系统消息
+/v1/system/msg/list?pageNo=1&pageSize=10  GET
+/v1/system/msg/read_all                   PUT

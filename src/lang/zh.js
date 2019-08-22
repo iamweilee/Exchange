@@ -30,7 +30,6 @@ module.exports = {
     home: {
         //header
         notLogin: "未登录",
-        sitesType: "模拟盘",
         server: "客服",
         //Modul
         hotActvitity: "热门活动",
@@ -195,7 +194,10 @@ module.exports = {
     fall: "跌",
     orderSucc: "下单成功",
     seeOrder: "查看订单",
-    cutFake: "切换至实际盘",
-    cutReal: "模拟盘",
-    more: "更多"
+    cutFake: "切换至实盘",
+    cutReal: "切换至模拟盘",
+    real: "模拟盘",
+    fake: "实盘",
+    more: "更多",
+    cancel: "取消"
 };

@@ -1,10 +1,12 @@
 <template>
   <div class="hold">
     <div v-if="entrustIng.length">
-      <ul
+      <router-link
         class="hold_single"
+        tag="ul"
         v-for="(item, index) in entrustIng"
         :key="item.orderNo"
+        :to="`/chat/hold/${item.orderNo}`"
       >
         <li class="top">
           <p class="top_l">
@@ -14,13 +16,14 @@
               <img :src="isBuy(index)" alt />
             </span>
             <span class="num"
-              >×{{ item.tradeAmount / item.stockRate
-              }}{{ $t("hand") }}</span
+              >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
             >
           </p>
           <p class="top_btn">
             <span :class="isColor(index)">-18.76</span>
-            <button @click="closeOut(item)">{{ $t("chat").cancelOrder }}</button>
+            <button @click.stop="closeOut(item)">
+              {{ $t("chat").cancelOrder }}
+            </button>
           </p>
         </li>
         <li class="bot">
@@ -41,7 +44,7 @@
             <span>{{ $t("chat").profitPrice }}</span>
           </p>
         </li>
-      </ul>
+      </router-link>
     </div>
     <div v-else class="notData">
       {{ $t("notData") }}
@@ -57,6 +60,10 @@ export default {
   props: {
     showDialog: {
       type: Function,
+      required: true
+    },
+    tradeType: {
+      type: Boolean,
       required: true
     }
   },
@@ -89,8 +96,11 @@ export default {
     },
     //获取持仓单
     getEntrustIng() {
+      let url = this.tradeType
+        ? "/v1/leverage/entrustIng"
+        : "/v1/mock/entrust_list";
       this.$http({
-        url: "/v1/leverage/entrustIng",
+        url: url,
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {
