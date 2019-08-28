@@ -1,10 +1,10 @@
 <template>
   <div class="fund">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft"/>
+    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <div class="fund_wrap">
-      <transition :name="transitionName">
-        <router-view/>
-      </transition>
+      <!-- <transition :name="transitionName"> -->
+      <router-view />
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
       loading: false,
       finished: true,
       isLoading: false,
-      transitionName: "slide-left",
+      //   transitionName: "slide-left",
       title: [
         { title: "OTC交易", url: "/me/fund", left: 0 },
         { title: "钱包转账", url: "/me/fund/wallet", left: 1 }
@@ -54,14 +54,14 @@ export default {
         this.$toast("刷新成功");
       }, 500);
     }
-  },
-  watch: {
-    $route(to, from) {
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-    }
   }
+  //   watch: {
+  //     $route(to, from) {
+  //       const toIndex = to.meta.id;
+  //       const fromIndex = from.meta.id;
+  //       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+  //     }
+  //   }
 };
 </script>
 

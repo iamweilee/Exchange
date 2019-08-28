@@ -72,7 +72,6 @@ export default {
           ];
         });
         this.initChart(splitData(lineArr));
-        this.$EventListener.on("TVkline", this.setKlineData);
       });
     },
     // amount: 91.9370512035309
@@ -105,26 +104,20 @@ export default {
       );
       this.chart.setOption(option, true);
       let _this = this;
-      console.log(option.series[0].data[0]);
-      setInterval(() => {
-        // console.log(option.series[0].data);
-        //     let arr = option.series[0].data;
-        //     arr[arr.length - 1][0] -= 1;
-        //     // option.series[0].data.slice(-1)[0] -= 2;
-        //     console.log(arr[arr.length - 1][0]);
-        //     _this.chart.setOption(option, true);
-      }, 2000);
       //   图标根据窗口大小自动缩放
+    //   this.$EventListener.on("TVkline", this.setKlineData);
       window.addEventListener("resize", this.chart.resize);
     },
     getData(data) {
       let allArr = this.optionData.series[0].data,
         arr = allArr[allArr.length - 1];
-      //   console.log(arr[arr.length - 1]);
       var rounded = data[4];
       var lastBarSec = Number(arr[4]) + 15 * 60000;
+      //   console.log(rounded, arr[4]);
       if (rounded > lastBarSec) {
-        arr = data;
+        allArr = [...allArr, data];
+        console.log(arr);
+        this.optionData.series[0].data = [...allArr, data];
       } else {
         if (data[2] < arr[2]) {
           arr[2] = data[2];
@@ -133,9 +126,12 @@ export default {
           arr[3] = data[3];
         }
         arr[1] = data[1];
-        console.log(arr,this.optionData.series);
+        allArr[allArr.length - 1] = arr;
+        this.optionData.series[0].data = 
+        console.log(arr, allArr[allArr.length - 1]);
       }
-      //   this.chart.setOption(this.optionData, true);
+      //   console.log(arr,this.optionData.series[0].data[allArr.length - 1])
+      this.chart.setOption(this.optionData, true);
     }
   }
 };

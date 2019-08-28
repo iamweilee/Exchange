@@ -50,7 +50,12 @@ export default {
       timer: null,
       activeClass: "phone",
       type: this.$route.params.type,
-      loginData: { loginName: "", mobileCode: "", emailCode: "", type: 1 }
+      loginData: {
+        loginName: "",
+        mobileCode: "",
+        emailCode: "",
+        type: 1
+      }
     };
   },
   mounted() {},

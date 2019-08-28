@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div class="main">
-      <transition :name="transitionName">
-        <router-view class="main_wrapper" />
-      </transition>
+      <!-- <transition :name="transitionName"> -->
+      <router-view class="main_wrapper" />
+      <!-- </transition> -->
     </div>
     <router-view name="mainfooter"></router-view>
   </div>
@@ -15,8 +15,8 @@ import WBT from "common/TollClass/socket";
 export default {
   data() {
     return {
-      Socket: null,
-      transitionName: "slide-left"
+      Socket: null
+      //   transitionName: "slide-left"
     };
   },
   mounted() {
@@ -130,12 +130,12 @@ export default {
   },
 
   watch: {
-    $route(to, from) {
-      let toName = to.name;
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-    }
+    // $route(to, from) {
+    //   let toName = to.name;
+    //   const toIndex = to.meta.id;
+    //   const fromIndex = from.meta.id;
+    //   this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+    // }
   }
 };
 </script>
@@ -144,12 +144,8 @@ export default {
 #app {
   height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  overflow-y: scroll;
   .main {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-    flex: 1;
     &_wrapper {
       width: 100%;
     }

@@ -1,19 +1,29 @@
 <template>
   <div class="nav_wrapper">
-    <div class="nav_bar" :class="isClass(fixed,hideBorder)">
+    <div class="nav_bar" :class="isClass(fixed, hideBorder)">
       <div class="nav_bar_l">
-        <van-icon v-show="showL" class="back_icon" @click="clickLeft" name="arrow-left"/>
+        <van-icon
+          v-show="showL"
+          class="back_icon"
+          @click="clickLeft"
+          name="arrow-left"
+        />
       </div>
       <div class="nav_bar_c">
         <ul class="tabs_wrap">
-          <router-link v-for="item in title" :to="item.url" :key="item.title" tag="li">
-            <p @click="tabClick(item.left)">{{item.title}}</p>
+          <router-link
+            v-for="item in title"
+            :to="item.url"
+            :key="item.title"
+            tag="li"
+          >
+            <p @click="tabClick(item.left)">{{ item.title }}</p>
           </router-link>
         </ul>
         <div :style="styls" class="tabs_line"></div>
       </div>
       <div class="nav_bar_r">
-        <img v-show="showR" src="~assets/Images/Otc/icon_detail.png" alt>
+        <img v-show="showR" src="~assets/Images/Otc/icon_detail.png" alt />
       </div>
     </div>
   </div>
@@ -109,6 +119,7 @@ export default {
       top: 0;
       left: 0;
       z-index: 99;
+      transform: translateZ(0);
     }
     &_l, &_r {
       font-size: 12px;

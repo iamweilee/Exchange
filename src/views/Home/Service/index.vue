@@ -1,36 +1,35 @@
 <template>
   <div class="service">
-    <NavBar title="联系客服" hideBorder fixed showL @clickLeft="clickLeft"/>
+    <NavBar title="联系客服" hideBorder fixed showL @clickLeft="clickLeft" />
     <div class="service_wrap">
       <ScrollV scrollToEndFlag pulldown @pullDown="pullDown" :data="List">
         <p class="time">22:35</p>
         <div
           class="msg"
-          v-for="(item,index) in List"
-          :key="item+index"
-          :class="item !== 'system_msg'&&'self'"
+          v-for="(item, index) in List"
+          :key="item + index"
+          :class="item !== 'system_msg' && 'self'"
         >
           <div class="msg_l">
-            <img src="~assets/Images/avatar.jpg" alt>
+            <img src="~assets/Images/avatar.jpg" alt />
           </div>
           <div class="msg_r" v-if="item == 'system_msg'">
             <p class="tips">哈喽，我是XXXX人客服~</p>
             <p class="tips">您是不是要咨询以下问题</p>
-            <p>1、充/提币有哪些方式？</p>
+            <p>1、忘记密码怎么办？</p>
             <p>2、杠杆交易下单有哪些方式？</p>
-            <p>3、保证金交易是什么意思？</p>
-            <p>4、忘记密码怎么办？</p>
-            <p>5、推广下线是如何分成的？</p>
+            <p>3、交易手续费怎么收取？</p>
+            <p>4、保证金交易是什么意思？</p>
           </div>
-          <div class="msg_r" v-else>{{item}}</div>
+          <div class="msg_r" v-else>{{ item }}</div>
         </div>
       </ScrollV>
     </div>
     <div class="service_send">
       <div class="inp">
-        <input type="text" v-model="inpVal" @keyup.enter="sendMsg(inpVal)">
+        <input type="text" v-model="inpVal" @keyup.enter="sendMsg(inpVal)" />
         <p class="icon">
-          <img src="~assets/Images/emoticon.png" alt>
+          <img src="~assets/Images/emoticon.png" alt />
         </p>
       </div>
       <button @click="sendMsg(inpVal)">发送</button>

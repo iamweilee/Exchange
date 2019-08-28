@@ -22,7 +22,7 @@
     </div>
     <div class="me_cont">
       <div class="me_cont_top">
-        <p class="title">USDT(余额)</p>
+        <p class="title">USDT({{ tradeType ? $t("real") : "" }}余额)</p>
         <p class="num">{{ usableBalance | priceFormat }}</p>
       </div>
       <div class="me_cont_btn">

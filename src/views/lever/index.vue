@@ -9,8 +9,15 @@
         <li>{{ $t("lever").title3 }}</li>
       </ul>
     </div>
-    <div class="lever_List" v-if="List.length">
-      <ScrollV pulldown pullup @pullDown="pullDown" @pullUp="pullUp">
+    <van-pull-refresh v-model="isLoading" @refresh="pullDown">
+      <div class="lever_List" v-if="List.length">
+        <!-- <ScrollV
+        pulldown
+        pullup
+        @pullDown="pullDown"
+        @pullUp="pullUp"
+        :data="List"
+      > -->
         <router-link
           tag="ul"
           class="lever_List_single border-1px"
@@ -39,28 +46,25 @@
             <button class="rate">{{ item.percent | toRate }}%</button>
           </li>
         </router-link>
-      </ScrollV>
-    </div>
+        <!-- </ScrollV> -->
+      </div>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
 import ScrollV from "components/Scroll";
-import { connect } from "net";
 export default {
   data() {
     return {
       List: [],
       coinPrecision: this.$lStore.get("coinPrecision"),
-      loading: false,
-      finished: false,
       isLoading: false
     };
   },
   components: {
-    NavBar,
-    ScrollV
+    NavBar
   },
   mounted() {
     this._initPage();
@@ -117,20 +121,18 @@ export default {
         return false;
       }
     },
-    pullDown(scroll) {
+    pullDown() {
       setTimeout(() => {
+        this.isLoading = false;
         this.$toast({
           message: "刷新成功",
           duration: 500
         });
-        scroll.finishPullDown();
       }, 1000);
     },
-    pullUp(scroll) {
-      let arr = list;
+    pullUp() {
       setTimeout(() => {
         console.log("到底了");
-        scroll.finishPullUp();
       }, 1000);
     }
   }

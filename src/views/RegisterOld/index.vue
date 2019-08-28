@@ -19,9 +19,9 @@
     </div>
     <div class="from">
       <div class="from_wrap">
-        <transition :name="transitionName">
-          <router-view ref="from" />
-        </transition>
+        <!-- <transition :name="transitionName"> -->
+        <router-view ref="from" />
+        <!-- </transition> -->
       </div>
       <button class="from_btn" :disabled="isClick" @click="subMit">
         {{ $t("loginReg").nextStep }}
@@ -84,10 +84,10 @@ export default {
   watch: {
     $route(to, from) {
       let toName = to.name;
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
+      //   const toIndex = to.meta.id;
+      //   const fromIndex = from.meta.id;
       this.type = toName;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+      //   this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
     }
   }
 };

@@ -7,7 +7,7 @@
       @clickLeft="clickLeft"
       @handleClick="showSelect"
     />
-    <van-popup v-model="show" position="top">
+    <van-popup v-model="show" position="top" @close="closeSelect">
       <div class="selectWrap">
         <h2>{{ `${symbol}${tradeType ? "" : `(${$t("real")})`}` }}</h2>
         <ul class="selectList">
@@ -18,207 +18,208 @@
           >
             <p class="coin">{{ item.symbol }}/USDT</p>
             <p class="price">
-              {{ item.close | priceFormat(coinPrecision[coinCode].tickSize) }}
+              {{
+                item.close | priceFormat(coinPrecision[item.symbol].tickSize)
+              }}
             </p>
           </li>
         </ul>
         <button class="selectBtn" @click="setTradeType(!tradeType)">
           {{ $t(isMock(tradeType)) }}
         </button>
-        <button class="closeBtn" @click="show = false">
+        <button class="closeBtn" @click="closeSelect">
           {{ $t("pos").clickHide }}
         </button>
       </div>
     </van-popup>
     <!-- @click="show=!show" -->
-    <div class="pos_top" v-if="detailData.close">
-      <div class="pos_top_t">
-        <div class="left">
-          <div class="color-green">
-            {{
-              detailData.close || priceFormat(coinPrecision[coinCode].tickSize)
-            }}
-          </div>
-          <div class="small">
-            <p>{{ detailData.diff }}</p>
-            <p>{{ detailData.percent | priceFormat }}%</p>
-          </div>
-        </div>
-        <ul class="right">
-          <li>
-            {{ $t("pos").high }}(24H)&nbsp;&nbsp;{{
-              detailData.high | priceFormat(coinPrecision[coinCode].tickSize)
-            }}
-          </li>
-          <li>
-            {{ $t("pos").low }}(24H)&nbsp;&nbsp;{{
-              detailData.low | priceFormat(coinPrecision[coinCode].tickSize)
-            }}
-          </li>
-          <li>
-            {{ $t("pos").amount }}(24H)&nbsp;&nbsp;{{
-              parseInt(detailData.amount)
-            }}
-          </li>
-        </ul>
-      </div>
-      <div class="pos_top_btn">
-        <div class="btn_list">
-          <button :class="TVInterval == 1 && 'active'" @click="clickBtn(1)">
-            1{{ $t("pos").minute }}
-          </button>
-          <button :class="TVInterval == 5 && 'active'" @click="clickBtn(5)">
-            5{{ $t("pos").minute }}
-          </button>
-          <button :class="TVInterval == 15 && 'active'" @click="clickBtn(15)">
-            15{{ $t("pos").minute }}
-          </button>
-          <button :class="TVInterval == 30 && 'active'" @click="clickBtn(30)">
-            30{{ $t("pos").minute }}
-          </button>
-          <button :class="TVInterval == 60 && 'active'" @click="clickBtn(60)">
-            1{{ $t("pos").hour }}
-          </button>
-          <button @click="clickBtnMore(true)">{{ $t("more") }}</button>
-          <button @click="clickBtnMore(false)">
-            {{ $t("pos").indicator }}
-          </button>
-        </div>
-        <transition name="moreIndex">
-          <div v-if="isShow" class="child_list">
-            <div v-show="isOther">
-              <button
-                :class="TVInterval == '240' && 'active'"
-                @click="clickBtn(240)"
-              >
-                4{{ $t("pos").hour }}
-              </button>
-              <button
-                :class="TVInterval == '1D' && 'active'"
-                @click="clickBtn('1D')"
-              >
-                1{{ $t("pos").day }}
-              </button>
-              <button
-                :class="TVInterval == '1W' && 'active'"
-                @click="clickBtn('1W')"
-              >
-                1{{ $t("pos").week }}
-              </button>
-              <button
-                :class="TVInterval == '1M' && 'active'"
-                @click="clickBtn('1M')"
-              >
-                1{{ $t("pos").month }}
-              </button>
+    <div class="pos_wrapper">
+      <div class="pos_top" v-if="detailData.close">
+        <div class="pos_top_t">
+          <div class="left">
+            <div class="color-green">
+              {{
+                detailData.close | priceFormat(coinPrecision[coinCode].tickSize)
+              }}
             </div>
-            <div v-show="!isOther">
-              <button
-                :class="TVInterval == 'MACD' && 'active'"
-                @click="clickIndicator('MACD')"
-              >
-                MACD
-              </button>
-              <button
-                :class="TVInterval == 'BOLL' && 'active'"
-                @click="clickIndicator('BOLL')"
-              >
-                BOLL
-              </button>
-              <button
-                :class="TVInterval == 'KDJ' && 'active'"
-                @click="clickIndicator('KDJ')"
-              >
-                KDJ
-              </button>
-              <button
-                :class="TVInterval == 'RSI' && 'active'"
-                @click="clickIndicator('RSI')"
-              >
-                RSI
-              </button>
-              <button
-                :class="TVInterval == 'WR' && 'active'"
-                @click="clickIndicator('WR')"
-              >
-                WR
-              </button>
-              <button
-                :class="TVInterval == 'closeOther' && 'active'"
-                @click="clickIndicator('closeOther')"
-              >
-                {{ $t("pos").hide }}
-              </button>
+            <div class="small">
+              <p>{{ detailData.diff }}</p>
+              <p>{{ detailData.percent | priceFormat }}%</p>
             </div>
           </div>
-        </transition>
+          <ul class="right">
+            <li>
+              {{ $t("pos").high }}(24H)&nbsp;&nbsp;{{
+                detailData.high | priceFormat(coinPrecision[coinCode].tickSize)
+              }}
+            </li>
+            <li>
+              {{ $t("pos").low }}(24H)&nbsp;&nbsp;{{
+                detailData.low | priceFormat(coinPrecision[coinCode].tickSize)
+              }}
+            </li>
+            <li>
+              {{ $t("pos").amount }}(24H)&nbsp;&nbsp;{{
+                parseInt(detailData.amount)
+              }}
+            </li>
+          </ul>
+        </div>
+        <div class="pos_top_btn">
+          <div class="btn_list">
+            <button :class="TVInterval == 1 && 'active'" @click="clickBtn(1)">
+              1{{ $t("pos").minute }}
+            </button>
+            <button :class="TVInterval == 5 && 'active'" @click="clickBtn(5)">
+              5{{ $t("pos").minute }}
+            </button>
+            <button :class="TVInterval == 15 && 'active'" @click="clickBtn(15)">
+              15{{ $t("pos").minute }}
+            </button>
+            <button :class="TVInterval == 30 && 'active'" @click="clickBtn(30)">
+              30{{ $t("pos").minute }}
+            </button>
+            <button :class="TVInterval == 60 && 'active'" @click="clickBtn(60)">
+              1{{ $t("pos").hour }}
+            </button>
+            <button @click="clickBtnMore(true)">{{ $t("more") }}</button>
+            <button @click="clickBtnMore(false)">
+              {{ $t("pos").indicator }}
+            </button>
+          </div>
+          <transition name="moreIndex">
+            <div v-if="isShow" class="child_list">
+              <div v-show="isOther">
+                <button
+                  :class="TVInterval == '240' && 'active'"
+                  @click="clickBtn(240)"
+                >
+                  4{{ $t("pos").hour }}
+                </button>
+                <button
+                  :class="TVInterval == '1D' && 'active'"
+                  @click="clickBtn('1D')"
+                >
+                  1{{ $t("pos").day }}
+                </button>
+                <button
+                  :class="TVInterval == '1W' && 'active'"
+                  @click="clickBtn('1W')"
+                >
+                  1{{ $t("pos").week }}
+                </button>
+                <button
+                  :class="TVInterval == '1M' && 'active'"
+                  @click="clickBtn('1M')"
+                >
+                  1{{ $t("pos").month }}
+                </button>
+              </div>
+              <div v-show="!isOther">
+                <button
+                  :class="TVInterval == 'MACD' && 'active'"
+                  @click="clickIndicator('MACD')"
+                >
+                  MACD
+                </button>
+                <button
+                  :class="TVInterval == 'BOLL' && 'active'"
+                  @click="clickIndicator('BOLL')"
+                >
+                  BOLL
+                </button>
+                <button
+                  :class="TVInterval == 'KDJ' && 'active'"
+                  @click="clickIndicator('KDJ')"
+                >
+                  KDJ
+                </button>
+                <button
+                  :class="TVInterval == 'RSI' && 'active'"
+                  @click="clickIndicator('RSI')"
+                >
+                  RSI
+                </button>
+                <button
+                  :class="TVInterval == 'WR' && 'active'"
+                  @click="clickIndicator('WR')"
+                >
+                  WR
+                </button>
+                <button
+                  :class="TVInterval == 'closeOther' && 'active'"
+                  @click="clickIndicator('closeOther')"
+                >
+                  {{ $t("pos").hide }}
+                </button>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </div>
+      <div class="k_line">
+        <TradingView
+          ref="trading"
+          :symbol="symbol"
+          :interval="TVInterval"
+        ></TradingView>
+        <!-- <TradingView ref="trading"></TradingView> -->
+        <div id="kline_logo"></div>
+      </div>
+      <div class="pos_wrap">
+        <div class="tabs">
+          <ul class="tabs_wrap">
+            <li
+              :class="tabsType == 'Capital' && 'active'"
+              @click="tabClick('Capital')"
+            >
+              <p>{{ $t("pos").fund }}</p>
+            </li>
+            <li
+              :class="tabsType == 'Intord' && 'active'"
+              @click="tabClick('Intord')"
+            >
+              <p>{{ $t("pos").intord }}</p>
+            </li>
+          </ul>
+          <div :style="styls" class="tabs_line"></div>
+        </div>
+        <div class="cont">
+          <Capital
+            v-if="tabsType == 'Capital'"
+            :coinPrecision="coinPrecision[coinCode]"
+          />
+          <Intord v-if="tabsType == 'Intord'" :intordData="intordData" />
+        </div>
+      </div>
+      <div class="handWrap">
+        <button @click="showOrderHandle(1)">
+          {{ $t("pos").buyFall }}
+          {{
+            (detailData.close * 1.0003)
+              | priceFormat(coinPrecision[coinCode].tickSize)
+          }}
+        </button>
+        <button @click="showOrderHandle(0)">
+          {{ $t("pos").buyRise }}
+          {{
+            (detailData.close * 0.9997)
+              | priceFormat(coinPrecision[coinCode].tickSize)
+          }}
+        </button>
       </div>
     </div>
-    <div class="k_line">
-      <TradingView
-        ref="trading"
-        :symbol="symbol"
-        :interval="TVInterval"
-      ></TradingView>
-      <!-- <TradingView ref="trading"></TradingView> -->
-      <div id="kline_logo"></div>
-    </div>
-    <div class="pos_wrap">
-      <div class="tabs">
-        <ul class="tabs_wrap">
-          <li
-            :class="tabsType == 'Capital' && 'active'"
-            @click="tabClick('Capital')"
-          >
-            <p>{{ $t("pos").fund }}</p>
-          </li>
-          <li
-            :class="tabsType == 'Intord' && 'active'"
-            @click="tabClick('Intord')"
-          >
-            <p>{{ $t("pos").intord }}</p>
-          </li>
-        </ul>
-        <div :style="styls" class="tabs_line"></div>
-      </div>
-      <div class="cont">
-        <Capital
-          v-if="tabsType == 'Capital'"
-          :coinPrecision="coinPrecision[coinCode]"
-        />
-        <Intord v-if="tabsType == 'Intord'" :intordData="intordData" />
-      </div>
-    </div>
-    <div class="handWrap">
-      <button @click="showOrderHandle(1)">
-        {{ $t("pos").buyFall }}
-        {{
-          (detailData.close * 1.0006)
-            | priceFormat(coinPrecision[coinCode].tickSize)
-        }}
-      </button>
-      <button @click="showOrderHandle(0)">
-        {{ $t("pos").buyRise }}
-        {{
-          (detailData.close * 0.9994)
-            | priceFormat(coinPrecision[coinCode].tickSize)
-        }}
-      </button>
-    </div>
-    <van-popup
-      v-model="showOrder"
-      position="bottom"
-      :overlay-style="{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }"
-    >
-      <PlaceOrder
-        :coinCode="$route.params.coinCode"
-        :position="position"
-        :cloeModle="cloeModle"
-        :closePic="detailData.close"
-        :succeedOrder="succeedOrder"
-        :coinData="coinPrecision[coinCode]"
-      />
-    </van-popup>
+    <!-- <van-popup v-model="showOrder" position="bottom" :overlay="false"> -->
+    <PlaceOrder
+      v-if="showOrder"
+      :coinCode="$route.params.coinCode"
+      :position="position"
+      :cloeModle="cloeModle"
+      :closePic="detailData.close"
+      :succeedOrder="succeedOrder"
+      :coinData="coinPrecision[coinCode]"
+    />
+    <!-- </van-popup> -->
     <van-dialog
       closeOnClickOverlay
       v-model="showSucceed"
@@ -331,6 +332,7 @@ export default {
     },
     //更新头部价格成交量
     renderDetail(data) {
+      //   console.log(this.symbol,data.symbol);
       if (data.symbol == this.symbol) {
         this.detailData = data;
       }
@@ -364,7 +366,7 @@ export default {
       this._initPage();
     },
     clickLeft() {
-      this.$router.push("/");
+      this.$router.push("/lever");
     },
     //点击TV的分辨率
     clickBtn(resolution) {
@@ -376,13 +378,17 @@ export default {
       this.$EventListener.fire("SendMsg", datas);
     },
     //socket 时间区间格式化
-    resolutionSocket(resolution) {
+    resolutionSocket(resolution, isAllCoin) {
       let type = typeof resolution,
         coinCode = this.$route.params.coinCode.toLowerCase() + "usdt",
         datas = {};
-      this.List.forEach(item => {
-        datas[`${item.symbol.toLowerCase()}usdt-ticker`] = 0;
-      });
+      if (isAllCoin) {
+        this.List.forEach(item => {
+          datas[`${item.symbol.toLowerCase()}usdt-ticker`] = 0;
+        });
+      } else {
+        datas[`${coinCode}-ticker`] = 0;
+      }
       datas[`${coinCode}-depth`] = 0;
       if (type == "number") {
         datas[`${coinCode}-kline-${resolution}m`] = 0;
@@ -398,6 +404,14 @@ export default {
     //显示币种列表
     showSelect() {
       this.show = true;
+      let datas = this.resolutionSocket(this.TVInterval, true);
+      this.$EventListener.fire("SendMsg", datas);
+    },
+    //隐藏币种列表
+    closeSelect() {
+      this.show = false;
+      let datas = this.resolutionSocket(this.TVInterval);
+      this.$EventListener.fire("SendMsg", datas);
     },
     //点击打开更多
     clickBtnMore(bol) {

@@ -94,6 +94,7 @@ export default {
       top: 0;
       left: 0;
       z-index: 99;
+      transform: translateZ(0)
     }
     &_l, &_r {
       font-size: 12px;

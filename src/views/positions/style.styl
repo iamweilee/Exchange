@@ -3,6 +3,11 @@
     width: 100%;
     min-height: 800px;
     background-color: $KBg;
+    &_wrapper {
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
     &_top {
         height: 120px;
         width: 100%;
@@ -217,6 +222,7 @@
         align-items: center;
         justify-content: space-between;
         position: fixed;
+        transform: translateZ(0);
         left: 0;
         bottom: 0;
         height: 62px;

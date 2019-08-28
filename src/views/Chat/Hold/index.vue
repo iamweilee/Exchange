@@ -4,7 +4,7 @@
       <router-link
         class="hold_single"
         tag="ul"
-        v-for="(item, index) in List"
+        v-for="item in List"
         :key="item.orderNo"
         :to="`/chat/hold/${item.orderNo}`"
       >
@@ -12,8 +12,8 @@
           <p class="top_l">
             <span class="big">{{ item.targetCoin }}</span>
             <span class="small">{{ item.sourceCoin }}</span>
-            <span class="icon">
-              <img :src="isBuy(index)" alt />
+            <span class="icon" :class="item.position ? 'fall' : 'rise'">
+              {{ isBuy(item.position) }}
             </span>
             <span class="num"
               >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
@@ -39,11 +39,17 @@
             <span>{{ $t("chat").currentPrice }}</span>
           </p>
           <p>
-            <span>{{ item.stopLoss }}</span>
+            <span>{{
+              item.stopLoss
+                | priceFormat(coinPrecision[item.targetCoin].tickSize)
+            }}</span>
             <span>{{ $t("chat").lossPrice }}</span>
           </p>
           <p>
-            <span>{{ item.stopProfit }}</span>
+            <span>{{
+              item.stopProfit
+                | priceFormat(coinPrecision[item.targetCoin].tickSize)
+            }}</span>
             <span>{{ $t("chat").profitPrice }}</span>
           </p>
         </li>
@@ -72,6 +78,7 @@ export default {
   },
   data() {
     return {
+      coinPrecision: this.$lStore.get("coinPrecision"),
       List: [],
       coinPrice: {}
     };
@@ -84,6 +91,7 @@ export default {
   },
   methods: {
     _initPage() {
+      console.log(this.coinPrecision);
       this.getHoldList();
     },
     sendMsg(coinArr) {
@@ -144,10 +152,10 @@ export default {
       this.showDialog(item);
     },
     isBuy(type) {
-      if (type % 3) {
-        return iconBuy;
+      if (type) {
+        return "跌";
       } else {
-        return iconSale;
+        return "涨";
       }
     },
     refresh(done) {

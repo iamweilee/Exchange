@@ -19,7 +19,7 @@
       </div>
       <div class="right">
         <p :class="isColor(orderDetail.income)">{{ orderDetail.income }}</p>
-        <p>-671.17({{ $t("chat").netProfit }})</p>
+        <p>{{orderDetail.income}}({{ $t("chat").netProfit }})</p>
       </div>
     </div>
     <div class="hdetail_info">
@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     getDetail() {
-        let url = this.tradeType ? "/v1/leverage/getOrder" : "/v1/mock/order_history_detail";
+    let url = this.tradeType ? "/v1/leverageHis/info" : "/v1/mock/order_history_detail";
         
       this.$http({
         url: url,

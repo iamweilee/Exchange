@@ -2,9 +2,9 @@
   <div class="otc">
     <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <div class="otc_wrapper">
-      <transition :name="transitionName">
+      <!-- <transition :name="transitionName"> -->
         <router-view />
-      </transition>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -15,7 +15,7 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      transitionName: "slide-left",
+    //   transitionName: "slide-left",
       title: [
         { title: "OTC交易", url: "/otc", left: 0 },
         { title: "钱包转账", url: "/otc/wallet", left: 1 }
@@ -53,13 +53,13 @@ export default {
       this.$router.push("/");
     }
   },
-  watch: {
-    $route(to, from) {
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-    }
-  }
+//   watch: {
+//     $route(to, from) {
+//       const toIndex = to.meta.id;
+//       const fromIndex = from.meta.id;
+//       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+//     }
+//   }
 };
 </script>
 

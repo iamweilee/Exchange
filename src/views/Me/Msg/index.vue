@@ -1,10 +1,10 @@
 <template>
   <div class="msg">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft"/>
+    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <div class="msg_wrapper">
-      <transition :name="transitionName">
-        <router-view/>
-      </transition>
+      <!-- <transition :name="transitionName"> -->
+      <router-view />
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -14,7 +14,7 @@ import NavBar from "components/NavBar/Switch";
 export default {
   data() {
     return {
-      transitionName: "slide-left",
+      //   transitionName: "slide-left",
       title: [
         { title: "系统消息", url: "/me/msg", left: 0 },
         { title: "公告消息", url: "/me/msg/notic", left: 1 }
@@ -29,14 +29,14 @@ export default {
     clickLeft() {
       this.$router.push("/me");
     }
-  },
-  watch: {
-    $route(to, from) {
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-    }
   }
+  //   watch: {
+  //     $route(to, from) {
+  //       const toIndex = to.meta.id;
+  //       const fromIndex = from.meta.id;
+  //       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+  //     }
+  //   }
 };
 </script>
 

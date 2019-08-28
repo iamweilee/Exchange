@@ -154,7 +154,8 @@ export default {
           //全屏
           "header_fullscreen_button",
           "property_pages",
-          "chart_zoom",
+          //是否支持缩放
+        //   "chart_zoom",
           "control_bar",
           "edit_buttons_in_legend",
           "countdown",

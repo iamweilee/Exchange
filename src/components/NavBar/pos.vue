@@ -91,6 +91,7 @@ export default {
       left: 0;
       z-index: 99;
       background-color: #1b212d;
+      transform: translateZ(0)
     }
     &_l, &_r {
       font-size: 12px;

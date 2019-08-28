@@ -1,59 +1,68 @@
 <template>
   <div class="history">
     <NavBar
-      :title="$t('chat').historyTitle"
+      :title="tradeType ? $t('chat').historyTitles : $t('chat').historyTitle"
       fixed
       showL
       @clickLeft="clickLeft"
     />
-    <van-pull-refresh
-      v-model="isLoading"
-      @refresh="onRefresh"
-      v-if="historyList.length"
-    >
-      <router-link
-        class="history_single"
-        v-for="item in historyList"
-        :to="`/chat/history/${item.orderNo}`"
-        :key="item.orderNo"
+    <div class="history_list" v-if="historyData.list.length">
+      <ScrollV
+        pulldown
+        pullup
+        @pullDown="pullDown"
+        @pullUp="pullUp"
+        :data="historyData.list"
       >
-        <li class="top">
-          <p class="top_l">
-            <span class="big">{{ item.targetCoin }}</span>
-            <span class="small">{{ item.sourceCoin }}</span>
-            <span class="icon">
-              <img :src="isBuy(item.position)" alt />
-            </span>
-            <span class="num"
-              >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
-            >
-          </p>
-          <p class="top_btn">
-            <span :class="isColor(item.income)">{{ item.income }}</span>
-            <button>{{ isStatus(item.status) }}</button>
-          </p>
-        </li>
-        <span class="bot">
-          <p class="line-1px">
-            <span>{{ item.tradePrice }}</span>
-            <span>{{ $t("chat").dealPrice }}</span>
-          </p>
-          <p class="line-1px">
-            <span>{{ item.closePrice }}</span>
-            <span>{{ $t("chat").closePrice }}</span>
-          </p>
-          <p class="line-1px">
-            <span>{{ item.stopLoss }}</span>
-            <span>{{ $t("chat").lossPrice }}</span>
-          </p>
-          <p>
-            <span>{{ item.stopProfit }}</span>
-            <span>{{ $t("chat").profitPrice }}</span>
-          </p>
-        </span>
-      </router-link>
-    </van-pull-refresh>
-    <!-- <div class="not_data">没有更多数据</div> -->
+        <router-link
+          class="history_single"
+          v-for="item in historyData.list"
+          :to="`/chat/history/${item.orderNo}`"
+          :key="item.orderNo"
+        >
+          <li class="top">
+            <p class="top_l">
+              <span class="big">{{ item.targetCoin }}</span>
+              <span class="small">{{ item.sourceCoin }}</span>
+              <span class="icon">
+                <img :src="isBuy(item.position)" alt />
+              </span>
+              <span class="num"
+                >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
+              >
+            </p>
+            <p class="top_btn">
+              <span :class="isColor(item.income)">{{ item.income }}</span>
+              <button>{{ isStatus(item.status) }}</button>
+            </p>
+          </li>
+          <span class="bot">
+            <p class="line-1px">
+              <span>{{ item.tradePrice }}</span>
+              <span>{{ $t("chat").dealPrice }}</span>
+            </p>
+            <p class="line-1px">
+              <span>{{ item.closePrice }}</span>
+              <span>{{ $t("chat").closePrice }}</span>
+            </p>
+            <p class="line-1px">
+              <span>{{
+                item.stopLoss
+                  | priceFormat(coinPrecision[item.targetCoin].tickSize)
+              }}</span>
+              <span>{{ $t("chat").lossPrice }}</span>
+            </p>
+            <p>
+              <span>{{
+                item.stopProfit
+                  | priceFormat(coinPrecision[item.targetCoin].tickSize)
+              }}</span>
+              <span>{{ $t("chat").profitPrice }}</span>
+            </p>
+          </span>
+        </router-link>
+      </ScrollV>
+    </div>
     <div v-else class="notData">
       {{ $t("notData") }}
     </div>
@@ -64,39 +73,46 @@
 import NavBar from "components/NavBar";
 import iconBuy from "Images/chat/icon_buy.png";
 import iconSale from "Images/chat/icon_sale.png";
+import ScrollV from "components/Scroll";
 import { mapState } from "vuex";
 export default {
   data() {
     return {
+      coinPrecision: this.$lStore.get("coinPrecision"),
       title: "历史记录（模拟盘）",
-      historyList: [],
+      historyData: { list: [] },
       loading: false,
       finished: false,
-      isLoading: false
+      isLoading: false,
+      pageNo: 1
     };
   },
   computed: {
     ...mapState(["tradeType"])
   },
-  components: { NavBar },
+  components: { NavBar, ScrollV },
   mounted() {
-    this.getHistory();
+    this.getHistory(this.pageNo);
+    alert(document.body.clientHeight);
   },
   methods: {
     clickLeft() {
       this.$router.push("/chat");
     },
-    getHistory() {
-      // /v1/leverageHis/history?pageNo=1&pageSize=10
-      let url = this.tradeType ? "/v1/leverageHis/history" : "/v1/mock/history_list";
+    getHistory(pageNo) {
+      let url = this.tradeType
+        ? "/v1/leverageHis/history"
+        : "/v1/mock/history_list";
       this.$http({
         url: url,
-        data: { pageNo: 1, pageSize: 10 },
+        data: { pageNo, pageSize: 10 },
         method: "get"
       }).then(res => {
-        console.log(res);
         if (res.status == this.STATUS) {
-          this.historyList = res.data.list;
+          if (pageNo != 1) {
+            res.data.list = [...this.historyData.list, ...res.data.list];
+          }
+          this.historyData = res.data;
         }
       });
     },
@@ -122,19 +138,22 @@ export default {
         return "color-green";
       }
     },
-    onLoad() {
+    pullDown(scroll) {
       setTimeout(() => {
-        this.loading = false;
-        this.finished = true;
-        this.$toast("异步更新数据");
-      }, 500);
+        this.getHistory(1);
+        scroll.finishPullDown();
+      }, 300);
     },
-    onRefresh() {
+    pullUp(scroll) {
       setTimeout(() => {
-        this.isLoading = false;
-        this.finished = false;
-        this.$toast("刷新成功");
-      }, 500);
+        if (this.historyData.hasNextPage) {
+          this.pageNo = this.pageNo + 1;
+          this.getHistory(this.pageNo);
+        } else {
+          console.log("到底了");
+        }
+        scroll.finishPullUp();
+      }, 300);
     }
   }
 };

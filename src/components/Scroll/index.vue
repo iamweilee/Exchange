@@ -4,10 +4,16 @@
     <div class="content-bg better-scroll-container">
       <!--如果需要调滚动内容的背景色，则改该节点的背景色-->
       <div v-if="pulldown" class="pulldown-tip">
-        <i class="pull-icon indexicon icon-pull-down" :class="[pulldownTip.rotate]"></i>
-        <span class="tip-content">{{pulldownTip.text}}</span>
+        <i
+          class="pull-icon indexicon icon-pull-down"
+          :class="[pulldownTip.rotate]"
+        ></i>
+        <span class="tip-content">{{ pulldownTip.text }}</span>
       </div>
-      <div v-show="loadingStatus.showIcon || loadingStatus.status" class="loading-pos">
+      <div
+        v-show="loadingStatus.showIcon || loadingStatus.status"
+        class="loading-pos"
+      >
         <div v-show="loadingStatus.showIcon" class="loading-container">
           <div class="cube">
             <div class="side side1"></div>
@@ -18,9 +24,11 @@
             <div class="side side6"></div>
           </div>
         </div>
-        <span class="loading-connecting">{{loadingStatus.status}}</span>
+        <span class="loading-connecting">{{ loadingStatus.status }}</span>
       </div>
-      <slot></slot>
+      <div class="better-scroll-root-list">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -258,7 +266,7 @@ export default {
   },
   watch: {
     // 监听数据的变化，延时refreshDelay时间后调用refresh方法重新计算，保证滚动效果正常
-    data() {
+    data(val) {
       setTimeout(() => {
         this.refresh();
         if (this.scrollToEndFlag) {
@@ -279,9 +287,12 @@ export default {
   border: none !important;
 }
 .better-scroll-root {
-  height: 100%;
+  height: 98%;
   position: relative;
   overflow: hidden;
+  &-list {
+    padding-bottom: 36px;
+  }
   .loading-pos, .pulldown-tip {
     position: absolute;
     left: 0;

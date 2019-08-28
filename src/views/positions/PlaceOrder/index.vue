@@ -17,11 +17,15 @@
             fn: Specialty
           }"
         >
-          切换至专业版
+          切换至{{ isSpecialty() ? "快捷" : "专业" }}版
           <img src="~assets/Images/pos/icon_zy.png" alt />
         </p>
         <div class="order_handle_r">
-          <Select v-model="value" :values="values"></Select>
+          <Select
+            v-model="value"
+            :values="values"
+            @input="changeSelect"
+          ></Select>
         </div>
       </div>
       <div class="order_form">
@@ -32,7 +36,11 @@
           </div>
           <div class="from_single_cont">
             <div class="box" @click="allCustom = true">
-              <input type="number" v-model="inpPrice" />
+              <input
+                type="number"
+                v-model="inpPrice"
+                @input="changeTradePrice"
+              />
               <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
               <img class="add" src="~assets/Images/pos/icon_add.png" alt />
             </div>
@@ -97,11 +105,6 @@
             <div class="from_single_cont_single">
               <div class="left">{{ $t("chat").lossPrice }}</div>
               <div class="box small" @click="isLoss = true">
-                <!-- :value="
-                    (Number(inpPrice) +
-                      (checkCash * checkHand * 0.8) / valRate)
-                      | toFixeds
-                  " -->
                 <input type="text" v-model="inpLoss" />
                 <img
                   class="minus"
@@ -110,19 +113,17 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size" @click.stop>
-                  ≥<em>{{ (inpPrice * 1.002) | toFixeds }}</em>
+                  ≥<em>{{ astrict(inpPrice) }}</em>
                   预计亏损约
-                  <em>{{ checkCash * checkHand * 0.8 }}</em>
+                  <em>{{
+                    exLossProfit(inpPrice, inpLoss, orderData.tradeAmount)
+                  }}</em>
                 </p>
               </div>
             </div>
             <div class="from_single_cont_single">
               <div class="left">{{ $t("chat").profitPrice }}</div>
               <div class="box small" @click="isProfit = true">
-                <!-- :value="
-                    (inpPrice - (checkCash * checkHand * 0.8) / valRate)
-                      | toFixeds
-                  " -->
                 <input type="text" v-model="inpProfit" />
                 <img
                   class="minus"
@@ -131,9 +132,11 @@
                 />
                 <img class="add" src="~assets/Images/pos/icon_add.png" alt />
                 <p class="box-size" @click.stop>
-                  ≤<em>{{ (inpPrice * 0.998) | toFixeds }}</em>
+                  ≤<em>{{ astrict(inpPrice, true) }}</em>
                   预计盈利约
-                  <em>{{ exLossProfit(inpPrice, inpProfit) }}</em>
+                  <em>{{
+                    exLossProfit(inpPrice, inpProfit, orderData.tradeAmount)
+                  }}</em>
                 </p>
               </div>
             </div>
@@ -190,6 +193,7 @@
 import Select from "components/Select";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { toFixeds } from "common/utli";
+import ScrollV from "components/Scroll";
 export default {
   props: {
     closePic: {
@@ -251,72 +255,120 @@ export default {
   mounted() {
     this._initPage();
   },
-  components: { Select },
+  components: { Select, ScrollV },
   methods: {
     _initPage() {
-      let setingData = this.$lStore.get("setingData"),
-        tradePrice = this.orderPic(this.closePic);
+      let setingData = this.$lStore.get("setingData");
       this.coinPrecision = this.coinData.tickSize;
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;
-      this.setLossProfit(tradePrice);
-      this.initData(tradePrice);
+      this.resetData();
     },
-    initData(tradePrice) {
-      let req = {
-        isDelay: 0, //是否过夜 0否 1是
-        position: this.position, //交易方向0-涨 1-跌
-        poundageAmount: 0, //手续费
-        sourceCoin: "USDT", //交易货币
-        targetCoin: this.coinCode, //目标货币
-        tradeCode: `${this.coinCode}/USDT`, //交易对
-        tradeType: this.value.value, //0-市价 1-限价
-        userId: this.userInfo.userId
-      };
-      //是否过夜 0否 1是
-      req.isDelay = this.isNight ? 1 : 0;
-      //手数比例
-      req.stockRate = this.valRate;
+    //页面显示数据
+    DomData(tradePrice) {
+      let req = {};
+      //下单价格
+      req.tradePrice = tradePrice;
       //保证金
       req.deposit = this.checkHand * this.checkCash;
       //委托量
       req.tradeAmount = this.checkHand * this.valRate;
-      //委托价
-      req.tradePrice = tradePrice;
       //杠杆倍数
       req.leverage = toFixeds((tradePrice * this.valRate) / this.checkCash);
       //手续费
       req.poundageAmount = toFixeds(
         (tradePrice * req.tradeAmount - req.deposit) * 0.003
       );
-
-      //止盈
-      req.stopProfit = toFixeds(
-        tradePrice - (0.8 * req.deposit) / this.valRate,
-        this.coinPrecision
-      );
-      //止损
-      req.stopLoss = toFixeds(
-        tradePrice + (0.8 * req.deposit) / this.valRate,
-        this.coinPrecision
-      );
-
+      //止盈止损函数
+      let lossProfit = this.fullStop(req);
+      this.inpLoss = lossProfit.inpLoss;
+      this.inpProfit = lossProfit.inpProfit;
       this.orderData = req;
-      return req;
     },
-    btnText() {
-      switch (this.position) {
-        case 0:
-          return `${this.value.text}买涨 `;
-        case 1:
-          return `${this.value.text}买跌 `;
+    //页面显示预计盈亏
+    exLossProfit(tradePrice, price) {
+      //下单价与止盈止损的差值
+      let chazhi = Math.abs(tradePrice - price);
+      return toFixeds(chazhi * this.orderData.tradeAmount);
+    },
+    //页面显示止盈止损价
+    fullStop(req) {
+      let inpLoss, inpProfit;
+      if (this.position == 1) {
+        //跌
+        if (!this.isLoss) {
+          inpLoss = toFixeds(
+            req.tradePrice + (req.deposit * 0.8) / req.tradeAmount,
+            this.coinPrecision
+          );
+        } else {
+          inpLoss = this.inpLoss;
+        }
+        if (!this.isProfit) {
+          inpProfit = toFixeds(
+            req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
+            this.coinPrecision
+          );
+        } else {
+          inpProfit = this.inpProfit;
+        }
+      } else {
+        //涨
+        if (!this.isLoss) {
+          inpLoss = toFixeds(
+            req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
+            this.coinPrecision
+          );
+        } else {
+          inpLoss = this.inpLoss;
+        }
+        if (!this.isProfit) {
+          inpProfit = toFixeds(
+            req.tradePrice + (req.deposit * 0.8) / req.tradeAmount,
+            this.coinPrecision
+          );
+        } else {
+          inpProfit = this.inpProfit;
+        }
+      }
+      return { inpLoss, inpProfit };
+    },
+    // 页面显示下单价格限制
+    orderPic(position) {
+      if (position) {
+        return toFixeds(
+          this.closePic + this.coinData.offset,
+          this.coinPrecision
+        );
+      } else {
+        return toFixeds(
+          this.closePic - this.coinData.offset,
+          this.coinPrecision
+        );
+      }
+    },
+    // 止盈止损限制值
+    astrict(price, type) {
+      if (this.position) {
+        if (type) {
+          return Number(price) - Number(this.coinData.offset) * 2;
+        } else {
+          return Number(price) + Number(this.coinData.offset);
+        }
+      } else {
+        if (type) {
+          return Number(price) + Number(this.coinData.offset);
+        } else {
+          return Number(price) - Number(this.coinData.offset) * 2;
+        }
       }
     },
     //下单函数
     placeOrder(tradePrice) {
-      let req = this.initData(tradePrice),
+      let req = this.placeOrderData(tradePrice),
         url = "";
+      console.log(req);
       if (this.tradeType) {
         url =
           this.value.value == 1
@@ -338,7 +390,7 @@ export default {
           this.succeedOrder(req);
           this.getBanlace();
         }
-        console.log(res);
+        // console.log(res);
       });
     },
     //获取socket数据
@@ -366,68 +418,101 @@ export default {
     //选择快捷还是专业
     Specialty() {
       this.title = this.title == "快捷" ? "专业" : "快捷";
+      this.resetData();
     },
-    // 下单价格限制
-    orderPic(position) {
-      if (position) {
-        return toFixeds(
-          this.closePic + this.coinData.offset,
-          this.coinPrecision
-        );
-      } else {
-        return toFixeds(
-          this.closePic - this.coinData.offset,
-          this.coinPrecision
-        );
-      }
-    },
+    //点击手数&保证金
     handClick(item, type) {
       this[type] = item;
+      this.DomData(this.inpPrice);
     },
-    setLossProfit(tradePrice) {
-      if (this.value.value == 1) {
-        if (this.position == 1) {
-          tradePrice = tradePrice + this.coinData.offset;
-        } else {
-          tradePrice = tradePrice - this.coinData.offset;
-        }
-      }
-      this.inpPrice = tradePrice;
-      //   console.log(this.isLoss, this.isProfit);
-      if (!this.isLoss) {
-        this.inpLoss = toFixeds(
-          tradePrice + (this.checkCash * this.checkHand * 0.8) / this.valRate,
-          this.coinPrecision
-        );
-      }
-      if (!this.isProfit) {
-        this.inpProfit = toFixeds(
-          tradePrice - (this.checkCash * this.checkHand * 0.8) / this.valRate,
-          this.coinPrecision
-        );
-      }
+    //监听下单输入框
+    changeTradePrice(val) {
+      console.log(this.inpPrice);
+      this.DomData(this.inpPrice);
     },
-
-    //预计盈亏
-    exLossProfit(tradePrice, price) {
+    //下单数据二次计算
+    placeOrderData(tradePrice) {
+      let req = {
+        position: this.position, //交易方向0-涨 1-跌
+        poundageAmount: 0, //手续费
+        sourceCoin: "USDT", //交易货币
+        targetCoin: this.coinCode, //目标货币
+        tradeCode: `${this.coinCode}/USDT`, //交易对
+        tradeType: this.value.value, //0-市价 1-限价
+        userId: this.userInfo.userId
+      };
+      //是否过夜 0否 1是
+      req.isDelay = this.isNight ? 1 : 0;
+      //手数比例
+      req.stockRate = this.valRate;
       //保证金
-      let deposit = this.checkHand * this.checkCash,
-        bili = tradePrice / deposit,
-        chazhi = Math.abs(tradePrice - price),
-        bili1 = chazhi / bili,
-        leverage = (this.closePic * this.valRate) / this.checkCash;
-      // console.log(bili,chazhi,bili1,leverage)
-      return toFixeds(bili1 * leverage);
+      req.deposit = this.checkHand * this.checkCash;
+      //委托量
+      req.tradeAmount = this.checkHand * this.valRate;
+      //下单价格
+      req.tradePrice = tradePrice;
+      //杠杆倍数
+      req.leverage = toFixeds((tradePrice * this.valRate) / this.checkCash);
+      //手续费
+      req.poundageAmount = toFixeds(
+        (tradePrice * req.tradeAmount - req.deposit) * 0.003
+      );
+      let lossProfit = this.fullStop(req);
+      //止盈
+      req.stopProfit = lossProfit.inpProfit;
+      //止损
+      req.stopLoss = lossProfit.inpLoss;
+      return req;
+    },
+    //下单按钮数字
+    btnText() {
+      switch (this.position) {
+        case 0:
+          return `${this.value.text}买涨 `;
+        case 1:
+          return `${this.value.text}买跌 `;
+      }
+    },
+    changeSelect(val) {
+      this.resetData();
+    },
+    //切换 数据格式化
+    resetData() {
+      let tradePrice = toFixeds(this.initTradePrice(this.closePic));
+      this.freeShow = false; //点击保证金
+      this.isNight = false; //是否过夜
+      this.isLossProfit = false; //是否设置盈损
+      this.allCustom = false; //是否自己填入下单价格
+      this.isProfit = false; //是否自己填入止盈价格
+      this.isLoss = false; //是否自己填入止损价格
+      this.inpPrice = tradePrice;
+      this.DomData(tradePrice);
+    },
+    //initTradePrice 初始化下单价
+    initTradePrice(tradePrice) {
+      if (this.value.value == 1) {
+        tradePrice =
+          this.position == 1
+            ? tradePrice + this.coinData.offset
+            : tradePrice - this.coinData.offset;
+      } else {
+        tradePrice =
+          this.position == 1 ? tradePrice * 1.0003 : tradePrice * 0.9997;
+      }
+      return tradePrice;
     },
     ...mapActions(["getBanlace"])
   },
   watch: {
     closePic(val) {
-      this.initData(val);
       if (!this.allCustom) {
-        // let tradePrice = toFixeds(val * 1.0006, this.coinPrecision);
-        this.setLossProfit(val);
+        let tradePrice = toFixeds(this.initTradePrice(val));
+        this.inpPrice = tradePrice;
+        this.DomData(tradePrice);
       }
+    },
+    $route(to) {
+      this._initPage();
     }
   }
 };

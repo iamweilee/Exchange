@@ -43,9 +43,9 @@
           <div :style="styls" class="tabs_line"></div>
         </div>
         <div class="cont">
-          <transition :name="transitionName">
+          <!-- <transition :name="transitionName"> -->
             <router-view ref="child" :tradeType="tradeType" :showDialog="showDialog" />
-          </transition>
+          <!-- </transition> -->
         </div>
       </div>
     </div>
@@ -70,7 +70,6 @@ export default {
     return {
       active: 0,
       styls: { left: 0 },
-      transitionName: "slide-left",
       dialogData: {},
       currentPrice: 0
     };
@@ -115,14 +114,14 @@ export default {
     },
     ...mapActions(["getBanlace"])
   },
-  watch: {
-    $route(to, from) {
-      let toName = to.name;
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-    }
-  }
+//   watch: {
+//     $route(to, from) {
+//       let toName = to.name;
+//       const toIndex = to.meta.id;
+//       const fromIndex = from.meta.id;
+//       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+//     }
+//   }
 };
 </script>
 

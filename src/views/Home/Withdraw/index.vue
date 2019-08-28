@@ -1,10 +1,10 @@
 <template>
   <div class="otc">
-    <NavBar :title="title" fixed showL @clickLeft="clickLeft"/>
+    <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
     <div class="otc_wrapper">
-      <transition :name="transitionName">
-        <router-view/>
-      </transition>
+      <!-- <transition :name="transitionName"> -->
+      <router-view />
+      <!-- </transition> -->
     </div>
   </div>
 </template>
@@ -14,7 +14,7 @@ import NavBar from "components/NavBar/Switch";
 export default {
   data() {
     return {
-      transitionName: "slide-left",
+      //   transitionName: "slide-left",
       title: [
         { title: "OTC交易", url: "/Withdraw", left: 0 },
         { title: "钱包转账", url: "/Withdraw/wallet", left: 1 }
@@ -27,14 +27,14 @@ export default {
     clickLeft() {
       this.$router.push("/");
     }
-  },
-  watch: {
-    $route(to, from) {
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-    }
   }
+  //   watch: {
+  //     $route(to, from) {
+  //       const toIndex = to.meta.id;
+  //       const fromIndex = from.meta.id;
+  //       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+  //     }
+  //   }
 };
 </script>
 

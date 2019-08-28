@@ -53,7 +53,7 @@ export default {
       timer: null,
       fromData: {
         phone: "",
-        code: "123456",
+        code: "",
         pwd: ""
       },
       defaultData: [{ text: "86(中国)", value: "86" }],

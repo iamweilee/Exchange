@@ -19,9 +19,9 @@
     </div>
     <div class="from">
       <div class="from_wrap">
-        <transition :name="transitionName">
-          <router-view ref="from" />
-        </transition>
+        <!-- <transition :name="transitionName"> -->
+        <router-view ref="from" />
+        <!-- </transition> -->
       </div>
       <div class="from_p">
         <button class="from_btn" :disabled="isClick" @click="subMit">
@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       isClick: false, //登录按钮是否可点击
-      transitionName: "slide-left",
+      //   transitionName: "slide-left",
       type: this.$route.name
     };
   },
@@ -126,10 +126,10 @@ export default {
   watch: {
     $route(to, from) {
       let toName = to.name;
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
+      //   const toIndex = to.meta.id;
+      //   const fromIndex = from.meta.id;
       this.type = toName;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+      //   this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
     }
   }
 };

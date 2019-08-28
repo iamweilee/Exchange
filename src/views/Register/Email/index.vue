@@ -38,7 +38,7 @@ export default {
       timer: null,
       fromData: {
         email: "",
-        code: "123456",
+        code: "",
         pwd: ""
       }
     };

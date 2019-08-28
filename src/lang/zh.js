@@ -89,6 +89,7 @@ module.exports = {
     chat: {
         title: "我的持仓",
         historyTitle: "历史记录（模拟盘）",
+        historyTitles: "历史记录",
         DetailTitle: "持仓详情",
         rechargeBtn: "立即充币",
         current: "可用保证金",

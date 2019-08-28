@@ -5,9 +5,9 @@
       <router-link to="/me/pwd">修改密码</router-link>
       <router-link to="/me/pwd/reset">重置密码</router-link>
     </p>
-    <transition :name="transitionName">
-      <router-view />
-    </transition>
+    <!-- <transition :name="transitionName"> -->
+    <router-view />
+    <!-- </transition> -->
   </div>
 </template>
 
@@ -29,7 +29,6 @@ export default {
     }
   },
   methods: {
-   
     clickLeft() {
       this.$router.push("/me/security");
     }
@@ -42,9 +41,9 @@ export default {
       } else {
         this.title = "修改密码";
       }
-      const toIndex = to.meta.id;
-      const fromIndex = from.meta.id;
-      this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+      //   const toIndex = to.meta.id;
+      //   const fromIndex = from.meta.id;
+      //   this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
     }
   }
 };

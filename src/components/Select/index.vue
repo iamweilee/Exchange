@@ -26,6 +26,7 @@
 
 <script>
 import { addEvent, removeEvent, stopEvent } from "common/utli";
+import { debuglog } from "util";
 export default {
   props: {
     values: {
@@ -44,13 +45,16 @@ export default {
   mounted() {},
   methods: {
     checkSel(e, value) {
-      this.$emit("input", value);
-      this.hideSel(e);
+      if (value != this.value) {
+        this.$emit("input", value);
+        this.hideSel(e);
+      }
     },
     showSel(e) {
       this.show = true;
       addEvent(document, "click", this.hideSel);
     },
+
     hideSel(e) {
       let ref = this.$refs.select;
       if (ref && ref.contains(e.target)) {
