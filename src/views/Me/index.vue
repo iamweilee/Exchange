@@ -26,8 +26,8 @@
         <p class="num">{{ usableBalance | priceFormat }}</p>
       </div>
       <div class="me_cont_btn">
-        <button @click="toUrl('/otc')">立即充币</button>
-        <button @click="toUrl('/withdraw')">提币</button>
+        <button :disabled="!tradeType" @click="toUrl('/otc')">立即充币</button>
+        <button :disabled="!tradeType" @click="toUrl('/withdraw')">提币</button>
       </div>
     </div>
     <div class="me_list">

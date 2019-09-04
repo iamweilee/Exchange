@@ -37,7 +37,7 @@
           <p class="recharge_num_r">
             <span>约需：</span>
             <span class="color-red"
-              >￥{{ (inpVal * otcDetail.buyRate) | toFixeds(2) }}</span
+              >￥{{ (inpVal * otcDetail.buyRate) | priceFormat }}</span
             >
           </p>
         </div>
@@ -181,8 +181,25 @@ export default {
 
     //显示充值弹窗
     showSelf(item) {
-      this.show = true;
-      this.otcDetail = item;
+      let _this = this;
+      if (this.bankList.length) {
+        this.show = true;
+        this.otcDetail = item;
+      } else {
+        this.$dialog
+          .confirm({
+            title: "提示",
+            message: "请先绑定银行卡",
+            confirmButtonText: "去绑定",
+            confirmButtonColor: "#2d9ef5"
+          })
+          .then(() => {
+            _this.$router.push("/me/bank/add");
+          })
+          .catch(() => {
+            // on cancel
+          });
+      }
     },
     toAddBank() {
       this.$router.push("/me/bank/add");

@@ -61,7 +61,9 @@ export default {
       data1: arr
     };
     this.pickData = obj;
-    console.log(obj);
+  },
+  destroyed() {
+    clearInterval(this.timer);
   },
   components: { vuePickers },
   methods: {

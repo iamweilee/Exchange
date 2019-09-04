@@ -70,6 +70,7 @@
     <div class="addBank_btn">
       <button @click="addBankCard">开户</button>
     </div>
+
     <vue-pickers
       :link="link"
       :show="show"

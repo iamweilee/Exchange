@@ -2,7 +2,7 @@ export default {
     // 测试地址
     testENV: {
         name: "test",
-        httpApi: "http://114.55.209.191:8183",
+        httpApi: "http://18.239.211.91:8183",
         uploadApi:"http://upload.bit2019.com",
         TVsocket: "ws://114.55.209.191:8195/ws",
     },

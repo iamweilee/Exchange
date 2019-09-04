@@ -25,7 +25,7 @@ export default {
             base: split_symbol[1],
             openTime: to ? to : "",
             interval: resolution, //resolution
-            pageSize: limit ? limit : 200
+            pageSize: limit ? limit : 100
         };
         return http({
             url: "/v1/kline/findList",

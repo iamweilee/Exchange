@@ -16,13 +16,13 @@
             </div>
           </div>
         </div>
-        <button @click="unbind(item.id)" class="unbind">解綁</button>
+        <button @click="unbind(item.id)" class="unbind">解绑</button>
       </div>
     </div>
     <div class="addBtn">
-      <button @click="toAddBank">
+      <p @click="toAddBank">
         <van-icon class="plus_icon" name="plus" />添加银行卡
-      </button>
+      </p>
     </div>
   </div>
 </template>
@@ -61,16 +61,30 @@ export default {
     },
     //解绑银行卡
     unbind(id) {
-      this.$http({
-        url: "/v1/user/card/remove",
-        method: "post",
-        data: { id: id }
-      }).then(res => {
-        if (res.status == this.STATUS) {
-          this.$toast("解绑成功");
-          this.getBankList();
-        }
-      });
+      let _this = this;
+      this.$dialog
+        .confirm({
+          message: "确定解绑此张银行卡?",
+          confirmButtonColor: "#2d9ef5"
+        })
+        .then(() => {
+          _this
+            .$http({
+              url: "/v1/user/card/remove",
+              method: "post",
+              data: { id: 'sdsd'}
+            })
+            .then(res => {
+              if (res.status == _this.STATUS) {
+                _this.$toast("解绑成功");
+                _this.getBankList();
+              }
+            });
+        })
+        .catch(() => {
+            console.log('11111')
+          // on cancel
+        });
     },
     toAddBank() {
       this.$router.push("/me/bank/add");

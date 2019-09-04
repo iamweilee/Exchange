@@ -144,7 +144,7 @@ function isEmail(str, err) {
 }
 function isAccount(str) {
     if (str.trim()) {
-        if (isEmail(str) && isPhone(str)) {
+        if (isEmail(str) && isNum(str)) {
             return "账号为手机号或邮箱！";
         }
         return false;
@@ -156,10 +156,10 @@ function isAccount(str) {
 function isPwd(str, err) {
     if (str.trim()) {
         //密码
-        var reg = /^\w{6,20}$/;
+        var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_]{6,20}$/;
         let isTrue = reg.test(str);
         if (!isTrue) {
-            return err ? err : "密码为6-20位数字，字母，下划线";
+            return err ? err : "密码为 6 - 20 位数字，字母，下划线组合";
         }
         return false;
     } else {

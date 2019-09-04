@@ -23,19 +23,40 @@
       </li>
       <li>
         <p class="label">区块查询</p>
-        <p class="val">{{ intordData.qkcx }}</p>
+        <p
+          class="val"
+          v-clipboard:copy="intordData.qkcx"
+          v-clipboard:success="onSuccess.bind('title', '区块查询')"
+          v-clipboard:error="onError"
+        >
+          {{ intordData.qkcx }}
+        </p>
       </li>
       <li>
         <p class="label">白皮书</p>
-        <p class="val">{{ intordData.bps }}</p>
+        <p
+          class="val"
+          v-clipboard:copy="intordData.bps"
+          v-clipboard:success="onSuccess.bind('title', '白皮书')"
+          v-clipboard:error="onError"
+        >
+          {{ intordData.bps }}
+        </p>
       </li>
       <li>
         <p class="label">官网</p>
-        <p class="val">{{ intordData.gw }}</p>
+        <p
+          class="val"
+          v-clipboard:copy="intordData.gw"
+          v-clipboard:success="onSuccess.bind('title', '官网')"
+          v-clipboard:error="onError"
+        >
+          {{ intordData.gw }}
+        </p>
       </li>
       <li class="letter">
         <p class="label">币种介绍</p>
-        <p class="val">
+        <p class="intord_val">
           {{ intordData.bzjs }}
         </p>
       </li>
@@ -53,14 +74,14 @@ export default {
       }
     }
   },
-  data() {
-    return {};
-  },
-  mounted() {
-    console.log(this.intordData);
-  },
-  components: {},
-  methods: {}
+  methods: {
+    onSuccess(title) {
+      this.$toast(`${title}复制成功`);
+    },
+    onError() {
+      this.$toast("浏览器不支持复制");
+    }
+  }
 };
 </script>
 

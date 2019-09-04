@@ -10,18 +10,18 @@
     .
     <div class="capital_list" v-if="List.length">
       <ul class="capital_single" v-for="(item, index) in List" :key="index">
-        <li class="type">{{ 6 - index }}</li>
+        <li class="type">{{ index + 1 }}</li>
         <li class="num">
-          {{ item.bidsNum | toFixeds(coinPrecision.stepSize) }}
+          {{ item.bidsNum | priceFormat(coinPrecision.stepSize) }}
         </li>
         <li class="price">
-          <p>{{ item.bidsPrice | toFixeds(coinPrecision.tickSize) }}</p>
-          <p>{{ item.asksPrice | toFixeds(coinPrecision.tickSize) }}</p>
+          <p>{{ item.bidsPrice | priceFormat(coinPrecision.tickSize) }}</p>
+          <p>{{ item.asksPrice | priceFormat(coinPrecision.tickSize) }}</p>
         </li>
         <li class="num">
-          {{ item.asksNum | toFixeds(coinPrecision.stepSize) }}
+          {{ item.asksNum | priceFormat(coinPrecision.stepSize) }}
         </li>
-        <li class="type">{{ 6 - index }}</li>
+        <li class="type">{{ index + 1 }}</li>
       </ul>
     </div>
   </div>
@@ -50,7 +50,7 @@ export default {
   methods: {
     _initPage() {
       this.$EventListener.on("TVdepth", this.rederDepth);
-      console.log(this.coinPrecision,'6666666666666');
+      console.log(this.coinPrecision, "6666666666666");
     },
     rederDepth(data) {
       let bids = data.bids,
@@ -63,7 +63,7 @@ export default {
         Obj.asksPrice = asks[i][0];
         Obj.asksNum = asks[i][1];
         Obj.key = "bidsasks" + i;
-        List.push(Obj);
+        List.unshift(Obj);
       }
       this.List = List;
     }

@@ -1,34 +1,43 @@
 <template>
   <div class="login">
-    <router-link tag="div" to="/register" class="title">{{
-      $t("loginReg").reg
-    }}</router-link>
-    <div class="size">
-      <p class="size_top">{{ $t("loginReg").niHao }}</p>
-      <div class="tab">
-        <p class="tab_size">{{ $t("loginReg").welcome }}</p>
-      </div>
+    <div class="title">
+      <router-link to="/" tag="p" class="left">{{
+        $t("tabNav").home
+      }}</router-link>
+      <router-link to="/register" tag="p" class="right">{{
+        $t("loginReg").reg
+      }}</router-link>
     </div>
-    <div class="from">
-      <div class="inp_group border-1px">
-        <input
-          type="text"
-          :placeholder="$t('loginReg').regPlaceholder"
-          v-model="loginData.loginName"
-        />
+    <div class="login_wrap">
+      <div class="size">
+        <p class="size_top">{{ $t("loginReg").niHao }}</p>
+        <div class="tab">
+          <p class="tab_size">{{ $t("loginReg").welcome }}</p>
+        </div>
       </div>
-      <div class="inp_group border-1px">
-        <input
-          type="password"
-          :placeholder="$t('loginReg').pwdPlaceholder"
-          v-model="loginData.loginPwd"
-          @keyup.enter="login"
-        />
+      <div class="from">
+        <div class="inp_group border-1px">
+          <input
+            type="text"
+            :placeholder="$t('loginReg').regPlaceholder"
+            v-model="loginData.loginName"
+          />
+        </div>
+        <div class="inp_group border-1px">
+          <input
+            type="password"
+            :placeholder="$t('loginReg').pwdPlaceholder"
+            v-model="loginData.loginPwd"
+            @keyup.enter="login"
+          />
+        </div>
+        <button class="from_btn" @click="login">
+          {{ $t("loginReg").login }}
+        </button>
+        <router-link tag="p" to="/login" class="from_check">{{
+          $t("loginReg").codeLogin
+        }}</router-link>
       </div>
-      <button class="from_btn" @click="login">{{ $t("loginReg").login }}</button>
-      <router-link tag="p" to="/login" class="from_check"
-        >{{ $t("loginReg").codeLogin }}</router-link
-      >
     </div>
   </div>
 </template>

@@ -10,70 +10,72 @@
     >
       <div slot="right" class="nav_right">客服</div>
     </NavBar>
-    <div class="detail_top">
-      <div class="detail_titel">
-        <h2>付款信息</h2>
-        <p>
-          <span>订单号:</span>
-          <span>{{ detail.tradeId }}</span>
+    <div class="detail_wrap">
+      <div class="detail_top">
+        <div class="detail_titel">
+          <h2>付款信息</h2>
+          <p>
+            <span>订单号:</span>
+            <span>{{ detail.tradeId }}</span>
+          </p>
+        </div>
+        <div class="detail_card">
+          <ul class="cardTop">
+            <li class="cardTop_left">
+              <p>付款金额</p>
+              <p class="big">￥{{ detail.rmbValue | priceFormat }}CNY</p>
+            </li>
+            <li class="cardTop_right">
+              <p>{{ downTime }}</p>
+              <p>{{ detail.status | statusType }}</p>
+            </li>
+          </ul>
+          <ul class="cardBot">
+            <li class="cardBot_left">
+              <p>单价：{{ detail.rmbRate }}CNY/USDT</p>
+              <p>数量：{{ detail.coinAmount }}USDT</p>
+              <p>付款方式：网上银行</p>
+            </li>
+            <li class="cardBot_right">
+              <p>付款姓名：{{ detail.userName }}</p>
+              <p>{{ detail.createTime | dateFormat }}</p>
+            </li>
+          </ul>
+        </div>
+        <p class="card_tips">
+          本订单有效时间为30分钟，您需在20分钟内完成付款并点击我已付款，否则订单自动取消
         </p>
       </div>
-      <div class="detail_card">
-        <ul class="cardTop">
-          <li class="cardTop_left">
-            <p>付款金额</p>
-            <p class="big">￥{{ detail.rmbValue | toFixeds }}CNY</p>
+      <div class="custom_bot_bg"></div>
+      <div class="detail_bot">
+        <h2>转账信息</h2>
+        <ul class="detail_bot_info">
+          <li>
+            <p>收款人姓名</p>
+            <p
+              v-clipboard:copy="detail.otcUserName"
+              v-clipboard:success="onSuccess"
+              v-clipboard:error="onError"
+            >
+              {{ detail.otcUserName }}
+              <button class="copy">复制</button>
+            </p>
           </li>
-          <li class="cardTop_right">
-            <p>{{ downTime }}</p>
-            <p>{{ detail.status | statusType }}</p>
-          </li>
-        </ul>
-        <ul class="cardBot">
-          <li class="cardBot_left">
-            <p>单价：{{ detail.rmbRate }}CNY/USDT</p>
-            <p>数量：{{ detail.coinAmount }}USDT</p>
-            <p>付款方式：网上银行</p>
-          </li>
-          <li class="cardBot_right">
-            <p>付款姓名：{{ detail.userName }}</p>
-            <p>{{ detail.createTime | dateFormat }}</p>
+          <li>
+            <p>农业银行</p>
+            <p
+              v-clipboard:copy="detail.otcBankAccount"
+              v-clipboard:success="onSuccess"
+              v-clipboard:error="onError"
+            >
+              {{ detail.otcBankAccount }}
+              <button class="copy">复制</button>
+            </p>
           </li>
         </ul>
       </div>
-      <p class="card_tips">
-        本订单有效时间为30分钟，您需在20分钟内完成付款并点击我已付款，否则订单自动取消
-      </p>
+      <p class="detail_tips">支付宝转账时请备注您的姓名，否则无法到账</p>
     </div>
-    <div class="custom_bot_bg"></div>
-    <div class="detail_bot">
-      <h2>转账信息</h2>
-      <ul class="detail_bot_info">
-        <li>
-          <p>收款人姓名</p>
-          <p
-            v-clipboard:copy="detail.otcUserName"
-            v-clipboard:success="onSuccess"
-            v-clipboard:error="onError"
-          >
-            {{ detail.otcUserName }}
-            <button class="copy">复制</button>
-          </p>
-        </li>
-        <li>
-          <p>农业银行</p>
-          <p
-            v-clipboard:copy="detail.otcBankAccount"
-            v-clipboard:success="onSuccess"
-            v-clipboard:error="onError"
-          >
-            {{ detail.otcBankAccount }}
-            <button class="copy">复制</button>
-          </p>
-        </li>
-      </ul>
-    </div>
-    <p class="detail_tips">支付宝转账时请备注您的姓名，否则无法到账</p>
     <div class="detail_btn">
       <button
         class="cancel"

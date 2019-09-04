@@ -10,50 +10,56 @@
       showL
       @clickLeft="clickLeft"
     />
-    <div class="hdetail_title">
-      <div class="left">
-        <p>{{ $t("chat").profit }}</p>
-        <button>
-          {{ tradeHandle(orderDetail.tradeType, orderDetail.position) }}
-        </button>
+    <div class="hdetail_wrap">
+      <div class="hdetail_title">
+        <div class="left">
+          <p>{{ $t("chat").profit }}</p>
+          <button>
+            {{ tradeHandle(orderDetail.tradeType, orderDetail.position) }}
+          </button>
+        </div>
+        <div class="right">
+          <p :class="isColor(orderDetail.income)">{{ orderDetail.income }}</p>
+          <p>{{ orderDetail.income }}({{ $t("chat").netProfit }})</p>
+        </div>
       </div>
-      <div class="right">
-        <p :class="isColor(orderDetail.income)">{{ orderDetail.income }}</p>
-        <p>{{orderDetail.income}}({{ $t("chat").netProfit }})</p>
+      <div class="hdetail_info">
+        <ul class="List">
+          <li>
+            <p>{{ $t("chat").dealPrice }}</p>
+            <p>{{ orderDetail.dealPrice | priceFormat(tickSize) }}</p>
+          </li>
+          <li>
+            <p>{{ $t("chat").closePrice }}</p>
+            <p>{{ orderDetail.closePrice | priceFormat(tickSize) }}</p>
+          </li>
+          <li>
+            <p>{{ $t("chat").lossPrice }}</p>
+            <p>{{ orderDetail.stopLoss | priceFormat(tickSize) }}</p>
+          </li>
+          <li>
+            <p>{{ $t("chat").volume }}</p>
+            <p>
+              {{ orderDetail.tradeAmount / orderDetail.stockRate
+              }}{{ $t("hand") }}({{ orderDetail.tradeAmount }}个)
+            </p>
+          </li>
+          <li>
+            <p>{{ $t("chat").deposit }}</p>
+            <p>{{ orderDetail.deposit }}</p>
+          </li>
+        </ul>
       </div>
-    </div>
-    <div class="hdetail_info">
-      <ul class="List">
-        <li>
-          <p>{{ $t("chat").dealPrice }}</p>
-          <p>{{ orderDetail.dealPrice | priceFormat }}</p>
-        </li>
-        <li>
-          <p>{{ $t("chat").closePrice }}</p>
-          <p>0.529</p>
-        </li>
-        <li>
-          <p>{{ $t("chat").lossPrice }}</p>
-          <p>{{ orderDetail.stopLoss | priceFormat }}</p>
-        </li>
-        <li>
-          <p>{{ $t("chat").volume }}</p>
-          <p>
-            {{ orderDetail.tradeAmount / orderDetail.stockRate
-            }}{{ $t("hand") }}({{ orderDetail.tradeAmount }}个)
-          </p>
-        </li>
-        <li>
-          <p>{{ $t("chat").deposit }}</p>
-          <p>{{ orderDetail.deposit }}</p>
-        </li>
-      </ul>
-    </div>
-    <div class="dotted"></div>
-    <div class="hdetail_intord">
-      <p>{{ $t("chat").dealTime }}&nbsp;:&nbsp;{{ orderDetail.createTime }}</p>
-      <p>{{ $t("chat").closeTime }}&nbsp;:&nbsp;{{ orderDetail.closeTime }}</p>
-      <p>{{ $t("chat").orderNo }}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
+      <div class="dotted"></div>
+      <div class="hdetail_intord">
+        <p>
+          {{ $t("chat").dealTime }}&nbsp;:&nbsp;{{ orderDetail.createTime }}
+        </p>
+        <p>
+          {{ $t("chat").closeTime }}&nbsp;:&nbsp;{{ orderDetail.closeTime }}
+        </p>
+        <p>{{ $t("chat").orderNo }}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -64,8 +70,9 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      title: "BTC/USDT (止损平仓)",
-      orderDetail: {}
+      orderDetail: {},
+      coinPrecision: this.$lStore.get("coinPrecision"),
+      tickSize: 2
     };
   },
   mounted() {
@@ -79,15 +86,17 @@ export default {
   },
   methods: {
     getDetail() {
-    let url = this.tradeType ? "/v1/leverageHis/info" : "/v1/mock/order_history_detail";
-        
+      let url = this.tradeType
+        ? "/v1/leverageHis/info"
+        : "/v1/mock/order_history_detail";
+
       this.$http({
         url: url,
         data: { orderNo: this.$route.params.id },
         method: "get"
       }).then(res => {
-        console.log(res);
         if (res.status == this.STATUS) {
+          this.tickSize = this.coinPrecision[res.data.targetCoin].tickSize;
           this.orderDetail = res.data;
         }
       });
@@ -123,6 +132,9 @@ export default {
 <style scoped lang="stylus">
 @import '~assets/stylus/variable';
 .hdetail {
+  &_wrap {
+    subScroll();
+  }
   &_title {
     height: 80px;
     display: flex;

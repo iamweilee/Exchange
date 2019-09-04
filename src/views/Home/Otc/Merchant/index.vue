@@ -20,7 +20,7 @@
                 {{
                   ((item.successService * 100) /
                     (item.successService + item.failService))
-                    | toFixeds
+                    | priceFormat
                 }}%成交量
               </p>
             </div>

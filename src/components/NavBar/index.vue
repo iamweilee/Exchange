@@ -54,7 +54,6 @@ export default {
       e.preventDefault();
     },
     clickRight(e) {
-      console.log("right");
       this.$emit("clickRight");
       e.preventDefault();
     },

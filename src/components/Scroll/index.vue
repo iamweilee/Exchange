@@ -287,11 +287,11 @@ export default {
   border: none !important;
 }
 .better-scroll-root {
-  height: 98%;
+  height: 100%;
   position: relative;
   overflow: hidden;
   &-list {
-    padding-bottom: 36px;
+    // padding-bottom: 36px;
   }
   .loading-pos, .pulldown-tip {
     position: absolute;

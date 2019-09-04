@@ -36,7 +36,7 @@
         placeholder="请设置新密码"
       />
     </div>
-    <p class="from_tips">* 6 - 16 位字母和数字组成</p>
+    <p class="from_tips">* 6 - 20 位数字，字母，下划线组合</p>
     <button
       class="from_btn"
       v-debounce="{
@@ -44,12 +44,13 @@
       }"
       :disabled="isClick"
     >
-      登录
+      重置密码
     </button>
   </div>
 </template>
 
 <script>
+import { isAccount, isPwd, isCode } from "common/TollClass/func";
 import { mapActions } from "vuex";
 export default {
   data() {
@@ -66,10 +67,12 @@ export default {
       }
     };
   },
+  destroyed() {
+    clearInterval(this.timer);
+  },
   components: {},
   methods: {
     resetPwd() {
-      console.log(this.resetData);
       let resetData = JSON.parse(JSON.stringify(this.resetData));
       resetData.password = this.$md5(resetData.password);
       this.$http({
@@ -77,20 +80,24 @@ export default {
         data: resetData,
         method: "put"
       }).then(res => {
-        console.log(res);
-        this.getUserInfo();
+        if (res.status == this.STATUS) {
+          this.getUserInfo();
+        }
       });
     },
     verify() {
-      this.resetData.vertifyCode.trim() && this.resetData.loginName.trim()
-        ? (this.isClick = false)
-        : (this.isClick = true);
+      let codeStr = isCode(this.resetData.vertifyCode),
+        loginNameStr = isAccount(this.resetData.loginName),
+        pwdStr = isPwd(this.resetData.password);
+      codeStr || loginNameStr || pwdStr
+        ? (this.isClick = true)
+        : (this.isClick = false);
     },
     //发送验证
     sendMsg() {
       let _this = this;
       this.sendMsgComm({
-        loginName: this.emailPhone,
+        loginName: this.resetData.loginName,
         codeType: 7,
         fn: _this.$timeSet.bind("edit", _this)
       });

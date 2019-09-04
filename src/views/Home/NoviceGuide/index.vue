@@ -22,13 +22,10 @@
             <p class="left_icon">
               <img :src="item.icon" :alt="item.title" />
             </p>
-            <ul class="right_cont border-1px">
+            <ul class="right_cont border-1px" @click="toSwiper">
               <li class="right_cont_size">
                 <h3>{{ item.title }}</h3>
                 <p>{{ item.content }}</p>
-              </li>
-              <li class="right_cont_more" @click="toSwiper">
-                <button>{{ $t("more") }}</button>
               </li>
             </ul>
           </div>

@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <div class="main">
-      <!-- <transition :name="transitionName"> -->
-      <router-view class="main_wrapper" />
-      <!-- </transition> -->
-    </div>
+    <router-view class="main" />
     <router-view name="mainfooter"></router-view>
   </div>
 </template>
@@ -144,11 +140,13 @@ export default {
 #app {
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
   .main {
-    &_wrapper {
-      width: 100%;
-    }
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
   }
 }
 </style>

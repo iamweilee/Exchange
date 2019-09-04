@@ -19,10 +19,12 @@
     <van-dialog
       v-model="show"
       title="修改昵称"
+      :overlay="false"
       class="customDialog"
       confirmButtonText="修改"
       :beforeClose="editUserName"
       confirmButtonColor="#2d9ef5"
+      showCancelButton
     >
       <div class="inputGroup">
         <input type="text" v-model="nickName" />
@@ -53,19 +55,29 @@ export default {
       console.log(e);
     },
     editUserName(action, done) {
-      this.$http({
-        url: "/v1/user/update_nick_name",
-        data: {
-          nickName: this.nickName,
-          userId: this.userInfo.userId
-        },
-        method: "put"
-      }).then(res => {
-        if (res.status == this.STATUS) {
-          this.getUserInfo();
-          done();
-        }
-      });
+      console.log(action);
+      if (action == "confirm") {
+        this.$http({
+          url: "/v1/user/update_nick_name",
+          data: {
+            nickName: this.nickName,
+            userId: this.userInfo.userId
+          },
+          method: "put"
+        })
+          .then(res => {
+            if (res.status == this.STATUS) {
+              this.getUserInfo();
+              done();
+            }
+          })
+          .catch(err => {
+            this.$toast(err.message);
+            done(false);
+          });
+      } else {
+        done();
+      }
     },
     //显示修改dialog
     showDialog() {
@@ -80,8 +92,8 @@ export default {
       this.$http({
         url: "/v1/upload",
         method: "post",
-        data: _FormData,
-        baseApi: "upload"
+        data: _FormData
+        // baseApi: "upload"
       }).then(res => {
         if (res.status == this.STATUS) {
           this.setAvatar(res.data.relativePath);

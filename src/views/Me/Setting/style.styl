@@ -1,7 +1,9 @@
 @import '~assets/stylus/variable.styl';
 .setting {
     background-color: $bgMain;
-    height: 100%;
+    &_wrap {
+        subScroll();
+    }
     &_list {
         background-color: $write;
         margin-bottom: 10px;

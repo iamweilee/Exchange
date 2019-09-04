@@ -1,15 +1,17 @@
 <template>
   <div class="home">
-    <div class="home_top container">
-      <HomeHead />
-      <Swipe v-if="bannerList.length" :bannerList="bannerList" />
-      <ModulInfo />
-      <Notice />
-      <Coin :coinList="coinList" />
+    <HomeHead />
+    <div class="home_wrapper">
+      <div class="home_top container">
+        <Swipe v-if="bannerList.length" :bannerList="bannerList" />
+        <ModulInfo />
+        <Notice />
+        <Coin :coinList="coinList" />
+      </div>
+      <Legal />
+      <News />
+      <Tips />
     </div>
-    <Legal />
-    <News />
-    <Tips />
   </div>
 </template>
 
@@ -24,7 +26,6 @@ import Legal from "components/Home/Legal";
 import News from "components/Home/News";
 import Tips from "components/Tips";
 import { dateFormat } from "common/utli";
-import { setTimeout } from "timers";
 export default {
   data() {
     return {

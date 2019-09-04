@@ -198,6 +198,7 @@ module.exports = {
     cutFake: "切换至实盘",
     cutReal: "切换至模拟盘",
     real: "模拟盘",
+    reals: "（模拟盘）",
     fake: "实盘",
     more: "更多",
     cancel: "取消"

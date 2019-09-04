@@ -219,6 +219,12 @@ const router = new Router({
                     name: "ChatList",
                     meta: { id: 4.1 },
                     component: () => import("views/Chat/List")
+                },
+                {
+                    path: "/chat/history", //持仓历史
+                    name: "ChatHistory",
+                    meta: { id: 4.2 },
+                    component: () => import("views/Chat/History")
                 }
             ]
         },
@@ -228,12 +234,7 @@ const router = new Router({
             meta: { id: 4.3 },
             component: () => import("views/Chat/HoldDetail")
         },
-        {
-            path: "/chat/history", //持仓历史
-            name: "ChatHistory",
-            meta: { id: 4.2 },
-            component: () => import("views/Chat/History")
-        },
+
         {
             path: "/chat/history/:id", //持仓历史
             name: "ChatHistoryDetail",
@@ -375,10 +376,7 @@ const router = new Router({
             path: "/me/user", //我的
             name: "User",
             meta: { id: 5.6 },
-            components: {
-                default: () => import("views/Me/User"),
-                mainfooter: Footer
-            }
+            component: () => import("views/Me/User")
         },
         {
             path: "/intord/:type", //所有介绍

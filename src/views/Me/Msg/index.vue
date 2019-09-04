@@ -1,7 +1,7 @@
 <template>
-  <div class="msg">
+  <div class="meMsg">
     <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
-    <div class="msg_wrapper">
+    <div class="meMsg_wrapper">
       <!-- <transition :name="transitionName"> -->
       <router-view />
       <!-- </transition> -->

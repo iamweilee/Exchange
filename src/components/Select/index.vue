@@ -1,7 +1,7 @@
 <template>
-  <div class="selectWrap">
-    <div class="selectWrap_inp" ref="select" @click="showSel">
-      <input readonly :value="value.text" />
+  <div class="customSelect">
+    <div class="customSelect_inp" ref="select" @click="showSel">
+      <input disabled :value="value.text" />
       <img
         :class="show && 'rotate'"
         src="~assets/Images/pos/icon_down.png"
@@ -9,7 +9,7 @@
       />
     </div>
     <transition name="fade">
-      <ul class="selectWrap_list" v-if="show">
+      <ul class="customSelect_list" v-if="show">
         <li
           v-for="item in values"
           :key="item.value"
@@ -69,7 +69,7 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.selectWrap {
+.customSelect {
   width: 100%;
   height: 100%;
   font-size: 14px;
@@ -83,6 +83,12 @@ export default {
       border: none;
       font-size: 14px;
       background-color: transparent;
+      &:disabled {
+        color: $write;
+        -webkit-text-fill-color: $write;
+        -webkit-opacity: 1;
+        opacity: 1;
+      }
     }
     img {
       width: 18px;

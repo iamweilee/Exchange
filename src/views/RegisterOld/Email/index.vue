@@ -34,6 +34,9 @@ export default {
       }
     };
   },
+  destroyed() {
+    clearInterval(this.timer);
+  },
   components: {},
   methods: {
     //发送验证

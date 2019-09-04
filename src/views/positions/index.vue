@@ -4,7 +4,10 @@
       :title="`${symbol}${tradeType ? '' : `(${$t('real')})`}`"
       fixed
       showL
+      showR
+      right="持仓"
       @clickLeft="clickLeft"
+      @clickRight="clickRight"
       @handleClick="showSelect"
     />
     <van-popup v-model="show" position="top" @close="closeSelect">
@@ -15,6 +18,7 @@
             v-for="item in List"
             @click="select(item.symbol)"
             :key="item.symbol"
+            :class="coinCode == item.symbol && 'active'"
           >
             <p class="coin">{{ item.symbol }}/USDT</p>
             <p class="price">
@@ -192,22 +196,6 @@
           <Intord v-if="tabsType == 'Intord'" :intordData="intordData" />
         </div>
       </div>
-      <div class="handWrap">
-        <button @click="showOrderHandle(1)">
-          {{ $t("pos").buyFall }}
-          {{
-            (detailData.close * 1.0003)
-              | priceFormat(coinPrecision[coinCode].tickSize)
-          }}
-        </button>
-        <button @click="showOrderHandle(0)">
-          {{ $t("pos").buyRise }}
-          {{
-            (detailData.close * 0.9997)
-              | priceFormat(coinPrecision[coinCode].tickSize)
-          }}
-        </button>
-      </div>
     </div>
     <!-- <van-popup v-model="showOrder" position="bottom" :overlay="false"> -->
     <PlaceOrder
@@ -219,6 +207,22 @@
       :succeedOrder="succeedOrder"
       :coinData="coinPrecision[coinCode]"
     />
+    <div class="handWrap">
+      <button @click="showOrderHandle(1)">
+        {{ $t("pos").buyFall }}
+        {{
+          (detailData.close * 1.0003)
+            | priceFormat(coinPrecision[coinCode].tickSize)
+        }}
+      </button>
+      <button @click="showOrderHandle(0)">
+        {{ $t("pos").buyRise }}
+        {{
+          (detailData.close * 0.9997)
+            | priceFormat(coinPrecision[coinCode].tickSize)
+        }}
+      </button>
+    </div>
     <!-- </van-popup> -->
     <van-dialog
       closeOnClickOverlay
@@ -282,6 +286,7 @@ export default {
     this._initPage();
   },
   beforeDestroy() {
+    document.body.style = "";
     this.$EventListener.off("TVdetail", this.renderDetail);
     this.$EventListener.off("TVkline", klineLastBar);
     this.$EventListener.fire("SendMsg", {});
@@ -295,13 +300,15 @@ export default {
   },
   methods: {
     _initPage() {
-      this.initSocket();
+      document.body.style.backgroundColor = "#1B212D";
+
       if (!this.$lStore.get("desc")[this.$route.params.coinCode]) {
         this.intordData = this.$lStore.get("desc")["BTC"];
       } else {
         this.intordData = this.$lStore.get("desc")[this.$route.params.coinCode];
       }
       this.coinCode = this.$route.params.coinCode;
+      this.initSocket();
     },
     beforeClose(action, done) {
       if (action == "confirm") {
@@ -332,7 +339,7 @@ export default {
     },
     //更新头部价格成交量
     renderDetail(data) {
-      //   console.log(this.symbol,data.symbol);
+      console.log(this.symbol, data.symbol);
       if (data.symbol == this.symbol) {
         this.detailData = data;
       }
@@ -367,6 +374,9 @@ export default {
     },
     clickLeft() {
       this.$router.push("/lever");
+    },
+    clickRight() {
+      this.$router.push("/chat");
     },
     //点击TV的分辨率
     clickBtn(resolution) {
@@ -433,7 +443,6 @@ export default {
   }
 };
 </script>
-
 <style scoped lang="stylus">
 @import './style';
 </style>

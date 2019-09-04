@@ -488,7 +488,7 @@ function priceFormat(nums, extent = 2) {
             nums == 0
                 ? nums
                 : nums.replace(eval(re), "$1").replace(regexp, "$1");
-        return Number(nums).toFixed(extent);
+        return Number(Number(nums).toFixed(extent));
     } else {
         return "--";
     }

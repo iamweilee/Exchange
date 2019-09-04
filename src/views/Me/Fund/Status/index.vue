@@ -1,52 +1,54 @@
 <template>
   <div class="status">
     <NavBar title="订单状态" fixed showL @clickLeft="clickLeft" />
-    <ul class="status_top">
-      <li>
-        <h2>订单信息</h2>
-        <p>{{ detail.status | statusType }}</p>
-      </li>
-      <li>
-        <p>付款金额</p>
-        <p>
-          <span class="big">{{ detail.rmbValue | toFixeds }}</span>
-          <span>CNY</span>
-        </p>
-      </li>
-      <li>
-        <p>单价</p>
-        <p>
-          <span class="color6">{{ detail.rmbRate }}</span>
-          <span>CNY</span>
-        </p>
-      </li>
-      <li>
-        <p>数量</p>
-        <p>
-          <span class="color6">{{ detail.coinAmount }}</span>
-          <span>USDT</span>
-        </p>
-      </li>
-    </ul>
-    <div class="custom_bot_bg"></div>
-    <ul class="status_bot">
-      <li>
-        <p>支付方式</p>
-        <p>银行卡</p>
-      </li>
-      <li>
-        <p>付款人姓名</p>
-        <p>{{ detail.userName }}</p>
-      </li>
-      <li>
-        <p>下单时间</p>
-        <p>{{ detail.createTime | dateFormat }}</p>
-      </li>
-      <li>
-        <p>订单号</p>
-        <p>{{ detail.tradeId }}</p>
-      </li>
-    </ul>
+    <div class="status_wrap">
+      <ul class="status_top">
+        <li>
+          <h2>订单信息</h2>
+          <p>{{ detail.status | statusType }}</p>
+        </li>
+        <li>
+          <p>付款金额</p>
+          <p>
+            <span class="big">{{ detail.rmbValue | priceFormat }}</span>
+            <span>CNY</span>
+          </p>
+        </li>
+        <li>
+          <p>单价</p>
+          <p>
+            <span class="color6">{{ detail.rmbRate }}</span>
+            <span>CNY</span>
+          </p>
+        </li>
+        <li>
+          <p>数量</p>
+          <p>
+            <span class="color6">{{ detail.coinAmount }}</span>
+            <span>USDT</span>
+          </p>
+        </li>
+      </ul>
+      <div class="custom_bot_bg"></div>
+      <ul class="status_bot">
+        <li>
+          <p>支付方式</p>
+          <p>银行卡</p>
+        </li>
+        <li>
+          <p>付款人姓名</p>
+          <p>{{ detail.userName }}</p>
+        </li>
+        <li>
+          <p>下单时间</p>
+          <p>{{ detail.createTime | dateFormat }}</p>
+        </li>
+        <li>
+          <p>订单号</p>
+          <p>{{ detail.tradeId }}</p>
+        </li>
+      </ul>
+    </div>
     <div class="status_btn">
       <button @click="toService">联系客服</button>
     </div>
@@ -95,6 +97,9 @@ export default {
 .status {
   background-color: $write;
   height: 100%;
+  &_wrap {
+    subScroll(46px, 92px);
+  }
   &_top {
     padding: 0 16px;
     height: 162px;
@@ -144,7 +149,7 @@ export default {
     }
   }
   &_btn {
-    padding: 40px 16px;
+    padding: 16px 16px 32px 16px;
     width: 100%;
     position: fixed;
     left: 0;

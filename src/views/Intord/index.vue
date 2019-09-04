@@ -1,9 +1,16 @@
 <template>
   <div class="intord">
-    <NavBar :title="product.title" fixed showL @clickLeft="clickLeft(product.name)"/>
-    <div class="intord_single" v-for="item in product.data" :key="item.id">
-      <p class="intord_single_title">{{item.title}}</p>
-      <p class="intord_single_cont" v-for="(text,index) in item.List" :key="index" v-html="text"></p>
+    <NavBar :title="product.title" showL @clickLeft="clickLeft(product.name)" />
+    <div class="intord_wrap">
+      <div class="intord_single" v-for="item in product.data" :key="item.id">
+        <p class="intord_single_title">{{ item.title }}</p>
+        <p
+          class="intord_single_cont"
+          v-for="(text, index) in item.List"
+          :key="index"
+          v-html="text"
+        ></p>
+      </div>
     </div>
   </div>
 </template>

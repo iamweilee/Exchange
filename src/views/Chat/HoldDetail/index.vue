@@ -6,119 +6,121 @@
       showL
       @clickLeft="clickLeft"
     />
-    <div class="holdD_btn">
-      <ScrollH scrollX :data="btnList">
-        <div class="holdD_btn_scroll">
-          <button
-            v-for="item in btnList"
-            :key="item.title"
-            :class="item.title == resolution && 'active'"
-            @click="checkResolution(item.title)"
-          >
-            {{ item.title }}
-          </button>
+    <div class="holdD_wrap">
+      <div class="holdD_btn">
+        <ScrollH scrollX :data="btnList">
+          <div class="holdD_btn_scroll">
+            <button
+              v-for="item in btnList"
+              :key="item.title"
+              :class="item.title == resolution && 'active'"
+              @click="checkResolution(item.title)"
+            >
+              {{ item.title }}
+            </button>
+          </div>
+        </ScrollH>
+      </div>
+      <div class="holdD_kline">
+        <div class="holdD_kline_container">
+          <Echart ref="echart" :tradeCode="orderDetail.targetCoin" />
         </div>
-      </ScrollH>
-    </div>
-    <div class="holdD_kline">
-      <div class="holdD_kline_container">
-        <Echart ref="echart" :tradeCode="orderDetail.targetCoin" />
       </div>
-    </div>
-    <div class="dotted"></div>
-    <div class="holdD_title">
-      <div class="holdD_title_top">
-        <p>{{ orderDetail.tradeCode }}</p>
-        <p :class="isColor(earnings(orderDetail, socketData.close))">
-          {{ earnings(orderDetail, socketData.close) }}
-        </p>
+      <div class="dotted"></div>
+      <div class="holdD_title">
+        <div class="holdD_title_top">
+          <p>{{ orderDetail.tradeCode }}</p>
+          <p :class="isColor(earnings(orderDetail, socketData.close))">
+            {{ earnings(orderDetail, socketData.close) }}
+          </p>
+        </div>
+        <div class="holdD_title_bot">
+          <p>{{ orderDetail.tradeType == 0 ? $t("rise") : $t("fall") }}</p>
+          <p @click="showProfitLoss = !showProfitLoss">
+            {{ $t("chat").setting }}
+          </p>
+        </div>
       </div>
-      <div class="holdD_title_bot">
-        <p>{{ orderDetail.tradeType == 0 ? $t("rise") : $t("fall") }}</p>
-        <p @click="showProfitLoss = !showProfitLoss">
-          {{ $t("chat").setting }}
-        </p>
+      <div class="holdD_info">
+        <ul class="List">
+          <li>
+            <p>
+              <span>{{ $t("chat").lossPrice }}</span>
+              <span>{{ orderDetail.stopLoss | priceFormat(tickSize) }}</span>
+            </p>
+            <p>
+              <span>{{ $t("chat").currentPrice }}</span>
+              <span>{{ socketData.close | priceFormat(tickSize) }}</span>
+            </p>
+          </li>
+          <li>
+            <p>
+              <span>{{ $t("chat").profitPrice }}</span>
+              <span>{{ orderDetail.stopProfit | priceFormat(tickSize) }}</span>
+            </p>
+            <p>
+              <span>{{ $t("chat").dealPrice }}</span>
+              <span>{{ orderDetail.dealPrice | priceFormat(tickSize) }}</span>
+            </p>
+          </li>
+          <li>
+            <p>
+              <span>{{ $t("chat").leverage }}</span>
+              <span>{{ orderDetail.leverage }}</span>
+            </p>
+            <p>
+              <span>{{ $t("chat").deposit }}</span>
+              <span>{{ orderDetail.deposit }}</span>
+            </p>
+          </li>
+          <li>
+            <p>
+              <span>{{ $t("chat").inventoryFree }}</span>
+              <span>0.529</span>
+            </p>
+            <p>
+              <span>{{ $t("chat").dealMarket }}</span>
+              <span>{{
+                (orderDetail.dealPrice * orderDetail.tradeAmount) | priceFormat
+              }}</span>
+            </p>
+          </li>
+          <li class="List_bot mt_bot">
+            <p>{{ $t("chat").volume }}</p>
+            <p>
+              {{ orderDetail.tradeAmount / orderDetail.stockRate
+              }}{{ $t("hand") }}({{ orderDetail.tradeAmount }}个)
+            </p>
+          </li>
+          <li class="List_bot">
+            <p>{{ $t("freeSyn") }}</p>
+            <p>{{ orderDetail.poundageAmount | priceFormat }}</p>
+          </li>
+        </ul>
       </div>
-    </div>
-    <div class="holdD_info">
-      <ul class="List">
-        <li>
-          <p>
-            <span>{{ $t("chat").lossPrice }}</span>
-            <span>{{ orderDetail.stopLoss | priceFormat(tickSize) }}</span>
-          </p>
-          <p>
-            <span>{{ $t("chat").currentPrice }}</span>
-            <span>{{ socketData.close | priceFormat(tickSize) }}</span>
-          </p>
-        </li>
-        <li>
-          <p>
-            <span>{{ $t("chat").profitPrice }}</span>
-            <span>{{ orderDetail.stopProfit | priceFormat(tickSize) }}</span>
-          </p>
-          <p>
-            <span>{{ $t("chat").dealPrice }}</span>
-            <span>{{ orderDetail.dealPrice | priceFormat(tickSize) }}</span>
-          </p>
-        </li>
-        <li>
-          <p>
-            <span>{{ $t("chat").leverage }}</span>
-            <span>{{ orderDetail.leverage }}</span>
-          </p>
-          <p>
-            <span>{{ $t("chat").deposit }}</span>
-            <span>{{ orderDetail.deposit }}</span>
-          </p>
-        </li>
-        <li>
-          <p>
-            <span>{{ $t("chat").inventoryFree }}</span>
-            <span>0.529</span>
-          </p>
-          <p>
-            <span>{{ $t("chat").dealMarket }}</span>
-            <span>{{
-              (orderDetail.dealPrice * orderDetail.tradeAmount) | priceFormat
-            }}</span>
-          </p>
-        </li>
-        <li class="List_bot mt_bot">
-          <p>{{ $t("chat").volume }}</p>
-          <p>
-            {{ orderDetail.tradeAmount / orderDetail.stockRate
-            }}{{ $t("hand") }}({{ orderDetail.tradeAmount }}个)
-          </p>
-        </li>
-        <li class="List_bot">
-          <p>{{ $t("freeSyn") }}</p>
-          <p>{{ orderDetail.poundageAmount | priceFormat }}</p>
-        </li>
-      </ul>
-    </div>
-    <div class="dotted"></div>
-    <div class="holdD_order">
-      <p>{{ $t("chat").dealTime }}：{{ orderDetail.dealTime }}</p>
-      <p>{{ $t("chat").orderNo }}：{{ orderDetail.orderNo }}</p>
-      <p></p>
-    </div>
-    <div class="dotted"></div>
-    <div class="holdD_night">
-      <div class="holdD_night_left">
-        <p>{{ $t("night") }}</p>
-        <p class="icon_size">
-          <img src="~assets/Images/other/icon_night.png" alt />{{
-            $t("holdTo")
-          }}6:00
-        </p>
+      <div class="dotted"></div>
+      <div class="holdD_order">
+        <p>{{ $t("chat").dealTime }}：{{ orderDetail.dealTime }}</p>
+        <p>{{ $t("chat").orderNo }}：{{ orderDetail.orderNo }}</p>
+        <p></p>
       </div>
-      <van-switch
-        v-model="checked"
-        active-color="#00A7E0"
-        inactive-color="#DEDEDE"
-        size="0.5rem"
-      />
+      <div class="dotted"></div>
+      <div class="holdD_night">
+        <div class="holdD_night_left">
+          <p>{{ $t("night") }}</p>
+          <p class="icon_size">
+            <img src="~assets/Images/other/icon_night.png" alt />{{
+              $t("holdTo")
+            }}6:00
+          </p>
+        </div>
+        <van-switch
+          v-model="checked"
+          active-color="#00A7E0"
+          inactive-color="#DEDEDE"
+          size="0.5rem"
+        />
+      </div>
     </div>
     <div class="holdD_hanle">
       <button>{{ $t("chat").goOrder }}</button>
@@ -191,7 +193,7 @@ import ScrollH from "components/Scroll/ScrollH";
 import NavBar from "components/NavBar";
 import Echart from "components/Echart";
 import CloseOut from "components/CloseOut";
-import { toFixeds, priceFormat } from "common/utli";
+import { priceFormat } from "common/utli";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -266,8 +268,8 @@ export default {
           this.tickSize = tickSize;
           datas[`${res.data.targetCoin.toLowerCase()}usdt-ticker`] = 0;
           datas[`${res.data.targetCoin.toLowerCase()}usdt-kline-15m`] = 0;
-          this.profitPrice = toFixeds(res.data.stopProfit, tickSize);
-          this.lossPrice = toFixeds(res.data.stopLoss, tickSize);
+          this.profitPrice = priceFormat(res.data.stopProfit, tickSize);
+          this.lossPrice = priceFormat(res.data.stopLoss, tickSize);
           this.$EventListener.fire("SendMsg", datas);
         }
       });

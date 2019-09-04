@@ -6,43 +6,45 @@
       showL
       @clickLeft="clickLeft"
     />
-    <p v-if="isMobile()" class="tips">{{ Edit.tips }}</p>
-    <div class="from">
-      <div class="inp_group border-1px">
-        <input
-          type="text"
-          :placeholder="Edit.tipPhone"
-          :disabled="isMobile()"
-          v-model="emailPhone"
+    <div class="Phone_wrap">
+      <p v-if="isMobile()" class="tips">{{ Edit.tips }}</p>
+      <div class="from">
+        <div class="inp_group border-1px">
+          <input
+            type="text"
+            :placeholder="Edit.tipPhone"
+            :disabled="isMobile()"
+            v-model="emailPhone"
+            v-debounce="{
+              fn: verify.bind(arguments, 'edit'),
+              method: 'input'
+            }"
+          />
+        </div>
+        <div class="inp_group border-1px">
+          <input
+            type="text"
+            placeholder="输入验证码"
+            v-debounce="{
+              fn: verify.bind(arguments, 'edit'),
+              method: 'input'
+            }"
+            v-model="emailPhoneCode"
+          />
+          <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
+            {{ sendBtnText }}
+          </button>
+        </div>
+        <button
+          class="from_btn"
           v-debounce="{
-            fn: verify.bind(arguments, 'edit'),
-            method: 'input'
+            fn: step
           }"
-        />
-      </div>
-      <div class="inp_group border-1px">
-        <input
-          type="text"
-          placeholder="输入验证码"
-          v-debounce="{
-            fn: verify.bind(arguments, 'edit'),
-            method: 'input'
-          }"
-          v-model="emailPhoneCode"
-        />
-        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
-          {{ sendBtnText }}
+          :disabled="isClick"
+        >
+          {{ isMobile() ? "下一步" : "确定" }}
         </button>
       </div>
-      <button
-        class="from_btn"
-        v-debounce="{
-          fn: step
-        }"
-        :disabled="isClick"
-      >
-        {{ isMobile() ? "下一步" : "确定" }}
-      </button>
     </div>
   </div>
 </template>

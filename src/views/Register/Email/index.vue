@@ -23,6 +23,7 @@
         placeholder="输入账户密码"
         v-model="fromData.pwd"
       />
+      <p class="inp_tips">* 6 - 20 位数字，字母，下划线组合</p>
     </div>
   </div>
 </template>
@@ -42,6 +43,9 @@ export default {
         pwd: ""
       }
     };
+  },
+  destroyed() {
+    clearInterval(this.timer);
   },
   components: {},
   methods: {

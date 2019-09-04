@@ -1,13 +1,13 @@
 <template>
   <div class="Pwd">
     <NavBar :title="title" fixed showL @clickLeft="clickLeft" />
-    <p class="tab_bar">
-      <router-link to="/me/pwd">修改密码</router-link>
-      <router-link to="/me/pwd/reset">重置密码</router-link>
-    </p>
-    <!-- <transition :name="transitionName"> -->
-    <router-view />
-    <!-- </transition> -->
+    <div class="Phone_wrap">
+      <p class="tab_bar">
+        <router-link to="/me/pwd">修改密码</router-link>
+        <router-link to="/me/pwd/reset">重置密码</router-link>
+      </p>
+      <router-view />
+    </div>
   </div>
 </template>
 

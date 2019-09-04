@@ -1,22 +1,23 @@
 <template>
   <div class="flash">
     <NavBar title="行业快讯" hideBorder fixed showL @clickLeft="clickLeft" />
-    <div class="flash_list" v-for="item in newsData" :key="item.id">
-      <p class="flash_list_title">{{ item.createdAt[0] }} 今日</p>
-      <ul class="List">
-        <li class="List_single">
-          <h2 class="List_single_title">{{ item.title }}</h2>
-          <p class="List_single_content">
-            {{ item.content }}
-          </p>
-          <p class="List_single_handle">
-            <span class="left">{{ item.createdAt[1] }}</span>
-            <a class="right">
-              <span @click="goodBab(item)">
-                <img src="~assets/Images/News/zan.png" alt />
-                {{ item.good }}
-              </span>
-              <!-- <span
+    <div class="flash_wrap">
+      <div class="flash_list" v-for="item in newsData" :key="item.id">
+        <p class="flash_list_title">{{ item.createdAt[0] }} 今日</p>
+        <ul class="List">
+          <li class="List_single">
+            <h2 class="List_single_title">{{ item.title }}</h2>
+            <p class="List_single_content">
+              {{ item.content }}
+            </p>
+            <p class="List_single_handle">
+              <span class="left">{{ item.createdAt[1] }}</span>
+              <a class="right">
+                <span @click="goodBab(item)">
+                  <img src="~assets/Images/News/zan.png" alt />
+                  {{ item.good }}
+                </span>
+                <!-- <span
                 v-debounce="{
                   fn: goodBab.bind('bad', item, 'bad')
                 }"
@@ -24,10 +25,11 @@
                 <img src="~assets/Images/News/not_cai.png" alt />
                 {{ item.bad }}
               </span> -->
-            </a>
-          </p>
-        </li>
-      </ul>
+              </a>
+            </p>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>

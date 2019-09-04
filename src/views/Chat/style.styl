@@ -1,13 +1,11 @@
 @import '~assets/stylus/variable';
 .chat {
-    width: 100%;
     background-color: $bgMain;
     &_wrap {
-        height: calc(100vh - 96px);
         display: flex;
         flex-direction: column;
         &_top {
-            height: 234px;
+            height: 226px;
             padding: 16px 20px 0 20px;
             background-color: $write;
             .card {
@@ -42,8 +40,8 @@
                 }
             }
             .list {
-                height: 88px;
-                padding-top: 16px;
+                height: 80px;
+                padding-top: 8px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -107,12 +105,9 @@
                 }
             }
             .cont {
-                position: relative;
-                z-index: 2;
-                overflow-y: auto;
-                height: calc(100% - 66px);
+                subScroll(332px, 52px);
+                background-color: $write;
             }
         }
     }
-    
 }

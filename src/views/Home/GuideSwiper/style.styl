@@ -3,12 +3,57 @@
     width: 100%;
     min-height: 100%;
     background-color: $color9;
+    position: relative;
+    .back_left {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 76px;
+        width: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $write;
+        cursor: pointer;
+        z-index: 10;
+        .back_icon {
+            font-size: 20px;
+        }
+    }
+    .custom-indicator {
+        position: absolute;
+        top: 41px;
+        left: 0;
+        width: 100%;
+        height: 78px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        z-index: 9;
+        .title {
+            color: $write;
+        }
+        .num {
+            margin-top: 4px;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            border: 4px solid $color9;
+            background-color: $write;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $blue;
+        }
+    }
     .guideSwiper {
-        position: relative;
+        subScroll(0, 168px);
         padding-top: 80px;
         &_item {
             width: 100%;
-            height: 555px;
+            height: 100%;
             padding: 16px;
             img {
                 width: 100%;
@@ -17,34 +62,10 @@
         }
         .van-swipe {
             cursor: pointer;
-        }
-        .custom-indicator {
             position: absolute;
-            top: 41px;
-            left: 0;
+            top: 76px;
+            bottom: 11px;
             width: 100%;
-            height: 78px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            z-index: 9;
-            .title {
-                color: $write;
-            }
-            .num {
-                margin-top: 4px;
-                width: 50px;
-                height: 50px;
-                border-radius: 25px;
-                border: 4px solid $color9;
-                background-color: $write;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: $blue;
-            }
         }
         .lrBtn {
             width: 100%;
@@ -53,7 +74,7 @@
             justify-content: center;
             position: absolute;
             left: 0;
-            bottom: -12px;
+            bottom: 0;
             p {
                 cursor: pointer;
                 width: 56px;
@@ -76,9 +97,14 @@
         }
     }
     &_intord {
+        position: absolute;
+        left: 0;
+        bottom: 16px;
+        height: 140px;
         font-size: 15px;
         line-height: 28px;
-        padding: 16px;
+        padding: 0 16px;
         color: $write;
+        overflow-y: scroll;
     }
 }

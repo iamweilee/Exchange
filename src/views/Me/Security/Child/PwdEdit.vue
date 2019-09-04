@@ -22,7 +22,7 @@
         }"
       />
     </div>
-    <p class="from_tips">* 6 - 16 位字母和数字组成</p>
+    <p class="from_tips">* 6 - 20 位数字，字母，下划线组合</p>
     <button
       class="from_btn"
       :disabled="isClick"
@@ -30,12 +30,13 @@
         fn: editPwd
       }"
     >
-      登录
+      修改密码
     </button>
   </div>
 </template>
 
 <script>
+import { isPwd } from "common/TollClass/func";
 import { mapActions } from "vuex";
 export default {
   data() {
@@ -48,27 +49,29 @@ export default {
       }
     };
   },
-  components: {},
   methods: {
     editPwd() {
-      let req = {
-        oldLoginPwd: this.$md5(this.editData.oldLoginPwd),
-        password: this.$md5(this.editData.password),
-        codeType: 7
-      };
-      this.$http({
-        url: "/v1/user/update_login_pwd",
-        data: req,
-        method: "put"
-      }).then(res => {
-        console.log(res);
-        this.getUserInfo();
-      });
+      if (this.editData.oldLoginPwd != this.editData.password) {
+        return this.$toast("两次密码不一致");
+      } else {
+        let req = {
+          oldLoginPwd: this.$md5(this.editData.oldLoginPwd),
+          password: this.$md5(this.editData.password),
+          codeType: 7
+        };
+        this.$http({
+          url: "/v1/user/update_login_pwd",
+          data: req,
+          method: "put"
+        }).then(res => {
+          this.getUserInfo();
+        });
+      }
     },
     verify() {
-      this.editData.oldLoginPwd.trim() && this.editData.password.trim()
-        ? (this.isClick = false)
-        : (this.isClick = true);
+      let errStr = isPwd(this.editData.oldLoginPwd),
+        errStr1 = isPwd(this.editData.password);
+      errStr || errStr1 ? (this.isClick = true) : (this.isClick = false);
     },
     ...mapActions(["getUserInfo"])
   }

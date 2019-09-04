@@ -1,7 +1,6 @@
 import Vue from "vue";
-const _comm = new Vue();
 import { numberFormat } from "./TollClass/func";
-import { toFixeds, toRate, dateFormat, priceFormat, coinPrice } from "./utli";
+import {  toRate, dateFormat, priceFormat, coinPrice } from "./utli";
 import avatar from "Images/avatar.jpg";
 function avatarFun(Img) {
     if (Img) {
@@ -51,7 +50,6 @@ function isMock(tradeType) {
 }
 
 Vue.filter("numberFormat", numberFormat); //数字格式化
-Vue.filter("toFixeds", toFixeds); //保留小数
 Vue.filter("toRate", toRate); //保留小数
 Vue.filter("dateFormat", dateFormat);
 Vue.filter("priceFormat", priceFormat);

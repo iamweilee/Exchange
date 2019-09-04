@@ -1,37 +1,44 @@
 <template>
-  <div class="login">
-    <router-link tag="div" to="/login" class="title">{{
-      $t("loginReg").login
-    }}</router-link>
-    <div class="size">
-      <p class="size_top">{{ $t("loginReg").niHao }}</p>
-      <div class="tab">
-        <p class="tab_size">{{ $t("loginReg").welcomeJoin }}</p>
-        <p class="tab_bar">
-          <router-link to="/register">{{
-            $t("loginReg").phoneReg
-          }}</router-link>
-          <router-link to="/register/email">{{
-            $t("loginReg").emailReg
-          }}</router-link>
-        </p>
-      </div>
+  <div class="register">
+    <div class="title">
+      <router-link to="/" tag="p" class="left">{{
+        $t("tabNav").home
+      }}</router-link>
+      <router-link to="/login" tag="p" class="right">{{
+        $t("loginReg").login
+      }}</router-link>
     </div>
-    <div class="from">
-      <div class="from_wrap">
-        <!-- <transition :name="transitionName"> -->
-        <router-view ref="from" />
-        <!-- </transition> -->
+    <div class="register_wrap">
+      <div class="size">
+        <p class="size_top">{{ $t("loginReg").niHao }}</p>
+        <div class="tab">
+          <p class="tab_size">{{ $t("loginReg").welcomeJoin }}</p>
+          <p class="tab_bar">
+            <router-link to="/register">{{
+              $t("loginReg").phoneReg
+            }}</router-link>
+            <router-link to="/register/email">{{
+              $t("loginReg").emailReg
+            }}</router-link>
+          </p>
+        </div>
       </div>
-      <div class="from_p">
-        <button class="from_btn" :disabled="isClick" @click="subMit">
-          {{ $t("loginReg").reg }}
-        </button>
-        <div class="agreement">
-          <span>{{ $t("loginReg").regDeal }}</span>
-          <router-link to="/intord/protocol" class="color-blue">{{
-            $t("loginReg").Deal
-          }}</router-link>
+      <div class="from">
+        <div class="from_wrap">
+          <!-- <transition :name="transitionName"> -->
+          <router-view ref="from" />
+          <!-- </transition> -->
+        </div>
+        <div class="from_p">
+          <button class="from_btn" :disabled="isClick" @click="subMit">
+            {{ $t("loginReg").reg }}
+          </button>
+          <div class="agreement">
+            <span>{{ $t("loginReg").regDeal }}</span>
+            <router-link to="/intord/protocol" class="color-blue">{{
+              $t("loginReg").Deal
+            }}</router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -40,7 +47,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { isEmail, isPwd, isPhone, isCode } from "common/TollClass/func";
+import { isEmail, isPwd, isCode, isNum } from "common/TollClass/func";
 export default {
   data() {
     return {
@@ -69,7 +76,7 @@ export default {
         errPwd = isPwd(regData.pwd),
         errCode = isCode(regData.code);
       if (Name == "Phone") {
-        let errPhone = isPhone(regData.phone);
+        let errPhone = isNum(regData.phone, "手机号输入有误");
         req = {
           mobileCode: regData.code,
           loginName: regData.phone,
@@ -137,78 +144,85 @@ export default {
 
 <style scoped lang="stylus">
 @import '~assets/stylus/variable.styl';
-.login {
-  width: 100%;
+.register {
+  background-color: $write;
   .title {
-    padding: 11px 16px;
+    padding: 32px 28px 11px 28px;
+    display: flex;
+    justify-content: space-between;
     font-size: 16px;
     color: $blue;
-    text-align: right;
-    margin-bottom: 16px;
-  }
-  .size {
-    color: $color3;
-    padding: 0 28px;
-    &_top {
-      font-size: 30px;
-      margin-bottom: 8px;
+    margin-bottom: 20px;
+    p {
+      cursor: pointer;
     }
-    .tab {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      &_size {
-        font-size: 24px;
+  }
+  &_wrap {
+    subScroll(80px);
+    .size {
+      color: $color3;
+      padding: 0 28px;
+      &_top {
+        font-size: 30px;
+        margin-bottom: 8px;
       }
-      &_bar {
-        a {
-          font-size: 14px;
-          color: $color6;
-          transition: color 0.3s linear;
-          extend-click();
-          &.router-link-exact-active {
-            color: $blue;
-          }
-          &:first-child {
-            margin-right: 12px;
+      .tab {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &_size {
+          font-size: 24px;
+        }
+        &_bar {
+          a {
+            font-size: 14px;
+            color: $color6;
+            transition: color 0.3s linear;
+            extend-click();
+            &.router-link-exact-active {
+              color: $blue;
+            }
+            &:first-child {
+              margin-right: 12px;
+            }
           }
         }
       }
     }
-  }
-  .from {
-    padding: 14px 0;
-    &_wrap {
-      height: 220px;
-      width: 100%;
-    }
-    &_p {
-      padding: 0 28px;
-    }
-    &_btn {
-      margin-top: 50px;
-      width: 319px;
-      height: 44px;
-      background: url('../../assets/Images/regLogin/bg_btn.png') no-repeat center;
-      background-size: 100% 100%;
-      border: none;
-      color: $write;
-      font-size: 16px;
-      line-height: 44px;
-      &:disabled {
-        color: rgba(255, 255, 255, 0.6);
+    .from {
+      padding: 14px 0;
+      &_wrap {
+        height: 220px;
+        width: 100%;
       }
-    }
-    &_check {
-      margin-top: 18px;
-      font-size: 14px;
-      color: $blue;
-    }
-    .agreement {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 14px;
-      color: $color6;
+      &_p {
+        padding: 0 28px;
+      }
+      &_btn {
+        margin-top: 50px;
+        width: 319px;
+        height: 44px;
+        background: url('../../assets/Images/regLogin/bg_btn.png') no-repeat center;
+        background-size: 100% 100%;
+        border: none;
+        color: $write;
+        font-size: 16px;
+        line-height: 44px;
+        &:disabled {
+          color: rgba(255, 255, 255, 0.6);
+        }
+      }
+      &_check {
+        margin-top: 18px;
+        font-size: 14px;
+        color: $blue;
+      }
+      .agreement {
+        margin-top: 18px;
+        text-align: center;
+        font-size: 14px;
+        color: $color6;
+      }
     }
   }
 }

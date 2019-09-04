@@ -1,39 +1,46 @@
 <template>
   <div class="login">
-    <router-link tag="div" to="/register" class="title">{{
-      $t("loginReg").reg
-    }}</router-link>
-    <div class="size">
-      <p class="size_top">{{ $t("loginReg").niHao }}</p>
-      <div class="tab">
-        <p class="tab_size">{{ $t("loginReg").welcome }}</p>
-      </div>
-    </div>
-    <div class="from">
-      <div class="inp_group border-1px">
-        <input
-          type="text"
-          :placeholder="$t('loginReg').regPlaceholder"
-          v-model="loginData.loginName"
-        />
-      </div>
-      <div class="inp_group border-1px">
-        <input
-          type="text"
-          :placeholder="$t('loginReg').codePlaceholder"
-          v-model="loginData.mobileCode"
-          @keyup.enter="login"
-        />
-        <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
-          {{ sendBtnText }}
-        </button>
-      </div>
-      <button class="from_btn" @click="login">
-        {{ $t("loginReg").login }}
-      </button>
-      <router-link tag="p" to="/login/pwd" class="from_check">{{
-        $t("loginReg").pwdLogin
+    <div class="title">
+      <router-link to="/" tag="p" class="left">{{
+        $t("tabNav").home
       }}</router-link>
+      <router-link to="/register" tag="p" class="right">{{
+        $t("loginReg").reg
+      }}</router-link>
+    </div>
+    <div class="login_wrap">
+      <div class="size">
+        <p class="size_top">{{ $t("loginReg").niHao }}</p>
+        <div class="tab">
+          <p class="tab_size">{{ $t("loginReg").welcome }}</p>
+        </div>
+      </div>
+      <div class="from">
+        <div class="inp_group border-1px">
+          <input
+            type="text"
+            :placeholder="$t('loginReg').regPlaceholder"
+            v-model="loginData.loginName"
+          />
+        </div>
+        <div class="inp_group border-1px">
+          <input
+            type="text"
+            :placeholder="$t('loginReg').codePlaceholder"
+            v-model="loginData.mobileCode"
+            @keyup.enter="login"
+          />
+          <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
+            {{ sendBtnText }}
+          </button>
+        </div>
+        <button class="from_btn" @click="login">
+          {{ $t("loginReg").login }}
+        </button>
+        <router-link tag="p" to="/login/pwd" class="from_check">{{
+          $t("loginReg").pwdLogin
+        }}</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -59,6 +66,9 @@ export default {
     };
   },
   mounted() {},
+  destroyed() {
+    clearInterval(this.timer);
+  },
   components: {},
   methods: {
     login() {

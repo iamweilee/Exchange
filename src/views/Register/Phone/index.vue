@@ -28,6 +28,7 @@
         placeholder="输入账户密码"
         v-model="fromData.pwd"
       />
+      <p class="inp_tips">* 6 - 20 位数字，字母，下划线组合</p>
     </div>
     <vue-pickers
       :show="show"
@@ -70,7 +71,9 @@ export default {
       data1: arr
     };
     this.pickData = obj;
-    console.log(obj);
+  },
+  destroyed() {
+    clearInterval(this.timer);
   },
   components: { vuePickers },
   methods: {
@@ -88,7 +91,7 @@ export default {
         errPhone = isPhone(_this.fromData.phone);
       if (errPhone) {
         this.$toast(errPhone);
-        return
+        return;
       }
       this.sendMsgComm({
         loginName: this.fromData.phone,

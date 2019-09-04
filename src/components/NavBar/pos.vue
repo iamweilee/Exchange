@@ -2,13 +2,18 @@
   <div class="nav_wrapper">
     <div class="nav_bar nav_fixed">
       <div class="nav_bar_l">
-        <van-icon v-show="showL" class="back_icon" @click="clickLeft" name="arrow-left"/>
+        <van-icon
+          v-show="showL"
+          class="back_icon"
+          @click="clickLeft"
+          name="arrow-left"
+        />
       </div>
       <div class="nav_bar_c" @click="handleClick">
-        {{title}}
-        <van-icon name="arrow-down"/>
+        {{ title }}
+        <van-icon name="arrow-down" />
       </div>
-      <div class="nav_bar_r">{{showR?right:''}}</div>
+      <div class="nav_bar_r" @click="clickRight">{{ showR ? right : "" }}</div>
     </div>
   </div>
 </template>
@@ -54,6 +59,10 @@ export default {
       this.$emit("clickLeft");
       e.preventDefault();
     },
+    clickRight(e) {
+      this.$emit("clickRight");
+      e.preventDefault();
+    },
     handleClick(e) {
       this.$emit("handleClick");
       e.preventDefault();
@@ -91,13 +100,16 @@ export default {
       left: 0;
       z-index: 99;
       background-color: #1b212d;
-      transform: translateZ(0)
+      transform: translateZ(0);
     }
     &_l, &_r {
-      font-size: 12px;
+      font-size: 15px;
       color: $color9;
       extend-click();
       cursor: pointer;
+    }
+    &_r {
+      color: $blue;
     }
     &_c {
       font-size: 18px;

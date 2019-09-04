@@ -6,12 +6,12 @@
       @pullDown="pullDown"
       @pullUp="pullUp"
       :data="otcData.list"
-      v-if="otcData.total"
+      v-if="!otcData.total"
     >
       <router-link
         tag="ul"
         class="fund_list_single border-1px"
-        v-for="item in otcData.list"
+        v-for="item in 20"
         :to="`/me/fund/${item.status == 1 ? 'detail/' : 'status/'}${item.id}`"
         :key="item.tradeId"
       >
@@ -33,6 +33,9 @@
         </li>
       </router-link>
     </ScrollV>
+    <div v-else class="notData">
+      {{ $t("notData") }}
+    </div>
   </div>
 </template>
 

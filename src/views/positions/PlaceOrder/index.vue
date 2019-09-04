@@ -192,7 +192,7 @@
 <script>
 import Select from "components/Select";
 import { mapState, mapGetters, mapActions } from "vuex";
-import { toFixeds } from "common/utli";
+import { priceFormat } from "common/utli";
 import ScrollV from "components/Scroll";
 export default {
   props: {
@@ -275,9 +275,9 @@ export default {
       //委托量
       req.tradeAmount = this.checkHand * this.valRate;
       //杠杆倍数
-      req.leverage = toFixeds((tradePrice * this.valRate) / this.checkCash);
+      req.leverage = priceFormat((tradePrice * this.valRate) / this.checkCash);
       //手续费
-      req.poundageAmount = toFixeds(
+      req.poundageAmount = priceFormat(
         (tradePrice * req.tradeAmount - req.deposit) * 0.003
       );
       //止盈止损函数
@@ -290,7 +290,7 @@ export default {
     exLossProfit(tradePrice, price) {
       //下单价与止盈止损的差值
       let chazhi = Math.abs(tradePrice - price);
-      return toFixeds(chazhi * this.orderData.tradeAmount);
+      return priceFormat(chazhi * this.orderData.tradeAmount);
     },
     //页面显示止盈止损价
     fullStop(req) {
@@ -298,15 +298,16 @@ export default {
       if (this.position == 1) {
         //跌
         if (!this.isLoss) {
-          inpLoss = toFixeds(
-            req.tradePrice + (req.deposit * 0.8) / req.tradeAmount,
+          inpLoss = priceFormat(
+            Number(req.tradePrice) +
+              Number((req.deposit * 0.8) / req.tradeAmount),
             this.coinPrecision
           );
         } else {
           inpLoss = this.inpLoss;
         }
         if (!this.isProfit) {
-          inpProfit = toFixeds(
+          inpProfit = priceFormat(
             req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
             this.coinPrecision
           );
@@ -316,7 +317,7 @@ export default {
       } else {
         //涨
         if (!this.isLoss) {
-          inpLoss = toFixeds(
+          inpLoss = priceFormat(
             req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
             this.coinPrecision
           );
@@ -324,8 +325,9 @@ export default {
           inpLoss = this.inpLoss;
         }
         if (!this.isProfit) {
-          inpProfit = toFixeds(
-            req.tradePrice + (req.deposit * 0.8) / req.tradeAmount,
+          inpProfit = priceFormat(
+            Number(req.tradePrice) +
+              Number((req.deposit * 0.8) / req.tradeAmount),
             this.coinPrecision
           );
         } else {
@@ -337,12 +339,12 @@ export default {
     // 页面显示下单价格限制
     orderPic(position) {
       if (position) {
-        return toFixeds(
+        return priceFormat(
           this.closePic + this.coinData.offset,
           this.coinPrecision
         );
       } else {
-        return toFixeds(
+        return priceFormat(
           this.closePic - this.coinData.offset,
           this.coinPrecision
         );
@@ -352,15 +354,27 @@ export default {
     astrict(price, type) {
       if (this.position) {
         if (type) {
-          return Number(price) - Number(this.coinData.offset) * 2;
+          return priceFormat(
+            Number(price) - Number(this.coinData.offset) * 2,
+            this.coinPrecision
+          );
         } else {
-          return Number(price) + Number(this.coinData.offset);
+          return priceFormat(
+            Number(price) + Number(this.coinData.offset),
+            this.coinPrecision
+          );
         }
       } else {
         if (type) {
-          return Number(price) + Number(this.coinData.offset);
+          return priceFormat(
+            Number(price) + Number(this.coinData.offset),
+            this.coinPrecision
+          );
         } else {
-          return Number(price) - Number(this.coinData.offset) * 2;
+          return priceFormat(
+            Number(price) - Number(this.coinData.offset) * 2,
+            this.coinPrecision
+          );
         }
       }
     },
@@ -427,7 +441,6 @@ export default {
     },
     //监听下单输入框
     changeTradePrice(val) {
-      console.log(this.inpPrice);
       this.DomData(this.inpPrice);
     },
     //下单数据二次计算
@@ -452,9 +465,9 @@ export default {
       //下单价格
       req.tradePrice = tradePrice;
       //杠杆倍数
-      req.leverage = toFixeds((tradePrice * this.valRate) / this.checkCash);
+      req.leverage = priceFormat((tradePrice * this.valRate) / this.checkCash);
       //手续费
-      req.poundageAmount = toFixeds(
+      req.poundageAmount = priceFormat(
         (tradePrice * req.tradeAmount - req.deposit) * 0.003
       );
       let lossProfit = this.fullStop(req);
@@ -478,7 +491,7 @@ export default {
     },
     //切换 数据格式化
     resetData() {
-      let tradePrice = toFixeds(this.initTradePrice(this.closePic));
+      let tradePrice = this.initTradePrice(this.closePic);
       this.freeShow = false; //点击保证金
       this.isNight = false; //是否过夜
       this.isLossProfit = false; //是否设置盈损
@@ -499,14 +512,14 @@ export default {
         tradePrice =
           this.position == 1 ? tradePrice * 1.0003 : tradePrice * 0.9997;
       }
-      return tradePrice;
+      return priceFormat(tradePrice, this.coinPrecision);
     },
     ...mapActions(["getBanlace"])
   },
   watch: {
     closePic(val) {
       if (!this.allCustom) {
-        let tradePrice = toFixeds(this.initTradePrice(val));
+        let tradePrice = this.initTradePrice(val);
         this.inpPrice = tradePrice;
         this.DomData(tradePrice);
       }

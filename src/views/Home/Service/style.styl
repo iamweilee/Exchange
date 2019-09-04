@@ -1,9 +1,8 @@
 @import '~assets/stylus/variable';
 .service {
     background-color: $bgMain;
-    height: 100%;
     &_wrap {
-        height: calc(100vh - 116px);
+        subScroll(46px, 70px);
         .time {
             padding: 0 32px;
             width: 100%;
@@ -54,6 +53,10 @@
         }
     }
     &_send {
+        position: fixed;
+        width: 100%;
+        left: 0;
+        bottom: 0;
         height: 70px;
         width: 100%;
         background-color: $write;

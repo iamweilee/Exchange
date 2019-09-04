@@ -1,12 +1,12 @@
 @import '~assets/stylus/variable.styl';
 .pos {
     width: 100%;
-    min-height: 800px;
     background-color: $KBg;
     &_wrapper {
         width: 100%;
         position: relative;
         z-index: 1;
+        subScroll(46px, 62px);
     }
     &_top {
         height: 120px;
@@ -210,9 +210,6 @@
                 left: 0;
                 bottom: 0;
             }
-        }
-        .cont {
-            padding-bottom: 70px;
         }
     }
     .handWrap {

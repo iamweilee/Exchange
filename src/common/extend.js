@@ -30,7 +30,7 @@ function ScrollTop(anim = true) {
 }
 function timerHandle(self) {
     self.isSend = true;
-    let num = 10;
+    let num = 60;
     self.timer = setInterval(() => {
         num--;
         if (num <= 0) {

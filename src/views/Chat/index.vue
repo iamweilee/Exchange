@@ -1,6 +1,6 @@
 <template>
   <div class="chat">
-    <NavBar :title="$t('chat').title" fixed />
+    <NavBar :title="`${$t('chat').title}${tradeType ? '' : $t('reals')}`" />
     <div class="chat_wrap">
       <div class="chat_wrap_top">
         <div class="card">
@@ -37,20 +37,22 @@
               <p @click="tabClick(1)">{{ $t("chat").list }}</p>
             </router-link>
             <router-link to="/chat/history" tag="li">
-              <p>{{ $t("chat").history }}</p>
+              <p @click="tabClick(2)">{{ $t("chat").history }}</p>
             </router-link>
           </ul>
           <div :style="styls" class="tabs_line"></div>
         </div>
         <div class="cont">
-          <!-- <transition :name="transitionName"> -->
-            <router-view ref="child" :tradeType="tradeType" :showDialog="showDialog" />
-          <!-- </transition> -->
+          <router-view
+            ref="child"
+            :tradeType="tradeType"
+            :showDialog="showDialog"
+          />
         </div>
       </div>
     </div>
+
     <!-- 平仓和撤单弹窗 -->
-    <!-- :currentPrice="currentPrice" -->
     <CloseOut
       ref="CloseOut"
       :dialogDataNull="dialogDataNull"
@@ -95,14 +97,16 @@ export default {
     },
     _initPage() {
       this.$EventListener.on("TVdetail", this.Detail);
-      if (this.$route.name == "ChatList") {
+      let pathName = this.$route.name;
+      if (pathName == "ChatList") {
         this.tabClick(1);
+      } else if (pathName == "ChatHistory") {
+        this.tabClick(2);
       }
       this.getBanlace();
     },
     Detail(data) {
       if (this.dialogData.tradeCode == data.symbol) {
-        // console.log(data.symbol);
         this.currentPrice = data.close;
       }
       this.$refs.child.Detail(data);
@@ -113,15 +117,15 @@ export default {
       };
     },
     ...mapActions(["getBanlace"])
-  },
-//   watch: {
-//     $route(to, from) {
-//       let toName = to.name;
-//       const toIndex = to.meta.id;
-//       const fromIndex = from.meta.id;
-//       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
-//     }
-//   }
+  }
+  //   watch: {
+  //     $route(to, from) {
+  //       let toName = to.name;
+  //       const toIndex = to.meta.id;
+  //       const fromIndex = from.meta.id;
+  //       this.transitionName = toIndex < fromIndex ? "slide-right" : "slide-left";
+  //     }
+  //   }
 };
 </script>
 

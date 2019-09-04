@@ -1,11 +1,11 @@
 <template>
   <div class="history">
-    <NavBar
+    <!-- <NavBar
       :title="tradeType ? $t('chat').historyTitles : $t('chat').historyTitle"
       fixed
       showL
       @clickLeft="clickLeft"
-    />
+    /> -->
     <div class="history_list" v-if="historyData.list.length">
       <ScrollV
         pulldown
@@ -93,7 +93,6 @@ export default {
   components: { NavBar, ScrollV },
   mounted() {
     this.getHistory(this.pageNo);
-    alert(document.body.clientHeight);
   },
   methods: {
     clickLeft() {

@@ -1,4 +1,5 @@
 import { mapState, mapActions } from "vuex";
+import { isAccount, isCode } from "common/TollClass/func";
 const extendTest = {
     data() {
         return {
@@ -13,18 +14,22 @@ const extendTest = {
     computed: {
         ...mapState(["userInfo"])
     },
+    destroyed() {
+        clearInterval(this.timer);
+      },
     methods: {
         verify(type) {
+            let codeStr, loginNameStr;
             if (type == "edit") {
-                this.emailPhone.trim() && this.emailPhoneCode.trim()
-                    ? (this.isClick = false)
-                    : (this.isClick = true);
+                codeStr = isCode(this.emailPhoneCode);
+                loginNameStr = isAccount(this.emailPhone);
             } else if (type == "edit1") {
-                this.phoneData[this.pageType].trim() &&
-                this.phoneData[this.pageType + "Code"].trim()
-                    ? (this.isClick = false)
-                    : (this.isClick = true);
+                codeStr = isCode(this.phoneData[this.pageType + "Code"]);
+                loginNameStr = isAccount(this.phoneData[this.pageType]);
             }
+            codeStr || loginNameStr
+                ? (this.isClick = true)
+                : (this.isClick = false);
         },
         editPhone(req, bol) {
             this.$http({
@@ -56,23 +61,7 @@ const extendTest = {
                 fn: _this.$timeSet.bind("edit", _this)
             });
         },
-        timerHandle() {
-            this.isSend = true;
-            let _this = this,
-                num = 10;
-            _this.timer = setInterval(() => {
-                num--;
-                if (num <= 0) {
-                    clearInterval(_this.timer);
-                    this.isSend = false;
-                    this.sendBtnText = "获取验证码";
-                } else {
-                    this.sendBtnText = num + "S后重新获取";
-                }
-                console.log("获取验证码");
-            }, 1000);
-            this.sendBtnText = num + "S后重新获取";
-        },
+
         ...mapActions(["getUserInfo", "sendMsgComm"])
     }
 };

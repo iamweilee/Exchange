@@ -28,28 +28,29 @@ ul {
 // -webkit-appearance: none;
 // }
 html {
+    font-size: 50px;
+}
+html, body {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 body {
     font-family: 'PingFang SC';
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    // -webkit-touch-callout: none;
+    // -webkit-user-select: none;
+    // -khtml-user-select: none;
+    // -moz-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: none;
     font-size: 12px;
     line-height: 1;
     padding-bottom: env(safe-area-inset-bottom) !important;
-    position: relative;
-    height: 100%;
-    width: 100%;
     color: $color3;
+    background-color: #F7F7F7;
     .container {
-        width: 100%;
         padding-left: 16px;
         padding-right: 16px;
     }
@@ -63,13 +64,10 @@ em {
 button {
     border: none;
     background-color: transparent;
-    line-height: normal;
-    // display: table-cell;
-    // vertical-align: middle;
-    // text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    // line-height: normal;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
 }
 button, a {
     cursor: pointer;
@@ -188,8 +186,11 @@ input {
     }
 }
 // dialog
-.customDialog {
+.customDialog, .van-dialog {
     width: 303px;
+    // background-color: $bgMain;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     // hold
     .van-dialog__header {
         padding-top: 24px;
@@ -198,6 +199,10 @@ input {
     }
     .van-dialog__content {
         padding: 20px 16px;
+        .van-dialog__message {
+            font-size: 16px;
+            color: $color3;
+        }
         p {
             line-height: 28px;
             font-size: 13px;
@@ -224,6 +229,12 @@ input {
                     }
                 }
             }
+        }
+    }
+    .van-button {
+        border-top: 1px solid $color12;
+        &.van-dialog__cancel {
+            border-right: 1px solid $color12;
         }
     }
     .van-button__text {
@@ -257,4 +268,9 @@ input {
     &:disabled {
         opacity: 0.8;
     }
+}
+.inp_tips {
+    padding-top: 10px;
+    color: $blue;
+    font-size: 14px;
 }
