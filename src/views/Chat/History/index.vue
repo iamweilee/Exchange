@@ -6,13 +6,27 @@
       showL
       @clickLeft="clickLeft"
     /> -->
-    <div class="history_list" v-if="historyData.list.length">
+    <van-pull-refresh
+      v-model="isLoading"
+      class="history_list"
+      v-if="historyData.list.length"
+      @refresh="pullDown"
+    >
+      <!-- <div class="history_list" v-if="historyData.list.length">
       <ScrollV
         pulldown
         pullup
         @pullDown="pullDown"
         @pullUp="pullUp"
         :data="historyData.list"
+      > -->
+      <van-list
+        v-model="loading"
+        :finished="!historyData.hasNextPage"
+        :offset="80"
+        finished-text="没有更多了"
+        @load="pullUp"
+        :immediate-check="false"
       >
         <router-link
           class="history_single"
@@ -61,8 +75,9 @@
             </p>
           </span>
         </router-link>
-      </ScrollV>
-    </div>
+      </van-list>
+      <!-- </ScrollV> -->
+    </van-pull-refresh>
     <div v-else class="notData">
       {{ $t("notData") }}
     </div>
@@ -92,26 +107,36 @@ export default {
   },
   components: { NavBar, ScrollV },
   mounted() {
-    this.getHistory(this.pageNo);
+    this.getHistory();
   },
   methods: {
     clickLeft() {
       this.$router.push("/chat");
     },
-    getHistory(pageNo) {
+    getHistory(initReq) {
+      initReq = initReq || { pageNo: 1 };
       let url = this.tradeType
         ? "/v1/leverageHis/history"
         : "/v1/mock/history_list";
       this.$http({
         url: url,
-        data: { pageNo, pageSize: 10 },
+        data: { pageNo: initReq.pageNo, pageSize: 6 },
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {
-          if (pageNo != 1) {
+          if (initReq.pageNo != 1) {
             res.data.list = [...this.historyData.list, ...res.data.list];
           }
           this.historyData = res.data;
+          this.pageNo = initReq.pageNo;
+          this.loading = false;
+          if (initReq.refresh) {
+            this.isLoading = false;
+            this.$toast({
+              message: "刷新成功",
+              duration: 300
+            });
+          }
         }
       });
     },
@@ -138,21 +163,10 @@ export default {
       }
     },
     pullDown(scroll) {
-      setTimeout(() => {
-        this.getHistory(1);
-        scroll.finishPullDown();
-      }, 300);
+      this.getHistory({ pageNo: 1, refresh: true });
     },
-    pullUp(scroll) {
-      setTimeout(() => {
-        if (this.historyData.hasNextPage) {
-          this.pageNo = this.pageNo + 1;
-          this.getHistory(this.pageNo);
-        } else {
-          console.log("到底了");
-        }
-        scroll.finishPullUp();
-      }, 300);
+    pullUp() {
+      this.getHistory({ pageNo: this.pageNo + 1 });
     }
   }
 };
