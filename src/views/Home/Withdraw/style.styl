@@ -1,5 +1,6 @@
 @import '~assets/stylus/variable';
 .otc {
+    background-color: $write;
     &_wrapper {
         width: 100%;
     }
@@ -130,51 +131,84 @@
 }
 // 钱包转账
 .wallet {
-    padding: 24px;
-    &_code {
-        width: 100%;
-        text-align: center;
-        img {
-            width: 180px;
-            padding: 16px;
-        }
-        p {
-            font-size: 15px;
-            color: $color3;
-            padding: 6px;
-        }
+    padding: 8px 16px;
+    &_tip {
+        font-size: 10px;
+        line-height: 18px;
     }
-    &_hash {
-        margin-top: 18px;
+    .from_single {
+        position: relative;
+        display: flex;
+        height: 46px;
         width: 100%;
-        height: 124px;
-        font-size: 15px;
-        background: url('../../../assets/Images/Otc/bg_usdt.png') no-repeat center / cover;
-        cursor: pointer;
-        .hash {
-            width: 100%;
-            text-align: center;
-            padding-top: 26px;
-            color: $color3;
+        border-radius: 4px;
+        background-color: $bgMain;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 16px;
+        padding: 0 16px;
+        margin-bottom: 10px;
+        &.border {
+            background-color: $write;
+            border: 1px solid $colorE;
         }
-        .copy {
-            width: 100%;
-            text-align: center;
-            margin-top: 48px;
+        .label {
+            width: 100px;
             color: $color6;
         }
-    }
-    &_intord {
-        margin-top: 16px;
-        color: $color3;
-        h2 {
-            font-size: 15px;
-        }
-        p {
-            margin-top: 8px;
-            font-size: 13px;
-            line-height: 24px;
+        .cont {
+            position: relative;
+            height: 100%;
+            flex: 1;
             display: flex;
+            align-items: center;
+            color: $ablue;
+            .inpVal {
+                padding-right: 16px;
+                display: flex;
+                align-items: center;
+            }
+            .select_btn {
+                position: absolute;
+                width: 46px;
+                height: 100%;
+                right: -16px;
+                top: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+        }
+        .inp {
+            flex: 1;
+            height: 18px;
+            border: none;
+            background-color: rgba(0, 0, 0, 0);
+        }
+        .sendMsg {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 13px;
+            color: $ablue;
+            height: 100%;
+            padding: 15px 10px;
+            &:disabled {
+                opacity: 0.6;
+            }
+        }
+    }
+    .okBtn {
+        margin-top: 40px;
+        width: 100%;
+        height: 46px;
+        border-radius: 4px;
+        font-size: 16px;
+        color: $write;
+        background: url('../../../assets/Images/regLogin/bg_btn.png') no-repeat center / cover;
+        &:disabled {
+            opacity: 0.6;
         }
     }
 }

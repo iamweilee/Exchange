@@ -1,7 +1,7 @@
 <template>
   <div class="wallet">
     <div class="wallet_code">
-      <img src="~assets/Images/avatar.jpg" alt />
+      <img :src="`http://qr.liantu.com/api.php?text=${hash}`" alt />
       <p>地址二维码</p>
       <p>或将USDT充值到以下地址</p>
     </div>
@@ -52,6 +52,10 @@ export default {
         url: "/v1/user/wallet_address",
         method: "post",
         data: { coinType: "USDT", userId: this.userInfo.userId }
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.hash = res.data.rechargeAdd;
+        }
       });
     },
     onSuccess() {

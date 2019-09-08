@@ -9,7 +9,7 @@
       :class="isColor(item.percent)"
     >
       <li class="trade">{{ item.symbol }}</li>
-      <li class="dollar">{{ item.close | priceFormat(item.tickSize) }}</li>
+      <li class="dollar">{{ item.close | priceFormat(item.tickLength) }}</li>
       <li class="rate">{{ item.percent | toRate }}%</li>
       <li class="cny">￥{{ item.cny | priceFormat }}</li>
     </router-link>

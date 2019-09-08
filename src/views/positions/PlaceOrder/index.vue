@@ -259,7 +259,7 @@ export default {
   methods: {
     _initPage() {
       let setingData = this.$lStore.get("setingData");
-      this.coinPrecision = this.coinData.tickSize;
+      this.coinPrecision = this.coinData.tickLength;
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;

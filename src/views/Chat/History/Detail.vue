@@ -19,23 +19,23 @@
           </button>
         </div>
         <div class="right">
-          <p :class="isColor(orderDetail.income)">{{ orderDetail.income }}</p>
-          <p>{{ orderDetail.income }}({{ $t("chat").netProfit }})</p>
+          <p :class="isColor(orderDetail.income)">{{ orderDetail.income > 0 ? "+" + orderDetail.income : orderDetail.income }}</p>
+          <p>{{ orderDetail.income > 0 ? "+" + orderDetail.income : orderDetail.income }}({{ $t("chat").netProfit }})</p>
         </div>
       </div>
       <div class="hdetail_info">
         <ul class="List">
           <li>
             <p>{{ $t("chat").dealPrice }}</p>
-            <p>{{ orderDetail.dealPrice | priceFormat(tickSize) }}</p>
+            <p>{{ orderDetail.dealPrice | priceFormat(coinData.tickLength) }}</p>
           </li>
           <li>
             <p>{{ $t("chat").closePrice }}</p>
-            <p>{{ orderDetail.closePrice | priceFormat(tickSize) }}</p>
+            <p>{{ orderDetail.closePrice | priceFormat(coinData.tickLength) }}</p>
           </li>
           <li>
             <p>{{ $t("chat").lossPrice }}</p>
-            <p>{{ orderDetail.stopLoss | priceFormat(tickSize) }}</p>
+            <p>{{ orderDetail.stopLoss | priceFormat(coinData.tickLength) }}</p>
           </li>
           <li>
             <p>{{ $t("chat").volume }}</p>
@@ -61,18 +61,22 @@
         <p>{{ $t("chat").orderNo }}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
       </div>
     </div>
+    
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
+import { priceFormat } from "common/utli";
 import { mapState } from "vuex";
 export default {
   data() {
     return {
       orderDetail: {},
       coinPrecision: this.$lStore.get("coinPrecision"),
-      tickSize: 2
+      coinData: {},
+      showSucceed: false,
+      succeedData: {}
     };
   },
   mounted() {
@@ -96,11 +100,12 @@ export default {
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {
-          this.tickSize = this.coinPrecision[res.data.targetCoin].tickSize;
+          this.coinData = this.coinPrecision[res.data.targetCoin];
           this.orderDetail = res.data;
         }
       });
     },
+    
     tradeHandle(tradeType, position) {
       let text = "";
       if (tradeType) {

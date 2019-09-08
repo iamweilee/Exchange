@@ -46,7 +46,9 @@
               >
             </p>
             <p class="top_btn">
-              <span :class="isColor(item.income)">{{ item.income }}</span>
+              <span :class="isColor(item.income)">{{
+                item.income > 0 ? "+" + item.income : item.income
+              }}</span>
               <button>{{ isStatus(item.status) }}</button>
             </p>
           </li>
@@ -62,14 +64,14 @@
             <p class="line-1px">
               <span>{{
                 item.stopLoss
-                  | priceFormat(coinPrecision[item.targetCoin].tickSize)
+                  | priceFormat(coinPrecision[item.targetCoin].tickLength)
               }}</span>
               <span>{{ $t("chat").lossPrice }}</span>
             </p>
             <p>
               <span>{{
                 item.stopProfit
-                  | priceFormat(coinPrecision[item.targetCoin].tickSize)
+                  | priceFormat(coinPrecision[item.targetCoin].tickLength)
               }}</span>
               <span>{{ $t("chat").profitPrice }}</span>
             </p>
@@ -120,7 +122,7 @@ export default {
         : "/v1/mock/history_list";
       this.$http({
         url: url,
-        data: { pageNo: initReq.pageNo, pageSize: 6 },
+        data: { pageNo: initReq.pageNo, pageSize: 10 },
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {

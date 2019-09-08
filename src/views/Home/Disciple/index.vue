@@ -120,8 +120,34 @@ export default {
   data() {
     return {};
   },
-  components: {},
+  mounted() {
+    this.getDisciple();
+    this.history();
+  },
   methods: {
+    //徒弟列表
+    getDisciple() {
+      this.$http({
+        url: "/user_commission_detail/list",
+        data: {
+          pageNo: 1,
+          pageSize: 10
+        },
+        method: "get"
+      }).then(res => {
+        console.log(res);
+      });
+    },
+
+    //徒弟列表
+    history() {
+      this.$http({
+        url: "/user_commission_detail/history",
+        method: "get"
+      }).then(res => {
+        console.log(res);
+      });
+    },
     clickLeft() {
       this.$router.push("/");
     }

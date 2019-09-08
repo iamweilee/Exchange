@@ -23,7 +23,7 @@
             <p class="coin">{{ item.symbol }}/USDT</p>
             <p class="price">
               {{
-                item.close | priceFormat(coinPrecision[item.symbol].tickSize)
+                item.close | priceFormat(coinPrecision[item.symbol].tickLength)
               }}
             </p>
           </li>
@@ -43,7 +43,7 @@
           <div class="left">
             <div class="color-green">
               {{
-                detailData.close | priceFormat(coinPrecision[coinCode].tickSize)
+                detailData.close | priceFormat(coinPrecision[coinCode].tickLength)
               }}
             </div>
             <div class="small">
@@ -54,12 +54,12 @@
           <ul class="right">
             <li>
               {{ $t("pos").high }}(24H)&nbsp;&nbsp;{{
-                detailData.high | priceFormat(coinPrecision[coinCode].tickSize)
+                detailData.high | priceFormat(coinPrecision[coinCode].tickLength)
               }}
             </li>
             <li>
               {{ $t("pos").low }}(24H)&nbsp;&nbsp;{{
-                detailData.low | priceFormat(coinPrecision[coinCode].tickSize)
+                detailData.low | priceFormat(coinPrecision[coinCode].tickLength)
               }}
             </li>
             <li>
@@ -212,14 +212,14 @@
         {{ $t("pos").buyFall }}
         {{
           (detailData.close * 1.0003)
-            | priceFormat(coinPrecision[coinCode].tickSize)
+            | priceFormat(coinPrecision[coinCode].tickLength)
         }}
       </button>
       <button @click="showOrderHandle(0)">
         {{ $t("pos").buyRise }}
         {{
           (detailData.close * 0.9997)
-            | priceFormat(coinPrecision[coinCode].tickSize)
+            | priceFormat(coinPrecision[coinCode].tickLength)
         }}
       </button>
     </div>
@@ -339,7 +339,6 @@ export default {
     },
     //更新头部价格成交量
     renderDetail(data) {
-      console.log(this.symbol, data.symbol);
       if (data.symbol == this.symbol) {
         this.detailData = data;
       }

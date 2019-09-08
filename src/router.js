@@ -115,20 +115,25 @@ const router = new Router({
             component: () => import("views/Home/Withdraw"),
             children: [
                 {
-                    path: "/Withdraw",
+                    path: "/withdraw",
                     name: "withdrawMerchant",
                     meta: { id: 1.51 },
                     component: () => import("views/Home/Withdraw/Merchant")
                 },
                 {
-                    path: "/Withdraw/wallet",
+                    path: "/withdraw/wallet",
                     name: "withdrawWallet",
                     meta: { id: 1.52, type: "sub" },
                     component: () => import("views/Home/Withdraw/Wallet")
                 }
             ]
         },
-
+        {
+            path: "/withdraw/address", //行业快讯
+            name: "Address",
+            meta: { id: 1.53 },
+            component: () => import("views/Home/Withdraw/Address")
+        },
         {
             path: "/news", //行业快讯
             name: "News",
@@ -217,13 +222,13 @@ const router = new Router({
                 {
                     path: "/chat/list",
                     name: "ChatList",
-                    meta: { id: 4.1 },
+                    meta: { id: 4 },
                     component: () => import("views/Chat/List")
                 },
                 {
                     path: "/chat/history", //持仓历史
                     name: "ChatHistory",
-                    meta: { id: 4.2 },
+                    meta: { id: 4 },
                     component: () => import("views/Chat/History")
                 }
             ]
@@ -388,12 +393,7 @@ const router = new Router({
 });
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.id)) {
-        let Id;
-        if (to.meta.id == 4.1) {
-            Id = 4;
-        } else {
-            Id = to.meta.id;
-        }
+        let Id = to.meta.id;
         store.commit("setTabNav", Id);
     }
     if (to.name == "Position") {

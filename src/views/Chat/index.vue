@@ -59,6 +59,7 @@
       :dialogData="dialogData"
       :currentPrice="currentPrice"
       :tradeType="tradeType"
+      :earnings="earnings(dialogData, currentPrice)"
     />
   </div>
 </template>
@@ -67,6 +68,7 @@
 import NavBar from "components/NavBar";
 import CloseOut from "components/CloseOut";
 import { mapState, mapActions } from "vuex";
+import { priceFormat } from "common/utli";
 export default {
   data() {
     return {
@@ -109,12 +111,34 @@ export default {
       if (this.dialogData.tradeCode == data.symbol) {
         this.currentPrice = data.close;
       }
-      this.$refs.child.Detail(data);
+      if (this.$refs.child.Detail) {
+        this.$refs.child.Detail(data);
+      }
     },
     tabClick(index) {
       this.styls = {
         left: index * 33 + "%"
       };
+    },
+    //收益计算
+    /* 买涨 持仓量*行情价-持仓量*成交价
+    买跌 持仓量*成交价-持仓量*行情价 */
+    earnings(item, currentPrice) {
+      let earning = 0;
+      if (item.position == 1) {
+        //买跌
+        earning =
+          item.tradeAmount * item.tradePrice - item.tradeAmount * currentPrice;
+      } else {
+        //买涨
+        earning =
+          item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
+      }
+      if (earning < 0) {
+        return priceFormat(earning);
+      } else {
+        return "+" + priceFormat(earning);
+      }
     },
     ...mapActions(["getBanlace"])
   }

@@ -46,21 +46,29 @@
           <li>
             <p>
               <span>{{ $t("chat").lossPrice }}</span>
-              <span>{{ orderDetail.stopLoss | priceFormat(tickSize) }}</span>
+              <span>{{
+                orderDetail.stopLoss | priceFormat(coinData.tickLength)
+              }}</span>
             </p>
             <p>
               <span>{{ $t("chat").currentPrice }}</span>
-              <span>{{ socketData.close | priceFormat(tickSize) }}</span>
+              <span>{{
+                socketData.close | priceFormat(coinData.tickLength)
+              }}</span>
             </p>
           </li>
           <li>
             <p>
               <span>{{ $t("chat").profitPrice }}</span>
-              <span>{{ orderDetail.stopProfit | priceFormat(tickSize) }}</span>
+              <span>{{
+                orderDetail.stopProfit | priceFormat(coinData.tickLength)
+              }}</span>
             </p>
             <p>
               <span>{{ $t("chat").dealPrice }}</span>
-              <span>{{ orderDetail.dealPrice | priceFormat(tickSize) }}</span>
+              <span>{{
+                orderDetail.dealPrice | priceFormat(coinData.tickLength)
+              }}</span>
             </p>
           </li>
           <li>
@@ -123,7 +131,9 @@
       </div>
     </div>
     <div class="holdD_hanle">
-      <button>{{ $t("chat").goOrder }}</button>
+      <button @click="afterSingle(socketData.close)">
+        {{ $t("chat").goOrder }}
+      </button>
       <button @click="showDialog">{{ $t("chat").closeOut }}</button>
     </div>
     <van-dialog
@@ -141,11 +151,11 @@
       </div>
       <div class="lossProfit_row">
         <p class="label">{{ $t("chat").dealPrice }}</p>
-        <p>{{ orderDetail.dealPrice | priceFormat(tickSize) }}</p>
+        <p>{{ orderDetail.dealPrice | priceFormat(coinData.tickLength) }}</p>
       </div>
       <div class="lossProfit_row">
         <p class="label">{{ $t("chat").currentPrice }}</p>
-        <p>{{ socketData.close | priceFormat(tickSize) }}</p>
+        <p>{{ socketData.close | priceFormat(coinData.tickLength) }}</p>
       </div>
 
       <div class="lossProfit_row">
@@ -156,7 +166,9 @@
             <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
             <img class="add" src="~assets/Images/pos/icon_add.png" alt />
             <p class="box-size" @click.stop>
-              ≥<em>{{ (socketData.close * 1.002) | priceFormat(tickSize) }}</em>
+              ≥<em>{{
+                (socketData.close * 1.002) | priceFormat(coinData.tickLength)
+              }}</em>
               预计亏损约
               <em>80</em>
             </p>
@@ -171,7 +183,9 @@
             <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
             <img class="add" src="~assets/Images/pos/icon_add.png" alt />
             <p class="box-size" @click.stop>
-              ≤<em>{{ (socketData.close * 0.998) | priceFormat(tickSize) }}</em>
+              ≤<em>{{
+                (socketData.close * 0.998) | priceFormat(coinData.tickLength)
+              }}</em>
               预计盈利约
               <em>80</em>
             </p>
@@ -179,10 +193,29 @@
         </div>
       </div>
     </van-dialog>
+    <van-dialog
+      closeOnClickOverlay
+      v-model="showSucceed"
+      :title="$t('orderSucc')"
+      :beforeClose="beforeClose"
+      :confirmButtonText="$t('seeOrder')"
+      class="customDialog"
+    >
+      <ul class="hold_dialog">
+        <li>
+          <p>{{ succeedData.targetCoin }}</p>
+          <p>{{ succeedData.tradeAmount }}</p>
+        </li>
+        <li>
+          <p>{{ $t("chat").dealPrice }}</p>
+          <p>{{ succeedData.tradePrice }}</p>
+        </li>
+      </ul>
+    </van-dialog>
     <CloseOut
       ref="CloseOut"
-      :dialogDataNull="dialogDataNull"
       :tradeType="tradeType"
+      :earnings="earnings(orderDetail, socketData.close)"
       :dialogData="orderDetail"
     />
   </div>
@@ -194,7 +227,7 @@ import NavBar from "components/NavBar";
 import Echart from "components/Echart";
 import CloseOut from "components/CloseOut";
 import { priceFormat } from "common/utli";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -211,11 +244,13 @@ export default {
       resolution: "5分",
       checked: true,
       orderDetail: {},
-      tickSize: 2,
+      coinData: {},
       socketData: {},
       showProfitLoss: false,
       profitPrice: 0,
-      lossPrice: 0
+      lossPrice: 0,
+      showSucceed: false,
+      succeedData: {}
     };
   },
   computed: {
@@ -239,11 +274,10 @@ export default {
       this.$EventListener.on("TVdetail", this.Detail);
       this.getDetail();
     },
-    dialogDataNull() {
-      this.orderDetail = {};
-    },
+
     showDialog(data) {
       this.$refs.CloseOut.show = true;
+      //   v1/leverage/updateProfitAndLoss?orderNo=xxx&profit=xxx&loss=xxx
     },
     getDetail() {
       let url = this.tradeType
@@ -263,13 +297,15 @@ export default {
           res.data.cb = this.toHisDetail;
           this.orderDetail = res.data;
           let datas = {},
-            tickSize = this.$lStore.get("coinPrecision")[res.data.targetCoin]
-              .tickSize;
-          this.tickSize = tickSize;
+            coinData = this.$lStore.get("coinPrecision")[res.data.targetCoin];
+          this.coinData = coinData;
           datas[`${res.data.targetCoin.toLowerCase()}usdt-ticker`] = 0;
           datas[`${res.data.targetCoin.toLowerCase()}usdt-kline-15m`] = 0;
-          this.profitPrice = priceFormat(res.data.stopProfit, tickSize);
-          this.lossPrice = priceFormat(res.data.stopLoss, tickSize);
+          this.profitPrice = priceFormat(
+            res.data.stopProfit,
+            coinData.tickLength
+          );
+          this.lossPrice = priceFormat(res.data.stopLoss, coinData.tickLength);
           this.$EventListener.fire("SendMsg", datas);
         }
       });
@@ -277,6 +313,140 @@ export default {
     Detail(data) {
       this.socketData = data;
       //   this.$refs.echart.getData(data);
+    },
+    //追单
+    afterSingle(tradePrice) {
+      let _this = this,
+        req = this.placeOrderData(tradePrice),
+        messageText = `确定以${req.tradeType ? "限价" : "市价"}再次下单${
+          req.targetCoin
+        }买跌${req.tradeAmount}个`;
+      this.$dialog
+        .confirm({
+          title: "提示",
+          message: messageText,
+          confirmButtonText: "确定",
+          confirmButtonColor: "#2d9ef5"
+        })
+        .then(() => {
+          _this.placeOrder(req);
+        })
+        .catch(() => {
+          // on cancel
+        });
+    },
+    //下单函数
+    placeOrder(req) {
+      let url = "";
+      console.log(req);
+      if (this.tradeType) {
+        url =
+          req.tradeType == 1
+            ? "/v1/leverage/limited/submit"
+            : "/v1/leverage/market/submit";
+      } else {
+        url =
+          req.tradeType == 1 ? "/v1/mock/limit_trade" : "/v1/mock/market_trade";
+      }
+
+      this.$http({
+        url: url,
+        data: req,
+        method: "post"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.succeedData = req;
+          this.showSucceed = true;
+          this.getBanlace();
+        }
+        // console.log(res);
+      });
+    },
+    //下单数据二次计算
+    placeOrderData(tradePrice) {
+      tradePrice = this.initTradePrice(tradePrice);
+      let orderDetail = this.orderDetail;
+      let req = {
+        position: orderDetail.position, //交易方向0-涨 1-跌
+        poundageAmount: 0, //手续费
+        sourceCoin: "USDT", //交易货币
+        targetCoin: orderDetail.targetCoin, //目标货币
+        tradeCode: `${orderDetail.targetCoin}/USDT`, //交易对
+        tradeType: orderDetail.tradeType, //0-市价 1-限价
+        userId: orderDetail.userId,
+        //是否过夜 0否 1是
+        isDelay: orderDetail.isDelay,
+        //手数比例
+        stockRate: orderDetail.stockRate,
+        //保证金
+        deposit: orderDetail.deposit,
+        //委托量
+        tradeAmount: orderDetail.tradeAmount
+      };
+      //下单价格
+      req.tradePrice = tradePrice;
+      //杠杆倍数
+      req.leverage = priceFormat((tradePrice * req.tradeAmount) / req.deposit);
+      //手续费
+      req.poundageAmount = priceFormat(
+        (tradePrice * req.tradeAmount - req.deposit) * 0.003
+      );
+      let lossProfit = this.fullStop(req);
+      //止盈
+      req.stopProfit = lossProfit.inpProfit;
+      //止损
+      req.stopLoss = lossProfit.inpLoss;
+      return req;
+    },
+    //页面显示止盈止损价
+    fullStop(req) {
+      let inpLoss, inpProfit;
+      if (req.position == 1) {
+        //跌
+        inpLoss = priceFormat(
+          Number(req.tradePrice) +
+            Number((req.deposit * 0.8) / req.tradeAmount),
+          this.coinData.tickLength
+        );
+        inpProfit = priceFormat(
+          req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
+          this.coinData.tickLength
+        );
+      } else {
+        //涨
+        inpLoss = priceFormat(
+          req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
+          this.coinData.tickLength
+        );
+
+        inpProfit = priceFormat(
+          Number(req.tradePrice) +
+            Number((req.deposit * 0.8) / req.tradeAmount),
+          this.coinData.tickLength
+        );
+      }
+      return { inpLoss, inpProfit };
+    },
+    //页面显示预计盈亏
+    exLossProfit(tradePrice, price) {
+      //下单价与止盈止损的差值
+      let chazhi = Math.abs(tradePrice - price);
+      return priceFormat(chazhi * this.orderData.tradeAmount);
+    },
+    //initTradePrice 初始化下单价
+    initTradePrice(tradePrice) {
+      let orderDetail = this.orderDetail;
+      // console.log(orderDetai);
+      if (orderDetail.tradeType == 1) {
+        tradePrice =
+          orderDetail.position == 1
+            ? tradePrice + this.coinData.offset
+            : tradePrice - this.coinData.offset;
+      } else {
+        tradePrice =
+          orderDetail.position == 1 ? tradePrice * 1.0003 : tradePrice * 0.9997;
+      }
+      return priceFormat(tradePrice, this.coinData.tickLength);
     },
     //收益计算
     /* 买涨 持仓量*行情价-持仓量*成交价
@@ -293,6 +463,14 @@ export default {
           item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
       }
       return priceFormat(earning);
+    },
+    beforeClose(action, done) {
+      if (action == "confirm") {
+        let path = this.succeedData.tradeType == 1 ? "/chat/list" : "/chat";
+        this.$router.push(path);
+      } else {
+        done();
+      }
     },
     profitLossHandle(action, done) {
       if (action == "cancel") {
@@ -314,7 +492,8 @@ export default {
       } else {
         return "color-green";
       }
-    }
+    },
+    ...mapActions(["getBanlace"])
   }
 };
 </script>

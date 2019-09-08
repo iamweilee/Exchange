@@ -26,7 +26,7 @@ export default {
         var split_data = symbolName.split(/[:/]/),
             pricescale = Math.pow(
                 10,
-                lStore.get("coinPrecision")[split_data[0]].tickSize
+                lStore.get("coinPrecision")[split_data[0]].tickLength
             );
         // console.log({split_data})
         var symbol_stub = {

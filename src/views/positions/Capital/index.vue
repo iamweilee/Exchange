@@ -15,8 +15,8 @@
           {{ item.bidsNum | priceFormat(coinPrecision.stepSize) }}
         </li>
         <li class="price">
-          <p>{{ item.bidsPrice | priceFormat(coinPrecision.tickSize) }}</p>
-          <p>{{ item.asksPrice | priceFormat(coinPrecision.tickSize) }}</p>
+          <p>{{ item.bidsPrice | priceFormat(coinPrecision.tickLength) }}</p>
+          <p>{{ item.asksPrice | priceFormat(coinPrecision.tickLength) }}</p>
         </li>
         <li class="num">
           {{ item.asksNum | priceFormat(coinPrecision.stepSize) }}

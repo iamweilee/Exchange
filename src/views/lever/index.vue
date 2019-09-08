@@ -34,7 +34,7 @@
         </li>
         <li class="middle">
           <p class="usdt">
-            {{ item.close | priceFormat(item.tickSize) }}
+            {{ item.close | priceFormat(item.tickLength) }}
           </p>
           <p class="cny">￥{{ item.cny | priceFormat }}</p>
         </li>
@@ -102,7 +102,7 @@ export default {
           for (let i = List.length - 1; i >= 0; i--) {
             let coinCode = List[i].symbol.replace("/USDT", "");
             List[i].coinCode = coinCode;
-            List[i].tickSize = this.coinPrecision[coinCode].tickSize;
+            List[i].tickLength = this.coinPrecision[coinCode].tickLength;
           }
           this.sendMsg(List);
           this.List = List;

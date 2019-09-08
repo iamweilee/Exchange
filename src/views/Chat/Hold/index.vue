@@ -41,14 +41,14 @@
           <p>
             <span>{{
               item.stopLoss
-                | priceFormat(coinPrecision[item.targetCoin].tickSize)
+                | priceFormat(coinPrecision[item.targetCoin].tickLength)
             }}</span>
             <span>{{ $t("chat").lossPrice }}</span>
           </p>
           <p>
             <span>{{
               item.stopProfit
-                | priceFormat(coinPrecision[item.targetCoin].tickSize)
+                | priceFormat(coinPrecision[item.targetCoin].tickLength)
             }}</span>
             <span>{{ $t("chat").profitPrice }}</span>
           </p>
@@ -91,7 +91,6 @@ export default {
   },
   methods: {
     _initPage() {
-      console.log(this.coinPrecision);
       this.getHoldList();
     },
     sendMsg(coinArr) {
@@ -121,7 +120,11 @@ export default {
         earning =
           item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
       }
-      return priceFormat(earning);
+      if (earning < 0) {
+        return priceFormat(earning);
+      } else {
+        return "+" + priceFormat(earning);
+      }
     },
     //获取持仓单
     getHoldList() {

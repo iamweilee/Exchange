@@ -48,14 +48,11 @@ export default {
     },
     getCoinDesc() {
       this.$http({ url: "/coin/get_coin_desc", method: "get" }).then(res => {
-        console.log(res);
         let desc = {};
         res.data.map(item => {
-          console.log(item);
           let obj = {};
           desc[item.coinCode] = item;
         });
-        console.log(desc);
         this.$lStore.set("desc", desc);
       });
     },
@@ -96,7 +93,7 @@ export default {
             coinPrecision = {};
           List.map(item => {
             let coinCode = item.tradeCode.replace("/USDT", "");
-            item.tickSize = item.tickSize.toString().split(".")[1].length;
+            item.tickLength = item.tickSize.toString().split(".")[1].length;
             item.stepSize = item.stepSize.toString().split(".")[1].length;
             item.minPrice = item.minPrice.toString().split(".")[1].length;
             item.minQty = item.minQty.toString().split(".")[1].length;
@@ -105,6 +102,7 @@ export default {
             item.offset = Obj[coinCode];
             coinPrecision[coinCode] = item;
           });
+          console.log(coinPrecision)
           this.$lStore.set("coinPrecision", coinPrecision);
         }
       });
@@ -116,6 +114,7 @@ export default {
         method: "get"
       }).then(res => {
         if (res.status == this.STATUS) {
+          //   console.log(res.data);
           let List = res.data[0].USDT;
           this.getSymbolOffset(List);
         }

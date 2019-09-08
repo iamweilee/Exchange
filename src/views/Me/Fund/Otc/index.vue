@@ -1,17 +1,22 @@
 <template>
   <div class="fund_list">
-    <ScrollV
+    <van-pull-refresh
+      v-if="!otcData.total"
+      v-model="isLoading"
+      @refresh="pullDown"
+    >
+      <!-- <ScrollV
+      v-if="otcData.total"
       pulldown
       pullup
       @pullDown="pullDown"
       @pullUp="pullUp"
       :data="otcData.list"
-      v-if="!otcData.total"
-    >
+    > -->
       <router-link
         tag="ul"
         class="fund_list_single border-1px"
-        v-for="item in 20"
+        v-for="item in otcData.list"
         :to="`/me/fund/${item.status == 1 ? 'detail/' : 'status/'}${item.id}`"
         :key="item.tradeId"
       >
@@ -32,7 +37,8 @@
           <p class="small">USDT</p>
         </li>
       </router-link>
-    </ScrollV>
+      <!-- </ScrollV> -->
+    </van-pull-refresh>
     <div v-else class="notData">
       {{ $t("notData") }}
     </div>

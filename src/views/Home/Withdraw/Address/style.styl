@@ -1,0 +1,66 @@
+@import '~assets/stylus/variable.styl';
+.address {
+    &_wrap {
+        padding: 16px;
+        subScroll();
+        font-size: 15px;
+        .from {
+            &_single {
+                margin-bottom: 16px;
+                width: 100%;
+                .label {
+                    margin-bottom: 10px;
+                }
+                .inp {
+                    padding: 10px 0;
+                    width: 100%;
+                    height: 46px;
+                    border: 1px solid $color12;
+                    border-radius: 4px;
+                    input {
+                        background-color: rgba(0, 0, 0, 0);
+                        width: 100%;
+                        height: 26px;
+                        border: none;
+                        padding: 0 16px;
+                    }
+                    &_tips {
+                        padding-top: 20px;
+                    }
+                }
+            }
+            &_select {
+                margin-top: 40px;
+                display: flex;
+                .checkbox {
+                    width: 16px;
+                    margin-right: 6px;
+                    height: 16px;
+                    background-color: $colorE;
+                    border-radius: 4px;
+                    img {
+                        width: 16px;
+                        height: 16px;
+                    }
+                }
+                .size {
+                    flex: 1;
+                    font-size: 13px;
+                    line-height: 16px;
+                }
+            }
+        }
+        .okBtn {
+            margin-top: 40px;
+            width: 100%;
+            height: 46px;
+            border-radius: 4px;
+            font-size: 16px;
+            color: $write;
+            background: url('../../../../assets/Images/regLogin/bg_btn.png') no-repeat center / cover;
+            &:disabled {
+                opacity: 0.6;
+            }
+        }
+    }
+}

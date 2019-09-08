@@ -9,7 +9,7 @@
           </p>
           <div class="left_user">
             <p>{{ userInfo.nickName }}</p>
-            <p>{{ tradeType ? $t("real") : $t("fake") }}账户</p>
+            <p>{{ tradeType ? $t("fake") : $t("real") }}账户</p>
           </div>
         </router-link>
         <div class="right" @click="setTradeType(!tradeType)">
@@ -22,7 +22,7 @@
     </div>
     <div class="me_cont">
       <div class="me_cont_top">
-        <p class="title">USDT({{ tradeType ? $t("real") : "" }}余额)</p>
+        <p class="title">USDT({{ tradeType ? "" : $t("real") }}余额)</p>
         <p class="num">{{ usableBalance | priceFormat }}</p>
       </div>
       <div class="me_cont_btn">

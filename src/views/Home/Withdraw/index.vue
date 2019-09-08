@@ -16,8 +16,8 @@ export default {
     return {
       //   transitionName: "slide-left",
       title: [
-        { title: "OTC交易", url: "/Withdraw", left: 0 },
-        { title: "钱包转账", url: "/Withdraw/wallet", left: 1 }
+        { title: "OTC交易", url: "/withdraw", left: 0 },
+        { title: "钱包转账", url: "/withdraw/wallet", left: 1 }
       ]
     };
   },

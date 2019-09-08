@@ -11,7 +11,7 @@
       <ul class="hold_dialog" v-if="dialogData.title == '平仓'">
         <li>
           <p>{{ $t("chat").floatProfit }}</p>
-          <p>+1.92</p>
+          <p :class="isColor(earnings)">{{ earnings }}</p>
         </li>
         <li>
           <p>{{ $t("chat").dealPrice }}</p>
@@ -57,6 +57,10 @@ export default {
     tradeType: {
       type: Boolean,
       required: true
+    },
+    earnings: {
+      type: [String, Number],
+      default: 0
     }
   },
   data() {
@@ -77,13 +81,11 @@ export default {
             this.dialogData.title == "平仓"
               ? "/v1/leverage/eveningUp"
               : "/v1/leverage/cancel";
-   
         } else {
           url =
             this.dialogData.title == "平仓"
               ? "/v1/mock/eveningUp"
               : "/v1/mock/cancel";
-          
         }
 
         this.$http({
@@ -104,6 +106,13 @@ export default {
       }
 
       return false;
+    },
+    isColor(num) {
+      if (num < 0) {
+        return "color-red1";
+      } else {
+        return "color-green";
+      }
     },
     ...mapActions(["getBanlace"])
   },

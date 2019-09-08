@@ -70,7 +70,7 @@ export default {
       for (let i = 0; i < List.length; i++) {
         if (List[i].symbol == data.symbol) {
           let coinCode = List[i].symbol.replace("/USDT", "");
-          data.tickSize = this.coinPrecision[coinCode].tickSize;
+          data.tickLength = this.coinPrecision[coinCode].tickLength;
           List[i] = data;
           break;
         }
