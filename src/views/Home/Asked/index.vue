@@ -1,6 +1,6 @@
 <template>
   <div class="asked">
-    <NavBar title="常见问题" fixed showL @clickLeft="clickLeft"/>
+    <NavBar title="常见问题" fixed showL @clickLeft="clickLeft" />
     <div class="asked_list">
       <van-collapse v-model="name" accordion>
         <van-collapse-item
@@ -9,7 +9,7 @@
           :key="item.name"
           :name="item.name"
         >
-          <p v-for="(item1,index) in item.content" :key="index">{{item1}}</p>
+          <p v-for="(item1, index) in item.content" :key="index">{{ item1 }}</p>
         </van-collapse-item>
       </van-collapse>
     </div>
@@ -39,6 +39,7 @@ export default {
         this.name = Number(name);
       }
     },
+    
     clickLeft() {
       this.$router.back();
     }

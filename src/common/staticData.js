@@ -340,7 +340,7 @@ export const meList = [
     },
     {
         title: "银行卡包",
-        icon: require("../assets/Images/me/icon_1.png"),
+        icon: require("../assets/Images/me/icon_7.png"),
         link: "/me/bank",
         id: "bank1"
     },

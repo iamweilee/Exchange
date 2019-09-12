@@ -59,6 +59,9 @@ export default {
       phoneData: this.$lStore.get("phoneData") || { mobile: "", mobileCode: "" }
     };
   },
+  mounted() {
+    console.log(this.$route);
+  },
   methods: {
     clickLeft() {
       this.$router.push(`/me/edit/${this.$route.params.type}`);

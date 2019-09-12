@@ -1,7 +1,7 @@
 <template>
   <div class="order">
     <ul class="order_title">
-      <li class="order_title_l">
+      <li class="order_title_l" @click="showExplain">
         <img src="~assets/Images/pos/icon_explain.png" alt />
       </li>
       <li class="order_title_m">{{ title }}下单</li>
@@ -41,8 +41,18 @@
                 v-model="inpPrice"
                 @input="changeTradePrice"
               />
-              <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
-              <img class="add" src="~assets/Images/pos/icon_add.png" alt />
+              <img
+                class="minus"
+                @click="minus('inpPrice')"
+                src="~assets/Images/pos/icon_minus.png"
+                alt
+              />
+              <img
+                class="add"
+                @click="add('inpPrice')"
+                src="~assets/Images/pos/icon_add.png"
+                alt
+              />
             </div>
           </div>
         </div>
@@ -109,9 +119,17 @@
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
-                  alt
+                  v-debounce="{
+                    fn: minus.bind('click', 'inpProfit')
+                  }"
                 />
-                <img class="add" src="~assets/Images/pos/icon_add.png" alt />
+                <img
+                  class="add"
+                  v-debounce="{
+                    fn: add.bind('click', 'inpProfit')
+                  }"
+                  src="~assets/Images/pos/icon_add.png"
+                />
                 <p class="box-size" @click.stop>
                   ≥<em>{{ astrict(inpPrice) }}</em>
                   预计亏损约
@@ -128,9 +146,17 @@
                 <img
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
-                  alt
+                  v-debounce="{
+                    fn: minus.bind('click', 'inpProfit')
+                  }"
                 />
-                <img class="add" src="~assets/Images/pos/icon_add.png" alt />
+                <img
+                  class="add"
+                  v-debounce="{
+                    fn: add.bind('click', 'inpProfit')
+                  }"
+                  src="~assets/Images/pos/icon_add.png"
+                />
                 <p class="box-size" @click.stop>
                   ≤<em>{{ astrict(inpPrice, true) }}</em>
                   预计盈利约
@@ -146,7 +172,7 @@
           <div class="from_single_label big">
             <div class="left">
               {{ $t("night") }}
-              <p class="icon_size">
+              <p class="icon_size" @click="showCustomDialog">
                 <img src="~assets/Images/other/icon_night.png" alt />持仓到6:00
               </p>
             </div>
@@ -186,15 +212,26 @@
         {{ this.btnText() }}{{ inpPrice }}
       </button>
     </div>
+    <OrderExplain ref="OrderExplain" />
+    <customDialog ref="customDialog" :titleText="$t('night')">
+      <p>
+        选择开启后，该笔订单可持仓过夜，但会收取一定的库存费，库存费=交易综合费*30%*持仓过夜天数；如用户不需要持仓过夜可取消设置，设置时间为【07:00:00—次日05:53:00】。
+      </p>
+      <p>如未开启，则该笔订单在次日05:53:00前会被系统强制平仓。</p>
+    </customDialog>
   </div>
 </template>
 
 <script>
 import Select from "components/Select";
+import OrderExplain from "components/OrderExplain";
+import customDialog from "components/customDialog";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { priceFormat } from "common/utli";
 import ScrollV from "components/Scroll";
+import extendsCom from "@/extendsCom";
 export default {
+  extends: extendsCom,
   props: {
     closePic: {
       type: [String, Number],
@@ -255,7 +292,7 @@ export default {
   mounted() {
     this._initPage();
   },
-  components: { Select, ScrollV },
+  components: { Select, ScrollV, OrderExplain, customDialog },
   methods: {
     _initPage() {
       let setingData = this.$lStore.get("setingData");
@@ -265,6 +302,7 @@ export default {
       this.valRate = setingData[this.coinCode].valRate;
       this.resetData();
     },
+
     //页面显示数据
     DomData(tradePrice) {
       let req = {};
@@ -291,6 +329,19 @@ export default {
       //下单价与止盈止损的差值
       let chazhi = Math.abs(tradePrice - price);
       return priceFormat(chazhi * this.orderData.tradeAmount);
+    },
+
+    add(key) {
+      this[key] = priceFormat(
+        decimal.accAdd(Number(this[key]), this.coinData.tickSize),
+        this.coinPrecision
+      );
+    },
+    minus(key) {
+      this[key] = priceFormat(
+        decimal.accSubtr(Number(this[key]), this.coinData.tickSize),
+        this.coinPrecision
+      );
     },
     //页面显示止盈止损价
     fullStop(req) {
@@ -463,18 +514,20 @@ export default {
       //委托量
       req.tradeAmount = this.checkHand * this.valRate;
       //下单价格
-      req.tradePrice = tradePrice;
+      req.tradePrice = Number(tradePrice);
       //杠杆倍数
-      req.leverage = priceFormat((tradePrice * this.valRate) / this.checkCash);
+      req.leverage = Number(
+        priceFormat((tradePrice * this.valRate) / this.checkCash)
+      );
       //手续费
-      req.poundageAmount = priceFormat(
-        (tradePrice * req.tradeAmount - req.deposit) * 0.003
+      req.poundageAmount = Number(
+        priceFormat((tradePrice * req.tradeAmount - req.deposit) * 0.003)
       );
       let lossProfit = this.fullStop(req);
       //止盈
-      req.stopProfit = lossProfit.inpProfit;
+      req.stopProfit = Number(lossProfit.inpProfit);
       //止损
-      req.stopLoss = lossProfit.inpLoss;
+      req.stopLoss = Number(lossProfit.inpLoss);
       return req;
     },
     //下单按钮数字

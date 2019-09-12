@@ -72,7 +72,7 @@ export default {
             .$http({
               url: "/v1/user/card/remove",
               method: "post",
-              data: { id: 'sdsd'}
+              data: { id: id }
             })
             .then(res => {
               if (res.status == _this.STATUS) {
@@ -82,7 +82,7 @@ export default {
             });
         })
         .catch(() => {
-            console.log('11111')
+          console.log("11111");
           // on cancel
         });
     },

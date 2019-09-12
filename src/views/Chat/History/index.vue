@@ -88,8 +88,7 @@
 
 <script>
 import NavBar from "components/NavBar";
-import iconBuy from "Images/chat/icon_buy.png";
-import iconSale from "Images/chat/icon_sale.png";
+
 import ScrollV from "components/Scroll";
 import { mapState } from "vuex";
 export default {

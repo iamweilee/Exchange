@@ -36,57 +36,55 @@ const router = new Router({
             path: "/service", //联系客服
             name: "Service",
             meta: { id: 1.1 },
-            components: {
-                default: () => import("views/Home/Service")
-            }
+            component: () => import("views/Home/Service")
+        },
+        {
+            path: "/msg_board", //留言板
+            name: "MsgBoard",
+            meta: { id: 1.1 },
+            component: () => import("views/MsgBoard")
         },
         {
             path: "/hot", //热门活动
             name: "Hot",
             meta: { id: 1.2 },
-            components: {
-                default: () => import("views/Home/HotActive")
-            }
+            component: () => import("views/Home/HotActive")
         },
         {
             path: "/guide", //新手引导
             name: "NoviceGuide",
             meta: { id: 1.3 },
-            components: {
-                default: () => import("views/Home/NoviceGuide")
-            }
+            component: () => import("views/Home/NoviceGuide")
         },
         {
             path: "/guide/swiper", //引导swiper
             name: "GuideSwiper",
             meta: { id: 1.31 },
-            components: {
-                default: () => import("views/Home/GuideSwiper")
-            }
+            component: () => import("views/Home/GuideSwiper")
         },
         {
             path: "/asked", //新手引导子页面
             name: "Asked",
             meta: { id: 1.32 },
-            components: {
-                default: () => import("views/Home/Asked")
-            }
+            component: () => import("views/Home/Asked")
         },
         {
             path: "/asked/:type",
             name: "AskedType",
             meta: { id: 1.33 },
-            components: {
-                default: () => import("views/Home/Asked")
-            }
+            component: () => import("views/Home/Asked")
         },
         {
             path: "/disciple", //我的徒弟
             name: "Disciple",
             meta: { id: 1.4 },
-            components: {
-                default: () => import("views/Home/Disciple")
-            }
+            component: () => import("views/Home/Disciple")
+        },
+        {
+            path: "/disciple/list", //我的徒弟
+            name: "DiscipleList",
+            meta: { id: 1.41 },
+            component: () => import("views/Home/Disciple/List.vue")
         },
         {
             path: "/otc", //充值OTC
@@ -131,8 +129,14 @@ const router = new Router({
         {
             path: "/withdraw/address", //行业快讯
             name: "Address",
-            meta: { id: 1.53 },
+            meta: { id: 1.54 },
             component: () => import("views/Home/Withdraw/Address")
+        },
+        {
+            path: "/withdraw/list", //行业快讯
+            name: "AddressList",
+            meta: { id: 1.53 },
+            component: () => import("views/Home/Withdraw/Address/List.vue")
         },
         {
             path: "/news", //行业快讯
@@ -274,7 +278,7 @@ const router = new Router({
                     component: () => import("views/Me/Fund/Otc")
                 },
                 {
-                    path: "/me/fund/wallet", //钱包资金明细
+                    path: "/me/fund/wallet/:type", //钱包资金明细
                     name: "FundWallet",
                     meta: { id: 5.22, type: "sub" },
                     component: () => import("views/Me/Fund/Wallet")

@@ -70,13 +70,18 @@ export default {
   components: {},
   methods: {
     _initPage() {
-      if (this.$route.meta.type == "sub") {
-        this.tabClick(1);
+        let route = this.$route
+      if (route.meta.type == "sub") {
+        if (route.params.type == "draw") {
+          this.tabClick(2);
+        } else {
+          this.tabClick(1);
+        }
       }
     },
     tabClick(index) {
       this.styls = {
-        left: index * 50 + "%"
+        left: index * (100 / this.title.length) + "%"
       };
     },
     clickLeft(e) {
@@ -135,14 +140,15 @@ export default {
       font-size: 18px;
       color: $color3;
       position: relative;
-      width: 250px;
+      width: 270px;
       .tabs_wrap {
         display: flex;
         height: 45px;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
+        flex-wrap: wrap;
         li {
-          width: 124px;
+          width: 90px;
           p {
             width: 100%;
             display: flex;
@@ -161,7 +167,7 @@ export default {
       .tabs_line {
         transition-duration: 0.3s;
         position: absolute;
-        width: 124px;
+        width: 90px;
         height: 2px;
         background: linear-gradient(left, #2db5ff, #2c68fc);
         left: 0;

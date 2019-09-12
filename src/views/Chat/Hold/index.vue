@@ -62,8 +62,7 @@
 </template>
 
 <script>
-import iconBuy from "Images/chat/icon_buy.png";
-import iconSale from "Images/chat/icon_sale.png";
+
 import { distinct, priceFormat } from "common/utli";
 export default {
   props: {

@@ -95,7 +95,8 @@ export default {
     getCoinInfo(refresh) {
       this.$http({
         url: "/v1/kline/findQuotationList",
-        method: "get"
+        method: "get",
+        baseApi: "test"
       }).then(res => {
         if (res.status == this.STATUS) {
           let List = res.data;

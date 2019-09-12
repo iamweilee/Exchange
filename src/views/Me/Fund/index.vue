@@ -20,7 +20,8 @@ export default {
       //   transitionName: "slide-left",
       title: [
         { title: "OTC交易", url: "/me/fund", left: 0 },
-        { title: "钱包转账", url: "/me/fund/wallet", left: 1 }
+        { title: "钱包充值", url: "/me/fund/wallet/recharge", left: 1 },
+        { title: "钱包提现", url: "/me/fund/wallet/draw", left: 2 }
       ]
     };
   },

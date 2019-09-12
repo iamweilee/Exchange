@@ -25,7 +25,7 @@ import Coin from "components/Home/Coin";
 import Legal from "components/Home/Legal";
 import News from "components/Home/News";
 import Tips from "components/Tips";
-import { dateFormat } from "common/utli";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -48,11 +48,11 @@ export default {
   },
   methods: {
     change(val) {
-      console.log(val);
       this.value = val;
     },
     _initPage() {
       this.getBanner();
+      this.getBanlace();
       this.sendMsg();
       this.$EventListener.on("TVdetail", this.Detail);
     },
@@ -100,7 +100,8 @@ export default {
       }).then(res => {
         console.log(res.data);
       });
-    }
+    },
+    ...mapActions(["getBanlace"])
   },
   components: {
     HomeHead,

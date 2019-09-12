@@ -23,7 +23,11 @@ import {
     SwipeItem,
     Dialog,
     Switch,
-    Popup
+    Popup,
+    AddressList,
+    RadioGroup,
+    Field,
+    Radio
 } from "vant";
 import VueClipboard from "vue-clipboard2";
 import VueI18n from "vue-i18n";
@@ -57,6 +61,10 @@ Vue.use(VueI18n)
     .use(Swipe)
     .use(SwipeItem)
     .use(Popup)
+    .use(AddressList)
+    .use(RadioGroup)
+    .use(Field)
+    .use(Radio)
     .use(Switch)
     .use(Dialog)
     .use(VueClipboard);

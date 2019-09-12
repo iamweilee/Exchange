@@ -1,0 +1,66 @@
+@import '~assets/stylus/variable';
+.popup {
+    &_close {
+        font-size: 18px;
+        padding: 10px;
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        &:before {
+            content: '';
+            position: absolute;
+            top: -9px;
+            left: -9px;
+            right: -9px;
+            bottom: -9px;
+        }
+    }
+    &_wrap {
+        padding: 50px 20px 30px;
+    }
+    &_item {
+        margin-top: 20px;
+        &:first-child {
+            margin-top: 0;
+        }
+        .title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            img {
+                width: 20px;
+                margin-right: 6px;
+            }
+        }
+        ul {
+            background-color: $bgMain;
+            border-radius: 4px;
+            padding: 14px;
+            li {
+                font-size: 14px;
+                line-height: 20px;
+                p {
+                    padding: 6px 0 10px 0;
+                    color: $color6;
+                    font-size: 12px;
+                    line-height: 18px;
+                }
+            }
+        }
+        .intro {
+            border: 1px solid $bgMain;
+            border-radius: 4px;
+            div {
+                font-size: 14px;
+                color: $color6;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                &:nth-child(odd) {
+                    background-color: $bgMain;
+                }
+            }
+        }
+    }
+}

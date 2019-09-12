@@ -135,16 +135,17 @@
     &_tip {
         font-size: 10px;
         line-height: 18px;
+        margin-bottom: 10px;
     }
     .from_single {
         position: relative;
         display: flex;
+        align-items: center;
+        justify-content: space-between;
         height: 46px;
         width: 100%;
         border-radius: 4px;
         background-color: $bgMain;
-        align-items: center;
-        justify-content: space-between;
         font-size: 16px;
         padding: 0 16px;
         margin-bottom: 10px;
@@ -159,14 +160,20 @@
         .cont {
             position: relative;
             height: 100%;
-            flex: 1;
+            width: calc(100% - 100px);
             display: flex;
             align-items: center;
             color: $ablue;
             .inpVal {
+                width: 90%;
                 padding-right: 16px;
-                display: flex;
-                align-items: center;
+                p {
+                    font-size: 13px;
+                    no-wrap();
+                    &:last-child {
+                        margin-top: 6px;
+                    }
+                }
             }
             .select_btn {
                 position: absolute;

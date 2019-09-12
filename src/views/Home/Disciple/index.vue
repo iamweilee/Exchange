@@ -3,7 +3,7 @@
     <div class="disciple_top">
       <div class="title">
         <p class="tips">累计收入（USDT）</p>
-        <p class="price">125,047.84</p>
+        <p class="price">{{ disData.childAmount }}</p>
       </div>
       <div class="wrap">
         <div class="wrap_top">
@@ -21,13 +21,13 @@
           <button class="btn_apprentice">立即收徒</button>
         </div>
         <div class="wrap_info">
-          <div class="wrap_info_single">
-            <p>1,299</p>
-            <p>一级徒弟22人</p>
-          </div>
+          <router-link tag="div" to="/disciple/list" class="wrap_info_single">
+            <p>{{ disData.childCount }}</p>
+            <p>我的徒弟</p>
+          </router-link>
           <div class="wrap_info_single line-1px">
-            <p>12,322</p>
-            <p>二级级徒弟99人</p>
+            <p>{{ disData.childAmount }}</p>
+            <p>累计收入（USDT）</p>
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
           <div class="bg2">
             <div class="bg2_left">
               <p>累计收徒获得佣金</p>
-              <p>125,456</p>
+              <p>{{ disData.childAmount }}</p>
             </div>
             <button class="bg2_btn">师傅</button>
           </div>
@@ -118,36 +118,24 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      disData: {}
+    };
   },
   mounted() {
-    this.getDisciple();
-    this.history();
+    this.getData();
   },
   methods: {
-    //徒弟列表
-    getDisciple() {
+    getData() {
       this.$http({
-        url: "/user_commission_detail/list",
-        data: {
-          pageNo: 1,
-          pageSize: 10
-        },
+        url: "/user_recommend_detail/childDetailStatistics",
         method: "get"
       }).then(res => {
         console.log(res);
+        this.disData = res.data;
       });
     },
 
-    //徒弟列表
-    history() {
-      this.$http({
-        url: "/user_commission_detail/history",
-        method: "get"
-      }).then(res => {
-        console.log(res);
-      });
-    },
     clickLeft() {
       this.$router.push("/");
     }

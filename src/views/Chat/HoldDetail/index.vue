@@ -116,7 +116,7 @@
       <div class="holdD_night">
         <div class="holdD_night_left">
           <p>{{ $t("night") }}</p>
-          <p class="icon_size">
+          <p class="icon_size" @click="showCustomDialog">
             <img src="~assets/Images/other/icon_night.png" alt />{{
               $t("holdTo")
             }}6:00
@@ -163,14 +163,38 @@
         <div class="lossProfit_single">
           <div class="box">
             <input type="text" v-model="lossPrice" />
-            <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
-            <img class="add" src="~assets/Images/pos/icon_add.png" alt />
+            <!-- v-debounce="{
+                fn: minus.bind('click', 'lossPrice')
+              }" -->
+            <img
+              class="minus"
+              src="~assets/Images/pos/icon_minus.png"
+              v-debounce="{
+                fn: minus.bind('click', 'lossPrice')
+              }"
+            />
+            <!-- v-debounce="{
+                fn: add.bind('click', 'lossPrice')
+              }" -->
+            <img
+              class="add"
+             v-debounce="{
+                fn: add.bind('click', 'lossPrice')
+              }"
+              src="~assets/Images/pos/icon_add.png"
+            />
             <p class="box-size" @click.stop>
               ≥<em>{{
                 (socketData.close * 1.002) | priceFormat(coinData.tickLength)
               }}</em>
               预计亏损约
-              <em>80</em>
+              <em>{{
+                exLossProfit(
+                  orderDetail.dealPrice,
+                  lossPrice,
+                  orderDetail.tradeAmount
+                )
+              }}</em>
             </p>
           </div>
         </div>
@@ -180,14 +204,32 @@
         <div class="lossProfit_single">
           <div class="box">
             <input type="text" v-model="profitPrice" />
-            <img class="minus" src="~assets/Images/pos/icon_minus.png" alt />
-            <img class="add" src="~assets/Images/pos/icon_add.png" alt />
+            <img
+              class="minus"
+              src="~assets/Images/pos/icon_minus.png"
+              v-debounce="{
+                fn: minus.bind('click', 'profitPrice')
+              }"
+            />
+            <img
+              class="add"
+              v-debounce="{
+                fn: add.bind('click', 'profitPrice')
+              }"
+              src="~assets/Images/pos/icon_add.png"
+            />
             <p class="box-size" @click.stop>
               ≤<em>{{
                 (socketData.close * 0.998) | priceFormat(coinData.tickLength)
               }}</em>
               预计盈利约
-              <em>80</em>
+              <em>{{
+                exLossProfit(
+                  orderDetail.dealPrice,
+                  profitPrice,
+                  orderDetail.tradeAmount
+                )
+              }}</em>
             </p>
           </div>
         </div>
@@ -218,6 +260,12 @@
       :earnings="earnings(orderDetail, socketData.close)"
       :dialogData="orderDetail"
     />
+    <customDialog ref="customDialog" :titleText="$t('night')">
+      <p>
+        选择开启后，该笔订单可持仓过夜，但会收取一定的库存费，库存费=交易综合费*30%*持仓过夜天数；如用户不需要持仓过夜可取消设置，设置时间为【07:00:00—次日05:53:00】。
+      </p>
+      <p>如未开启，则该笔订单在次日05:53:00前会被系统强制平仓。</p>
+    </customDialog>
   </div>
 </template>
 
@@ -226,9 +274,13 @@ import ScrollH from "components/Scroll/ScrollH";
 import NavBar from "components/NavBar";
 import Echart from "components/Echart";
 import CloseOut from "components/CloseOut";
+import customDialog from "components/customDialog";
+import decimal from "common/decimal";
+import extendsCom from "@/extendsCom";
 import { priceFormat } from "common/utli";
 import { mapState, mapActions } from "vuex";
 export default {
+  extends: extendsCom,
   data() {
     return {
       btnList: [
@@ -267,7 +319,8 @@ export default {
     NavBar,
     ScrollH,
     Echart,
-    CloseOut
+    CloseOut,
+    customDialog
   },
   methods: {
     _initPage() {
@@ -279,6 +332,7 @@ export default {
       this.$refs.CloseOut.show = true;
       //   v1/leverage/updateProfitAndLoss?orderNo=xxx&profit=xxx&loss=xxx
     },
+    //获取订单详情
     getDetail() {
       let url = this.tradeType
         ? "/v1/leverage/getOrder"
@@ -384,18 +438,20 @@ export default {
         tradeAmount: orderDetail.tradeAmount
       };
       //下单价格
-      req.tradePrice = tradePrice;
+      req.tradePrice = Number(tradePrice);
       //杠杆倍数
-      req.leverage = priceFormat((tradePrice * req.tradeAmount) / req.deposit);
+      req.leverage = Number(
+        priceFormat((tradePrice * req.tradeAmount) / req.deposit)
+      );
       //手续费
-      req.poundageAmount = priceFormat(
-        (tradePrice * req.tradeAmount - req.deposit) * 0.003
+      req.poundageAmount = Number(
+        priceFormat((tradePrice * req.tradeAmount - req.deposit) * 0.003)
       );
       let lossProfit = this.fullStop(req);
       //止盈
-      req.stopProfit = lossProfit.inpProfit;
+      req.stopProfit = Number(lossProfit.inpProfit);
       //止损
-      req.stopLoss = lossProfit.inpLoss;
+      req.stopLoss = Number(lossProfit.inpLoss);
       return req;
     },
     //页面显示止盈止损价
@@ -428,10 +484,10 @@ export default {
       return { inpLoss, inpProfit };
     },
     //页面显示预计盈亏
-    exLossProfit(tradePrice, price) {
+    exLossProfit(tradePrice, price, tradeAmount) {
       //下单价与止盈止损的差值
       let chazhi = Math.abs(tradePrice - price);
-      return priceFormat(chazhi * this.orderData.tradeAmount);
+      return priceFormat(chazhi * tradeAmount);
     },
     //initTradePrice 初始化下单价
     initTradePrice(tradePrice) {
@@ -462,7 +518,7 @@ export default {
         earning =
           item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
       }
-      return priceFormat(earning);
+      return priceFormat(earning, this.coinData.tickLength);
     },
     beforeClose(action, done) {
       if (action == "confirm") {
@@ -472,10 +528,40 @@ export default {
         done();
       }
     },
+    add(key) {
+      this[key] = priceFormat(
+        decimal.accAdd(Number(this[key]), this.coinData.tickSize),
+        this.coinData.tickLength
+      );
+    },
+    minus(key) {
+      this[key] = priceFormat(
+        decimal.accSubtr(Number(this[key]) , this.coinData.tickSize),
+        this.coinData.tickLength
+      );
+    },
     profitLossHandle(action, done) {
       if (action == "cancel") {
         done();
+      } else {
+        this.updateProfitAndLoss(done);
+        console.log(action);
       }
+    },
+    updateProfitAndLoss() {
+      this.$http({
+        url: `/v1/leverage/updateProfitAndLoss?orderNo=${this.orderDetail.orderNo}&profit=${this.profitPrice}&loss=${this.lossPrice}`,
+        // data: {
+        //   orderNo: this.orderDetail.orderNo,
+        //   profit: this.profitPrice,
+        //   loss: this.lossPrice
+        // },
+        method: "put"
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          done();
+        }
+      });
     },
     checkResolution(resolution) {
       this.resolution = resolution;

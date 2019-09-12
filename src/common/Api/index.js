@@ -5,6 +5,7 @@ import Store from "../../Store";
 import ENV from "./ENV";
 import { Toast } from "vant";
 const baseApi = ENV.getENV().httpApi;
+const baseApi1 = ENV.getENV().httpApi1;
 const uploadAPI = ENV.getENV().uploadApi;
 const TVApi = ENV.getENV().TVApi;
 
@@ -45,7 +46,9 @@ const comFunc = function(options) {
             baseURL: baseApi,
             timeout: 5000
         };
-    if (options.baseApi == "upload") {
+    if (options.baseApi == "test") {
+        axiosData.baseURL = baseApi1;
+    } else if (options.baseApi == "upload") {
         axiosData.baseURL = uploadAPI;
     } else if (options.baseApi == "TV") {
         axiosData.baseURL = TVApi;

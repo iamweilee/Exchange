@@ -16,7 +16,7 @@ const extendTest = {
     },
     destroyed() {
         clearInterval(this.timer);
-      },
+    },
     methods: {
         verify(type) {
             let codeStr, loginNameStr;
@@ -51,6 +51,19 @@ const extendTest = {
             let _this = this,
                 loginName = this.emailPhone,
                 codeType = this.pageType == "email" ? 6 : 5;
+            if (this.pageType == "email") {
+                codeType = 6;
+            } else {
+                if (this.$route.name == "Edit1") {
+                    codeType = 5;
+                } else {
+                    if (this.userInfo.mobile) {
+                        codeType = 9;
+                    } else {
+                        codeType = 5;
+                    }
+                }
+            }
             if (type == "new") {
                 loginName = this.phoneData[this.pageType];
             }

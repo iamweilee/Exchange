@@ -16,8 +16,8 @@
           <button class="right_btn">{{ $t(isMock(tradeType)) }}</button>
         </div>
       </div>
-      <div class="back_left">
-        <van-icon class="back_icon" @click="clickLeft" name="arrow-left" />
+      <div class="back_left" @click="clickLeft">
+        <van-icon class="back_icon" name="arrow-left" />
       </div>
     </div>
     <div class="me_cont">
@@ -26,8 +26,8 @@
         <p class="num">{{ usableBalance | priceFormat }}</p>
       </div>
       <div class="me_cont_btn">
-        <button :disabled="!tradeType" @click="toUrl('/otc')">立即充币</button>
-        <button :disabled="!tradeType" @click="toUrl('/withdraw')">提币</button>
+        <button @click="toUrl('/otc')">立即充币</button>
+        <button @click="toUrl('/withdraw')">提币</button>
       </div>
     </div>
     <div class="me_list">
@@ -56,6 +56,9 @@ export default {
     ...mapState(["userInfo", "tradeType"]),
     ...mapGetters(["usableBalance"])
   },
+  mounted() {
+    this.getBanlace();
+  },
   components: {},
   methods: {
     toUrl(url) {
@@ -71,7 +74,7 @@ export default {
         return "cutFake";
       }
     },
-    ...mapActions(["setTradeType"])
+    ...mapActions(["setTradeType", "getBanlace"])
   }
 };
 </script>

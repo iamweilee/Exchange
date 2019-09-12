@@ -15,8 +15,11 @@
         font-size: 16px;
         color: $write;
         height: 50px;
-        img {
-            width: 18px;
+        &_l, &_r {
+            extend-click();
+            img {
+                width: 18px;
+            }
         }
     }
     &_scroll {
@@ -66,6 +69,7 @@
                         align-items: center;
                         color: $write;
                         .icon_size {
+                            extend-click();
                             font-size: 12px;
                             color: $KSize;
                             img {

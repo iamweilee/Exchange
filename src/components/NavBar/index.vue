@@ -1,11 +1,16 @@
 <template>
   <div class="nav_wrapper">
-    <div class="nav_bar" :class="isClass(fixed,hideBorder)">
+    <div class="nav_bar" :class="isClass(fixed, hideBorder)">
       <div class="nav_bar_l">
-        <van-icon v-show="showL" class="back_icon" @click="clickLeft" name="arrow-left"/>
+        <van-icon
+          v-show="showL"
+          class="back_icon"
+          @click="clickLeft"
+          name="arrow-left"
+        />
       </div>
-      <div class="nav_bar_c">{{title}}</div>
-      <div @click="clickRight"  class="nav_bar_r">
+      <div class="nav_bar_c">{{ title }}</div>
+      <div @click="clickRight" class="nav_bar_r">
         <slot name="right"></slot>
       </div>
     </div>
@@ -75,13 +80,14 @@ export default {
 <style scoped lang="stylus">
 @import '~assets/stylus/variable';
 .nav_wrapper {
+  position: relative;
   width: 100%;
   height: 46px;
   .nav_bar {
     width: 100%;
     height: 46px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 0 16px;
     background-color: $write;
@@ -93,13 +99,39 @@ export default {
       top: 0;
       left: 0;
       z-index: 99;
-      transform: translateZ(0)
+      transform: translateZ(0);
     }
-    &_l, &_r {
+    &_l {
+      position: absolute;
+      left: 16px;
+      top: 16;
       font-size: 12px;
       color: $color6;
-      extend-click();
       cursor: pointer;
+      &:before {
+        content: '';
+        position: absolute;
+        top: -9px;
+        left: -9px;
+        right: -9px;
+        bottom: -9px;
+      }
+    }
+    &_r {
+      position: absolute;
+      right: 16px;
+      top: 14px;
+      font-size: 12px;
+      color: $color6;
+      cursor: pointer;
+      &:before {
+        content: '';
+        position: absolute;
+        top: -9px;
+        left: -9px;
+        right: -9px;
+        bottom: -9px;
+      }
     }
     &_c {
       font-size: 18px;

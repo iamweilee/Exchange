@@ -2,7 +2,7 @@
   <div class="merchant">
     <div class="merchant_title">
       <p>已为您甄选优质商家！</p>
-      <p class="link" @click="showOtc = !showOtc">什么是OTC？</p>
+      <p class="link" @click="showCustomDialog">什么是OTC？</p>
     </div>
     <div class="merchant_single">
       <div
@@ -40,7 +40,7 @@
           </div>
           <div class="single_m_r">
             <p>单价：</p>
-            <p class="price">≈{{ item.buyRate}}</p>
+            <p class="price">≈{{ item.buyRate }}</p>
           </div>
         </div>
         <div class="single_b">
@@ -61,35 +61,34 @@
         </div>
       </div>
     </div>
-    <van-dialog
-      v-model="showOtc"
-      confirmButtonText="知道了"
-      confirmButtonColor="#2d9ef5"
-      class="customDialog"
-    >
+
+    <customDialog ref="customDialog" ButtonText="知道了">
       <p>
         OTC交易为场外交易，平台与商户签约，用户可通过平台与商户签约商户自由进行数字货币资产与法币买卖。
       </p>
       <p>如买方以法币（人民币）购买出售方提供的数字资产，如USDT</p>
-    </van-dialog>
-    <Recharge ref="Recharge"/>
+    </customDialog>
+    <Recharge ref="Recharge" />
   </div>
 </template>
 
 <script>
 import Recharge from "components/Recharge";
+import customDialog from "components/customDialog";
+import extendsCom from "@/extendsCom";
 export default {
+  extends: extendsCom,
   data() {
     return {
-      otcData: {},
-      showOtc: false
+      otcData: {}
     };
   },
   mounted() {
     this._initPage();
   },
   components: {
-    Recharge
+    Recharge,
+    customDialog
   },
   methods: {
     _initPage() {

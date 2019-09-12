@@ -90,7 +90,7 @@ export default {
             oldEmailCode: this.emailPhoneCode,
             email: "",
             emailCode: "",
-            deType: 6,
+            codeType: 6,
             type: 1
           };
         }

@@ -114,7 +114,6 @@ function toFixeds(nums, len = 2) {
     }
 }
 //保留小数位数
-
 function isAction(str, err) {
     //账号
     var reg = /[a-zA-Z0-9_]{4,16}/;

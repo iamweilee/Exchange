@@ -1,7 +1,7 @@
 <template>
   <div class="fund_list">
     <van-pull-refresh
-      v-if="!otcData.total"
+      v-if="otcData.total"
       v-model="isLoading"
       @refresh="pullDown"
     >

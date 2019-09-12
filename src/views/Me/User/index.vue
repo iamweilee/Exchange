@@ -92,8 +92,8 @@ export default {
       this.$http({
         url: "/v1/upload",
         method: "post",
-        data: _FormData
-        // baseApi: "upload"
+        data: _FormData,
+        baseApi: "upload"
       }).then(res => {
         if (res.status == this.STATUS) {
           this.setAvatar(res.data.relativePath);

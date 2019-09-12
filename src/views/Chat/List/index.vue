@@ -53,8 +53,7 @@
 </template>
 
 <script>
-import iconBuy from "Images/chat/icon_buy.png";
-import iconSale from "Images/chat/icon_sale.png";
+
 import { distinct } from "common/utli";
 export default {
   props: {

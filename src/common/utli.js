@@ -462,7 +462,7 @@ function toRate(rate, len = 2) {
     let prefix = "";
     if (rate > 0) {
         prefix = "+";
-    } else if ((rate == 0 || rate < 0)) {
+    } else if (rate == 0 || rate < 0) {
         prefix = "";
     } else {
         return "--";
@@ -488,7 +488,7 @@ function priceFormat(nums, extent = 2) {
             nums == 0
                 ? nums
                 : nums.replace(eval(re), "$1").replace(regexp, "$1");
-        return Number(Number(nums).toFixed(extent));
+        return Number(nums).toFixed(extent);
     } else {
         return "--";
     }
@@ -550,6 +550,133 @@ function distinct(a, b = []) {
     return result;
 }
 
+function isAction(str, err) {
+    //账号
+    var reg = /[a-zA-Z0-9_]{4,16}/;
+    let isTrue = reg.test(str);
+    if (!isTrue) {
+        return err ? err : "账号为4-14位数字，字母，下划线";
+    }
+    return false;
+}
+// if (str.trim()) {
+// } else {
+//     return "密码不能为空";
+// }
+// return false;
+function isEmail(str, err) {
+    //email
+    if (str.trim()) {
+        var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "邮箱格式有误！";
+        }
+        return false;
+    } else {
+        return "邮箱不能为空";
+    }
+}
+function isAccount(str) {
+    if (str.trim()) {
+        if (isEmail(str) && isNum(str)) {
+            return "账号为手机号或邮箱！";
+        }
+        return false;
+    } else {
+        return "账号不能为空";
+    }
+}
+
+function isPwd(str, err) {
+    if (str.trim()) {
+        //密码
+        var reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z_]{6,20}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "密码为 6 - 20 位数字，字母，下划线组合";
+        }
+        return false;
+    } else {
+        return "密码不能为空";
+    }
+}
+function isCode(str, err) {
+    if (str.trim()) {
+        //验证码
+        var reg = /^\d{6}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "验证码为6位数字";
+        }
+        return false;
+    } else {
+        return "验证码不能为空";
+    }
+}
+function isBankCode(str, err) {
+    if (str.trim()) {
+        //银行卡
+        var reg = /^([1-9]{1})(\d{14,18})$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "银行卡号为15-19位数字";
+        }
+        return false;
+    } else {
+        return "银行卡号不能为空";
+    }
+}
+function isShenfenCard(str, err) {
+    if (str.trim()) {
+        //身份证
+        var reg = /(^\d{15,18}$)|(^\d{17}(\d|X|x)$)/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "身份证号为15-18位数字";
+        }
+        return false;
+    } else {
+        return "身份证号不能为空";
+    }
+}
+function isPhone(str, err) {
+    if (str.trim()) {
+        //手机号
+        var reg = /^1[23456789]\d{9}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "手机号码有误，请重填";
+        }
+        return false;
+    } else {
+        return "手机号不能为空";
+    }
+}
+function isNum(str, err) {
+    //全数字
+    var reg = /^\d{1,}$/;
+    let isTrue = reg.test(str);
+    if (!isTrue) {
+        return err ? err : "邀请码请输入数字";
+    }
+    return false;
+}
+
+function isAddress(str, err) {
+    if (str.trim()) {
+        //提币地址
+        var reg = /^(?!\d+$)[\da-zA-Z]{6,}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "提币地址格式有误";
+        }
+        return false;
+    } else {
+        return "提币地址不能为空";
+    }
+}
+
 export {
     dataType,
     deepCopy,
@@ -571,5 +698,16 @@ export {
     toThousands,
     priceFormat,
     coinPrice,
-    distinct
+    distinct,
+    //验证
+    isAction,
+    isEmail,
+    isAccount,
+    isPwd,
+    isCode,
+    isBankCode,
+    isShenfenCard,
+    isPhone,
+    isNum,
+    isAddress
 };

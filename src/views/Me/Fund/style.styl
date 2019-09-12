@@ -4,6 +4,7 @@
         width: 100%;
     }
     &_list {
+        background-color: $write;
         width: 100%;
         subScroll();
         &_single {
@@ -30,6 +31,17 @@
                 &_shops, &_time {
                     font-size: 12px;
                     color: $color9;
+                    display: flex;
+                    align-items: center;
+                    span {
+                        display: inline-block;
+                        width: 216px;
+                        color: $ablue;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        margin-left: 4px;
+                    }
                 }
                 &_shops {
                     margin-bottom: 6px;

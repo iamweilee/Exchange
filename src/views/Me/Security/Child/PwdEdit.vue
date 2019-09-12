@@ -51,9 +51,6 @@ export default {
   },
   methods: {
     editPwd() {
-      if (this.editData.oldLoginPwd != this.editData.password) {
-        return this.$toast("两次密码不一致");
-      } else {
         let req = {
           oldLoginPwd: this.$md5(this.editData.oldLoginPwd),
           password: this.$md5(this.editData.password),
@@ -66,7 +63,6 @@ export default {
         }).then(res => {
           this.getUserInfo();
         });
-      }
     },
     verify() {
       let errStr = isPwd(this.editData.oldLoginPwd),

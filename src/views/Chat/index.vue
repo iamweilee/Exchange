@@ -1,9 +1,10 @@
 <template>
   <div class="chat">
-    <NavBar :title="`${$t('chat').title}${tradeType ? '' : $t('reals')}`" />
+    <NavBar :title="`${$t('chat').title}${tradeType ? '' : $t('reals')}`">
+    </NavBar>
     <div class="chat_wrap">
       <div class="chat_wrap_top">
-        <div class="card">
+        <div class="card" :class="!tradeType && 'card_mock'">
           <div class="card_size">
             <p>USDT</p>
             <p>{{ balance.enableAmount | priceFormat }}</p>

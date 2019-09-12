@@ -1,0 +1,65 @@
+@import '~assets/stylus/variable';
+.board {
+    .right_text {
+        font-size: 16px;
+        color: $blue;
+    }
+    &_top {
+        background-color: $write;
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+    &_wrap {
+        subScroll(230px);
+        .List {
+            padding: 16px;
+            background-color: $write;
+            min-height: 100%;
+            .single {
+                padding-top: 12px;
+                display: flex;
+                &_left {
+                    width: 16px;
+                    padding-top: 8px;
+                    img {
+                        width: 9px;
+                    }
+                }
+                &_right {
+                    width: calc(100% - 16px);
+                    border-bottom: 1px solid $colorE;
+                    padding-bottom: 12px;
+                    .top {
+                        height: 24px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        .title {
+                            font-size: 16px;
+                        }
+                        .time {
+                            font-size: 13px;
+                            color: $color9;
+                        }
+                    }
+                    .user {
+                        padding: 4px;
+                        display: flex;
+                        align-items: center;
+                        font-size: 13px;
+                        color: $color9;
+                        img {
+                            width: 18px;
+                            padding: 2px;
+                        }
+                    }
+                    .content {
+                        font-size: 13px;
+                        color: $color6;
+                        line-height: 22px;
+                    }
+                }
+            }
+        }
+    }
+}
