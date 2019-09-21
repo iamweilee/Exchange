@@ -1,0 +1,44 @@
+@import '~assets/stylus/variable.styl';
+.feedback {
+    background-color: $write;
+    .right_text {
+        font-size: 15px;
+        color: $blue;
+    }
+    &_top {
+        margin-bottom: 4px;
+        border-1px($color12, 100%);
+        textarea {
+            placeholderColor($color12,15px);
+            font-size: 15px;
+        }
+        .van-hairline--top-bottom::after {
+            display: none;
+        }
+        .uploader_wrap {
+            padding: 6px 16px;
+            .van-uploader__upload {
+                background-color: #f1f1f1;
+                border: 1px solid #f1f1f1;
+            }
+        }
+    }
+    &_inp {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        padding: 0 16px;
+        font-size: 15px;
+        border-1px($color12, 100%);
+        .label {
+            width: 82px;
+        }
+        input {
+            flex: 1;
+            font-size: 15px;
+            placeholderColor($color12,15px);
+            height: 18px;
+            border: none;
+        }
+    }
+}

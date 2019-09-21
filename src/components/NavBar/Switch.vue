@@ -70,19 +70,33 @@ export default {
   components: {},
   methods: {
     _initPage() {
-        let route = this.$route
+      let route = this.$route;
       if (route.meta.type == "sub") {
         if (route.params.type == "draw") {
           this.tabClick(2);
         } else {
           this.tabClick(1);
         }
+      } else {
+        this.tabClick(0);
       }
     },
     tabClick(index) {
-      this.styls = {
-        left: index * (100 / this.title.length) + "%"
-      };
+      if (this.title.length == 3) {
+        this.styls = {
+          left: index * (100 / this.title.length) + "%"
+        };
+      } else {
+        if (index) {
+          this.styls = {
+            left: "50%"
+          };
+        } else {
+          this.styls = {
+            left: "16.6%"
+          };
+        }
+      }
     },
     clickLeft(e) {
       this.$emit("clickLeft");

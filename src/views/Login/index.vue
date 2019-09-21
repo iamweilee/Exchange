@@ -21,6 +21,10 @@
             type="text"
             :placeholder="$t('loginReg').regPlaceholder"
             v-model="loginData.loginName"
+            v-debounce="{
+              fn: verify,
+              method: 'input'
+            }"
           />
         </div>
         <div class="inp_group border-1px">
@@ -28,13 +32,18 @@
             type="text"
             :placeholder="$t('loginReg').codePlaceholder"
             v-model="loginData.mobileCode"
+            maxlength="6"
             @keyup.enter="login"
+            v-debounce="{
+              fn: verify,
+              method: 'input'
+            }"
           />
           <button class="inp_group_right" :disabled="isSend" @click="sendMsg">
             {{ sendBtnText }}
           </button>
         </div>
-        <button class="from_btn" @click="login">
+        <button class="from_btn" :disabled="isClick" @click="login">
           {{ $t("loginReg").login }}
         </button>
         <router-link tag="p" to="/login/pwd" class="from_check">{{
@@ -46,12 +55,12 @@
 </template>
 
 <script>
-import { setInterval, clearInterval } from "timers";
 import { mapActions } from "vuex";
+import { isAccount, isCode } from "common/utli";
 export default {
   data() {
     return {
-      isClick: false, //登录按钮是否可点击
+      isClick: true, //登录按钮是否可点击
       isSend: false, //发送验证码按钮是否可点击
       sendBtnText: "获取验证码",
       timer: null,
@@ -97,7 +106,12 @@ export default {
         fn: _this.$timeSet.bind("regPhone", _this)
       });
     },
-
+    verify() {
+      let codeStr, loginNameStr;
+      codeStr = isCode(this.loginData.mobileCode);
+      loginNameStr = isAccount(this.loginData.loginName);
+      codeStr || loginNameStr ? (this.isClick = true) : (this.isClick = false);
+    },
     ...mapActions(["updatedUserInfo", "getBanlace", "sendMsgComm"])
   }
 };

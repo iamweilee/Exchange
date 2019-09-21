@@ -8,6 +8,7 @@ const baseApi = ENV.getENV().httpApi;
 const baseApi1 = ENV.getENV().httpApi1;
 const uploadAPI = ENV.getENV().uploadApi;
 const TVApi = ENV.getENV().TVApi;
+const market = ENV.getENV().market;
 
 // // 添加请求拦截器
 // axios.interceptors.request.use(function (config) {
@@ -36,6 +37,7 @@ axios.interceptors.response.use(
 const comFunc = function(options) {
     let params = options.data ? options.data : "",
         headers = {
+            market: market,
             "Content-Type": "application/json",
             Authorization: "Bearer " + (lStore.get("token") || "")
         },

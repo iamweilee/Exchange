@@ -22,7 +22,7 @@
             <p class="left_icon">
               <img :src="item.icon" :alt="item.title" />
             </p>
-            <ul class="right_cont border-1px" @click="toSwiper">
+            <ul class="right_cont border-1px" @click="toSwiper(item.id)">
               <li class="right_cont_size">
                 <h3>{{ item.title }}</h3>
                 <p>{{ item.content }}</p>
@@ -163,8 +163,8 @@ export default {
     clickLeft() {
       this.$router.back();
     },
-    toSwiper() {
-      this.$router.push("/guide/swiper");
+    toSwiper(id) {
+      this.$router.push(`/guide/swiper/${id}`);
     }
   }
 };

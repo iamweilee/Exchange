@@ -8,16 +8,27 @@
         position: absolute;
         left: 0;
         top: 0;
-        height: 76px;
-        width: 46px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        height: 46px;
+        width: 100%;
         color: $write;
         cursor: pointer;
         z-index: 10;
         .back_icon {
             font-size: 20px;
+            padding: 13px;
+            position: relative;
+            z-index: 999;
+        }
+        p {
+            width: 100%;
+            position: absolute;
+            height: 46px;
+            left: 0;
+            top: 0;
+            font-size: 16px;
+            color: $write;
+            text-align: center;
+            padding: 15px;
         }
     }
     .custom-indicator {
@@ -34,6 +45,7 @@
         z-index: 9;
         .title {
             color: $write;
+            font-size: 18px;
         }
         .num {
             margin-top: 4px;
@@ -49,7 +61,7 @@
         }
     }
     .guideSwiper {
-        subScroll(0, 168px);
+        subScroll(0, 116px);
         padding-top: 80px;
         &_item {
             width: 100%;
@@ -100,7 +112,7 @@
         position: absolute;
         left: 0;
         bottom: 16px;
-        height: 140px;
+        height: 100px;
         font-size: 15px;
         line-height: 28px;
         padding: 0 16px;

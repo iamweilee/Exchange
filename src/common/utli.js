@@ -654,13 +654,17 @@ function isPhone(str, err) {
     }
 }
 function isNum(str, err) {
-    //全数字
-    var reg = /^\d{1,}$/;
-    let isTrue = reg.test(str);
-    if (!isTrue) {
-        return err ? err : "邀请码请输入数字";
+    if (str.trim()) {
+        //全数字
+        var reg = /^\d{1,}$/;
+        let isTrue = reg.test(str);
+        if (!isTrue) {
+            return err ? err : "邀请码请输入数字";
+        }
+        return false;
+    } else {
+        return "手机号不能为空";
     }
-    return false;
 }
 
 function isAddress(str, err) {
@@ -675,6 +679,9 @@ function isAddress(str, err) {
     } else {
         return "提币地址不能为空";
     }
+}
+function random(lower, upper) {
+    return Math.floor(Math.random() * (upper - lower + 1)) + lower;
 }
 
 export {
@@ -709,5 +716,6 @@ export {
     isShenfenCard,
     isPhone,
     isNum,
-    isAddress
+    isAddress,
+    random
 };

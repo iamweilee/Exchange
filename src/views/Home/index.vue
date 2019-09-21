@@ -52,9 +52,12 @@ export default {
     },
     _initPage() {
       this.getBanner();
-      this.getBanlace();
+
       this.sendMsg();
       this.$EventListener.on("TVdetail", this.Detail);
+      if (this.$lStore.get("token")) {
+        this.getBanlace();
+      }
     },
     sendMsg() {
       setTimeout(() => {

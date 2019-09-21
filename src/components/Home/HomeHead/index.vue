@@ -2,7 +2,7 @@
   <div class="header">
     <div class="group" @click="toLogin(userInfo)">
       <p class="group_avatar">
-        <img :src="userInfo.portrait | avatarFun" alt />
+        <img :src="userInfo.portrait" alt />
       </p>
 
       <div v-if="userInfo" class="group_login">

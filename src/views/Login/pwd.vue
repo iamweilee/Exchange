@@ -21,6 +21,10 @@
             type="text"
             :placeholder="$t('loginReg').regPlaceholder"
             v-model="loginData.loginName"
+            v-debounce="{
+              fn: verify,
+              method: 'input'
+            }"
           />
         </div>
         <div class="inp_group border-1px">
@@ -29,9 +33,13 @@
             :placeholder="$t('loginReg').pwdPlaceholder"
             v-model="loginData.loginPwd"
             @keyup.enter="login"
+            v-debounce="{
+              fn: verify,
+              method: 'input'
+            }"
           />
         </div>
-        <button class="from_btn" @click="login">
+        <button :disabled="isClick" class="from_btn" @click="login">
           {{ $t("loginReg").login }}
         </button>
         <router-link tag="p" to="/login" class="from_check">{{
@@ -43,12 +51,12 @@
 </template>
 
 <script>
-import { isAccount, isPwd } from "common/TollClass/func";
+import { isAccount, isPwd } from "common/utli";
 import { mapActions } from "vuex";
 export default {
   data() {
     return {
-      isClick: false, //登录按钮是否可点击
+      isClick: true, //登录按钮是否可点击
       isSend: false, //发送验证码按钮是否可点击
       sendBtnText: "获取验证码",
       timer: null,
@@ -63,32 +71,30 @@ export default {
   components: {},
   methods: {
     login() {
-      let err = isAccount(this.loginData.loginName),
-        err1 = isPwd(this.loginData.loginPwd),
-        req = {
-          loginName: this.loginData.loginName,
-          loginPwd: this.$md5(this.loginData.loginPwd),
-          type: 0
-        };
-      if (err) {
-        this.$toast(err);
-      } else if (err1) {
-        this.$toast(err);
-      } else {
-        this.$http({
-          url: "/auth/authorize",
-          data: req,
-          method: "put",
-          pro: true
-        }).then(res => {
-          if (res.status == this.STATUS) {
-            this.$lStore.set("token", res.data.token);
-            this.updatedUserInfo(res.data);
-            this.getBanlace();
-            this.$router.push("/");
-          }
-        });
-      }
+      let req = {
+        loginName: this.loginData.loginName,
+        loginPwd: this.$md5(this.loginData.loginPwd),
+        type: 0
+      };
+      this.$http({
+        url: "/auth/authorize",
+        data: req,
+        method: "put",
+        pro: true
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.$lStore.set("token", res.data.token);
+          this.updatedUserInfo(res.data);
+          this.getBanlace();
+          this.$router.push("/");
+        }
+      });
+    },
+    verify() {
+      let pwdStr, loginNameStr;
+      pwdStr = isPwd(this.loginData.loginPwd);
+      loginNameStr = isAccount(this.loginData.loginName);
+      pwdStr || loginNameStr ? (this.isClick = true) : (this.isClick = false);
     },
     ...mapActions(["updatedUserInfo", "getBanlace"])
   }

@@ -57,7 +57,7 @@ const router = new Router({
             component: () => import("views/Home/NoviceGuide")
         },
         {
-            path: "/guide/swiper", //引导swiper
+            path: "/guide/swiper/:type", //引导swiper
             name: "GuideSwiper",
             meta: { id: 1.31 },
             component: () => import("views/Home/GuideSwiper")
@@ -340,6 +340,12 @@ const router = new Router({
             name: "About",
             meta: { id: 5.44 },
             component: () => import("views/Me/Setting/About")
+        },
+        {
+            path: "/me/feedback", //关于我们
+            name: "FeedBack",
+            meta: { id: 5.45 },
+            component: () => import("views/Me/Setting/FeedBack")
         },
         {
             path: "/me/security", //安全中心

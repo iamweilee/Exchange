@@ -2,8 +2,8 @@
   <div class="disciple">
     <div class="disciple_top">
       <div class="title">
-        <p class="tips">累计收入（USDT）</p>
-        <p class="price">{{ disData.childAmount }}</p>
+        <p class="tips">我的邀请码</p>
+        <p class="price">{{ userInfo.userCode }}</p>
       </div>
       <div class="wrap">
         <div class="wrap_top">
@@ -116,12 +116,17 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       disData: {}
     };
   },
+  computed: {
+    ...mapState(["userInfo"])
+  },
+
   mounted() {
     this.getData();
   },

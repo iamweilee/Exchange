@@ -6,8 +6,11 @@
     }
     &_top {
         background-color: $write;
-        font-size: 16px;
         margin-bottom: 4px;
+        textarea {
+            placeholderColor($color12, 15px);
+            font-size: 15px;
+        }
     }
     &_wrap {
         subScroll(230px);
@@ -16,6 +19,7 @@
             background-color: $write;
             min-height: 100%;
             .single {
+                position: relative;
                 padding-top: 12px;
                 display: flex;
                 &_left {
@@ -57,6 +61,14 @@
                         font-size: 13px;
                         color: $color6;
                         line-height: 22px;
+                    }
+                }
+                .solve {
+                    position: absolute;
+                    right: 20px;
+                    bottom: 20px;
+                    img {
+                        width: 38px;
                     }
                 }
             }

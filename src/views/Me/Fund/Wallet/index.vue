@@ -26,6 +26,7 @@
         </li>
       </ul>
     </ScrollV>
+    <NotData v-else />
     <!-- <div v-else class="notData">
       {{ $t("notData") }}
     </div> -->
@@ -33,6 +34,7 @@
 </template>
 
 <script>
+import NotData from "components/NotData";
 import ScrollV from "components/Scroll";
 export default {
   data() {
@@ -46,7 +48,8 @@ export default {
     };
   },
   components: {
-    ScrollV
+    ScrollV,
+    NotData
   },
   mounted() {
     this._initPage();

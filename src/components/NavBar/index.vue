@@ -90,7 +90,8 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 0 16px;
-    background-color: $write;
+    // background-color: $write;
+    background-color: transparent;
     &.border-1px {
       border-1px($color12, calc(100% - 1px));
     }
@@ -104,7 +105,7 @@ export default {
     &_l {
       position: absolute;
       left: 16px;
-      top: 16;
+      top: 16px;
       font-size: 12px;
       color: $color6;
       cursor: pointer;

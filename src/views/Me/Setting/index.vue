@@ -19,7 +19,7 @@
           to="/me/setting/about"
           :title="$t('meSeting').about"
         ></van-cell>
-        <van-cell is-link :title="$t('meSeting').feedback"></van-cell>
+        <van-cell is-link to="/me/feedback" :title="$t('meSeting').feedback"></van-cell>
       </div>
       <p class="setting_logout" @click="loginOut">
         {{ $t("meSeting").loginOut }}

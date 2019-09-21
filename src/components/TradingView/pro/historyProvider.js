@@ -4,6 +4,7 @@ const history = {};
 export default {
     history: history,
     getBars: function(symbolInfo, resolution, from, to, first, limit) {
+        console.log(new Date().getTime())
         var split_symbol = symbolInfo.name.split(/[:/]/);
         // to = to * 1000;
         // console.log(resolution)

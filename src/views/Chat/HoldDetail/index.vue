@@ -35,7 +35,7 @@
           </p>
         </div>
         <div class="holdD_title_bot">
-          <p>{{ orderDetail.tradeType == 0 ? $t("rise") : $t("fall") }}</p>
+          <p>{{ orderDetail.tradeType == 0 ? $t("fall") : $t("rise") }}</p>
           <p @click="showProfitLoss = !showProfitLoss">
             {{ $t("chat").setting }}
           </p>
@@ -178,7 +178,7 @@
               }" -->
             <img
               class="add"
-             v-debounce="{
+              v-debounce="{
                 fn: add.bind('click', 'lossPrice')
               }"
               src="~assets/Images/pos/icon_add.png"
@@ -518,7 +518,11 @@ export default {
         earning =
           item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
       }
-      return priceFormat(earning, this.coinData.tickLength);
+      if (earning < 0) {
+        return priceFormat(earning);
+      } else {
+        return "+" + priceFormat(earning);
+      }
     },
     beforeClose(action, done) {
       if (action == "confirm") {
@@ -536,7 +540,7 @@ export default {
     },
     minus(key) {
       this[key] = priceFormat(
-        decimal.accSubtr(Number(this[key]) , this.coinData.tickSize),
+        decimal.accSubtr(Number(this[key]), this.coinData.tickSize),
         this.coinData.tickLength
       );
     },

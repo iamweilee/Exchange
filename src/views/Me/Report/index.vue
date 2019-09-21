@@ -1,7 +1,7 @@
 <template>
   <div class="report">
     <NavBar title="投资报表" fixed showL @clickLeft="clickLeft" />
-    <div class="report_wrap">
+    <div class="report_wrap" v-if="reportData.successUpCount">
       <div class="report_wrap_top">
         <div class="single">
           <p class="single_big color-blue">
@@ -98,12 +98,14 @@
         </ul>
       </div>
     </div>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
 import VeRing from "v-charts/lib/ring.common";
+import NotData from "components/NotData";
 export default {
   data() {
     return {
@@ -149,7 +151,7 @@ export default {
       reportData: {}
     };
   },
-  components: { NavBar, VeRing },
+  components: { NavBar, VeRing, NotData },
   mounted() {
     this._initPage();
   },

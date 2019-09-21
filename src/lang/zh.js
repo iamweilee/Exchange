@@ -71,7 +71,7 @@ module.exports = {
     pos: {
         clickHide: "点击收起",
         high: "高",
-        low: "底",
+        low: "低",
         amount: "量",
         minute: "分",
         hour: "时",

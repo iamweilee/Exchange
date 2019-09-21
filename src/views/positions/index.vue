@@ -43,7 +43,8 @@
           <div class="left">
             <div class="color-green">
               {{
-                detailData.close | priceFormat(coinPrecision[coinCode].tickLength)
+                detailData.close
+                  | priceFormat(coinPrecision[coinCode].tickLength)
               }}
             </div>
             <div class="small">
@@ -54,7 +55,8 @@
           <ul class="right">
             <li>
               {{ $t("pos").high }}(24H)&nbsp;&nbsp;{{
-                detailData.high | priceFormat(coinPrecision[coinCode].tickLength)
+                detailData.high
+                  | priceFormat(coinPrecision[coinCode].tickLength)
               }}
             </li>
             <li>
@@ -339,10 +341,11 @@ export default {
     },
     //更新头部价格成交量
     renderDetail(data) {
-      if (data.symbol == this.symbol) {
+      console.log(data.symbol, this.symbol);
+      data.symbol = data.symbol.replace("/USDT", "");
+      if (data.symbol == this.coinCode) {
         this.detailData = data;
       }
-      data.symbol = data.symbol.replace("/USDT", "");
       let List = this.List;
       for (let i = 0; i < List.length; i++) {
         if (List[i].symbol == data.symbol) {

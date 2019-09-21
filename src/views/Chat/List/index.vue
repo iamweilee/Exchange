@@ -12,8 +12,8 @@
           <p class="top_l">
             <span class="big">{{ item.targetCoin }}</span>
             <span class="small">{{ item.sourceCoin }}</span>
-            <span class="icon">
-              <img :src="isBuy(index)" alt />
+            <span class="icon" :class="item.position ? 'fall' : 'rise'">
+              {{ isBuy(item.position) }}
             </span>
             <span class="num"
               >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
@@ -46,15 +46,13 @@
         </li>
       </router-link>
     </div>
-    <div v-else class="notData">
-      {{ $t("notData") }}
-    </div>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
-
 import { distinct } from "common/utli";
+import NotData from "components/NotData";
 export default {
   props: {
     showDialog: {
@@ -74,6 +72,9 @@ export default {
   },
   mounted() {
     this._initPage();
+  },
+  components: {
+    NotData
   },
   methods: {
     _initPage() {
@@ -124,10 +125,10 @@ export default {
       this.showDialog(item);
     },
     isBuy(type) {
-      if (type % 3) {
-        return iconBuy;
+      if (type) {
+        return "跌";
       } else {
-        return iconSale;
+        return "涨";
       }
     },
     refresh(done) {

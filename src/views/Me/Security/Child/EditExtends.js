@@ -1,5 +1,5 @@
 import { mapState, mapActions } from "vuex";
-import { isAccount, isCode } from "common/TollClass/func";
+import { isAccount, isCode } from "common/utli";
 const extendTest = {
     data() {
         return {

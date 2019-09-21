@@ -3,7 +3,6 @@
 </template>
 
 <script>
-// import Datafeed from "./api/index";
 import Datafeed from "./pro/index";
 import { dateFormatUTC } from "common/utli";
 function getLanguageFromURL() {
@@ -88,6 +87,7 @@ export default {
   },
   methods: {
     _initTV() {
+        console.log(new Date().getTime())
       const widgetOptions = {
         debug: false,
         symbol: this.symbol,

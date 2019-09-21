@@ -39,13 +39,12 @@
       </router-link>
       <!-- </ScrollV> -->
     </van-pull-refresh>
-    <div v-else class="notData">
-      {{ $t("notData") }}
-    </div>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
+import NotData from "components/NotData";
 import ScrollV from "components/Scroll";
 export default {
   data() {
@@ -57,7 +56,8 @@ export default {
     };
   },
   components: {
-    ScrollV
+    ScrollV,
+    NotData
   },
   mounted() {
     this.getList();

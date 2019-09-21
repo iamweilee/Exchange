@@ -47,7 +47,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { isEmail, isPwd, isCode, isNum } from "common/TollClass/func";
+import { isEmail, isPwd, isCode, isNum, random } from "common/utli";
 export default {
   data() {
     return {
@@ -122,13 +122,24 @@ export default {
         if (res.status == this.STATUS) {
           this.$toast("恭喜你注册成功");
           this.$lStore.set("token", res.data.token);
-          this.updatedUserInfo(res.data);
+          this.setAvatar();
           this.getBanlace();
           this.$router.push("/");
         }
       });
     },
-    ...mapActions(["updatedUserInfo", "getBanlace"])
+    setAvatar() {
+      this.$http({
+        url: "/v1/user/portrait",
+        method: "post",
+        data: { portrait: `/avatar/avatar${random(1, 8)}.png` }
+      }).then(res => {
+        if (res.status == this.STATUS) {
+          this.getUserInfo();
+        }
+      });
+    },
+    ...mapActions(["getUserInfo", "getBanlace"])
   },
   watch: {
     $route(to, from) {

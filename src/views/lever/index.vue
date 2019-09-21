@@ -43,10 +43,12 @@
         </li>
       </router-link>
     </van-pull-refresh>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
+import NotData from "components/NotData";
 import NavBar from "components/NavBar";
 import ScrollV from "components/Scroll";
 export default {
@@ -59,7 +61,8 @@ export default {
   },
   components: {
     NavBar,
-    ScrollV
+    ScrollV,
+    NotData
   },
   mounted() {
     this._initPage();

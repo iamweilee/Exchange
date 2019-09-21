@@ -55,15 +55,13 @@
         </li>
       </router-link>
     </div>
-    <div v-else class="notData">
-      {{ $t("notData") }}
-    </div>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
-
 import { distinct, priceFormat } from "common/utli";
+import NotData from "components/NotData";
 export default {
   props: {
     showDialog: {
@@ -87,6 +85,9 @@ export default {
   },
   destroyed() {
     this.$EventListener.fire("SendMsg", {});
+  },
+  components: {
+    NotData
   },
   methods: {
     _initPage() {

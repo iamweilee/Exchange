@@ -1,25 +1,11 @@
 <template>
   <div class="history">
-    <!-- <NavBar
-      :title="tradeType ? $t('chat').historyTitles : $t('chat').historyTitle"
-      fixed
-      showL
-      @clickLeft="clickLeft"
-    /> -->
     <van-pull-refresh
       v-model="isLoading"
       class="history_list"
       v-if="historyData.list.length"
       @refresh="pullDown"
     >
-      <!-- <div class="history_list" v-if="historyData.list.length">
-      <ScrollV
-        pulldown
-        pullup
-        @pullDown="pullDown"
-        @pullUp="pullUp"
-        :data="historyData.list"
-      > -->
       <van-list
         v-model="loading"
         :finished="!historyData.hasNextPage"
@@ -38,8 +24,8 @@
             <p class="top_l">
               <span class="big">{{ item.targetCoin }}</span>
               <span class="small">{{ item.sourceCoin }}</span>
-              <span class="icon">
-                <img :src="isBuy(item.position)" alt />
+              <span class="icon" :class="item.position ? 'fall' : 'rise'">
+                {{ isBuy(item.position) }}
               </span>
               <span class="num"
                 >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
@@ -78,17 +64,14 @@
           </span>
         </router-link>
       </van-list>
-      <!-- </ScrollV> -->
     </van-pull-refresh>
-    <div v-else class="notData">
-      {{ $t("notData") }}
-    </div>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
 import NavBar from "components/NavBar";
-
+import NotData from "components/NotData";
 import ScrollV from "components/Scroll";
 import { mapState } from "vuex";
 export default {
@@ -106,7 +89,7 @@ export default {
   computed: {
     ...mapState(["tradeType"])
   },
-  components: { NavBar, ScrollV },
+  components: { NavBar, ScrollV, NotData },
   mounted() {
     this.getHistory();
   },
@@ -141,19 +124,19 @@ export default {
         }
       });
     },
-    isBuy(type) {
-      if (type) {
-        return iconBuy;
-      } else {
-        return iconSale;
-      }
-    },
     isStatus(status) {
       switch (status) {
         case 6:
           return `已${this.$t("chat").cancelOrder}`;
         case 7:
           return `已${this.$t("chat").closeOut}`;
+      }
+    },
+    isBuy(type) {
+      if (type) {
+        return "跌";
+      } else {
+        return "涨";
       }
     },
     isColor(num) {
