@@ -84,7 +84,6 @@ WBT.prototype.initWs = function() {
 // 断线重连 reConnect
 WBT.prototype.reConnect = function() {
     if (this.isReconnect) return;
-    console.log("666666666666666666666666666666");
     this.isReconnect = true;
     var _this = this;
     //没连接上会一直重连，设置延迟避免请求过多
@@ -115,7 +114,6 @@ WBT.prototype.handleEvent = function(message) {
 WBT.prototype.Send = function(data) {
     var timer = setInterval(() => {
         if (this.socket.readyState == 1) {
-            console.log(this.socket.readyState);
             this.socket.send(data);
             clearInterval(timer);
         }

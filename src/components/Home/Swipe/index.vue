@@ -9,7 +9,9 @@
       v-if="bannerList.length"
     >
       <Slide v-for="item in bannerList" :key="item.id">
-        <img src="~assets/Images/home/banner.png" alt />
+        <router-link tag="p" :to="item.url">
+          <img :src="item.picPath" :alt="item.name" />
+        </router-link>
       </Slide>
     </Swiper>
   </div>
@@ -34,7 +36,9 @@ export default {
     Swiper,
     Slide
   },
-  mounted() {},
+  mounted() {
+    console.log(this.bannerList);
+  },
   methods: {
     hanleSwipe() {
       console.log("666666");

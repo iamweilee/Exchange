@@ -87,9 +87,6 @@ export default {
         data: { type: 1 }
       }).then(res => {
         if (res.status == this.STATUS) {
-          res.data.map(item => {
-            item.picPath = bannerImg;
-          });
           this.bannerList = res.data;
         }
       });

@@ -34,7 +34,7 @@ export default {
     },
     getMessage() {
       this.$http({
-        url: "/v1/platMessage/",
+        url: "/v1/platMessage/getList",
         method: "get",
         data: { type: 3, pageSize: 20, pageNo: 1 }
       }).then(res => {
