@@ -6,7 +6,7 @@
         v-for="item in hotData.list"
         :key="item.id"
         class="hot_list_single"
-        to="/"
+        to="/active_page"
       >
         <img src="~assets/Images/home/banner.png" alt />
       </router-link>
@@ -34,7 +34,7 @@ export default {
     },
     getMessage() {
       this.$http({
-        url: "/v1/platMessage/getList",
+        url: "/v1/platMessage/",
         method: "get",
         data: { type: 3, pageSize: 20, pageNo: 1 }
       }).then(res => {

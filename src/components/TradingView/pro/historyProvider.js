@@ -4,7 +4,6 @@ const history = {};
 export default {
     history: history,
     getBars: function(symbolInfo, resolution, from, to, first, limit) {
-        console.log(new Date().getTime())
         var split_symbol = symbolInfo.name.split(/[:/]/);
         // to = to * 1000;
         // console.log(resolution)
@@ -34,29 +33,31 @@ export default {
             name: "K线数据源",
             method: "get",
             baseApi: "test"
-        }).then(data => {
-            if (data.Response && data.Response === "Error") {
-                console.log("CryptoCompare API error:", data.Message);
-                return [];
-            }
-            if (data.data.length) {
-                var bars = data.data.map(el => {
-                    return {
-                        time: el.openTime, //TradingView requires bar time in ms
-                        low: el.low,
-                        high: el.high,
-                        open: el.open,
-                        close: el.close,
-                        volume: el.volume
+        }).then(res => {
+            if (res.status == 200) {
+                let resList = res.data;
+                if (resList.length) {
+                    let newList = resList.map(item => {
+                        return {
+                            time: item.openTime, //TradingView requires bar time in ms
+                            low: item.low,
+                            high: item.high,
+                            open: item.open,
+                            close: item.close,
+                            volume: item.volume
+                        };
+                    });
+
+                    let lastBar = newList[99];
+                    console.log(lastBar);
+                    history[symbolInfo.name] = {
+                        lastBar: lastBar
                     };
-                });
-                if (first) {
-                    var lastBar = bars[bars.length - 1];
-                    history[symbolInfo.name] = { lastBar: lastBar };
+                    console.log(history[symbolInfo.name]);
+                    return resList;
+                } else {
+                    return [];
                 }
-                return bars;
-            } else {
-                return [];
             }
         });
     }

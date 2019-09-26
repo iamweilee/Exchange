@@ -4,7 +4,7 @@
 
 <script>
 import Datafeed from "./pro/index";
-import { dateFormatUTC } from "common/utli";
+import { dateFormatUTC, dateFormat } from "common/utli";
 function getLanguageFromURL() {
   const regex = new RegExp("[\\?&]lang=([^&#]*)");
   const results = regex.exec(window.location.search);
@@ -87,7 +87,6 @@ export default {
   },
   methods: {
     _initTV() {
-        console.log(new Date().getTime())
       const widgetOptions = {
         debug: false,
         symbol: this.symbol,
@@ -106,12 +105,12 @@ export default {
         customFormatters: {
           timeFormatter: {
             format: function(date) {
-              return dateFormatUTC(date, "hh:mm:ss");
+              return dateFormat(date, "hh:mm:ss");
             }
           },
           dateFormatter: {
             format: function(date) {
-              return dateFormatUTC(date, "yyyy-MM-dd");
+              return dateFormat(date, "yyyy-MM-dd");
             }
           }
         },
@@ -155,7 +154,7 @@ export default {
           "header_fullscreen_button",
           "property_pages",
           //是否支持缩放
-        //   "chart_zoom",
+          //   "chart_zoom",
           "control_bar",
           "edit_buttons_in_legend",
           "countdown",
@@ -255,13 +254,11 @@ export default {
         .setResolution(resolution, function onReadyCallback() {});
     },
     getID(Id, type) {
-      console.log(Id, type);
       this[type] = Id;
     },
     //关闭其他指标
     closeOther() {
       let IdArr = this.tvWidget.chart().getAllStudies();
-      console.log(IdArr);
       IdArr.forEach(item => {
         if (
           item.name == "Moving Average Exponential" ||

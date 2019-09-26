@@ -1,5 +1,6 @@
 @import '~assets/stylus/variable.styl';
 .detail {
+    background-color: $write;
     .nav_right {
         font-size: 16px;
         color: $blue;
@@ -133,12 +134,17 @@
             height: 44px;
             font-size: 16px;
             color: $write;
-            background: $blue;
             border-radius: 6px;
             margin: 0 16px;
             &.cancel {
-                background-color: $color12;
+                border: 1px solid $colorE;
                 color: $color6;
+            }
+            &.okBtn {
+                background: $blue;
+            }
+            &:disabled {
+                background-color: $disBtn;
             }
         }
     }

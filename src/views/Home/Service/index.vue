@@ -6,7 +6,7 @@
         <p class="time">22:35</p>
         <div class="msg">
           <div class="msg_l">
-            <img src="~assets/Images/avatar.jpg" alt />
+            <img :src="sysAvatar" alt />
           </div>
           <div class="msg_r">
             <p class="tips">您是不是要咨询以下问题</p>
@@ -29,7 +29,10 @@
           :class="item.type !== 'system_msg' && 'self'"
         >
           <div class="msg_l">
-            <img src="~assets/Images/avatar.jpg" alt />
+            <img
+              :src="item.type == 'system_msg' ? sysAvatar : userInfo.portrait"
+              alt
+            />
           </div>
           <div class="msg_r">
             <p v-for="(text, index) in item.list" :key="index">{{ text }}</p>
@@ -62,13 +65,18 @@
 <script>
 import NavBar from "components/NavBar";
 import ScrollV from "components/Scroll";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
       isLoading: false,
       List: [],
-      inpVal: ""
+      inpVal: "",
+      sysAvatar: require("../../../assets/Images/sysAvatar.png")
     };
+  },
+  computed: {
+    ...mapState(["userInfo"])
   },
   components: {
     NavBar,

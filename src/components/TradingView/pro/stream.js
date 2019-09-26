@@ -1,5 +1,6 @@
 // api/stream.js
 import historyProvider from "./historyProvider.js";
+import { dateFormat } from "common/utli";
 import Vue from "vue";
 const _comm = new Vue();
 // keep track of subscriptions
@@ -8,7 +9,6 @@ var _subs = [];
 export default {
     subscribeBars: function(symbolInfo, resolution, updateCb, uid, resetCache) {
         _comm.$EventListener.on("TVkline", klineLastBar);
-
         var newSub = {
             uid,
             resolution,
@@ -16,6 +16,7 @@ export default {
             lastBar: historyProvider.history[symbolInfo.name].lastBar,
             listener: updateCb
         };
+        console.log(historyProvider.history[symbolInfo.name].lastBar.time)
         _subs.push(newSub);
     },
     unsubscribeBars: function(uid) {
@@ -61,6 +62,7 @@ function updateBar(data, sub) {
     var rounded = data.ts;
     var lastBarSec = Number(lastBar.time) + resolution * 60000;
     var _lastBar;
+
     // return;
     if (rounded > lastBarSec) {
         // create a new candle, use last close as open **PERSONAL CHOICE**
@@ -69,7 +71,7 @@ function updateBar(data, sub) {
             high: data.high,
             low: data.low,
             open: data.open,
-            time: data.ts,
+            time: lastBarSec,
             volume: data.volume
         };
     } else {

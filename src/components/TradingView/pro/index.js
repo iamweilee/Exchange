@@ -33,7 +33,7 @@ export default {
             name: symbolName,
             type: "crypto",
             session: "24x7",
-            timezone: "Etc/UTC",
+            timezone: "Asia/Shanghai",
             ticker: symbolName,
             minmov: 1,
             pricescale: 100,
@@ -61,17 +61,11 @@ export default {
         firstDataRequest
     ) {
         console.log("=====getBars running");
-        // console.log('function args',arguments)
-        // console.log(
-        //     `Requesting bars between ${new Date(
-        //         from * 1000
-        //     ).toISOString()} and ${new Date(to * 1000).toISOString()}`
-        // );
-
         historyProvider
             .getBars(symbolInfo, resolution, from, to, firstDataRequest)
             .then(bars => {
                 if (bars.length) {
+                    console.log(bars)
                     onHistoryCallback(bars, { noData: false });
                 } else {
                     onHistoryCallback(bars, { noData: true });

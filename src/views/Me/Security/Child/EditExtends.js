@@ -40,11 +40,30 @@ const extendTest = {
                 if ((res.status = 200)) {
                     if (bol) {
                         this.$router.back();
+                        this.getUserInfo();
+                        this.$lStore.remove("phoneData");
+                    } else {
+                        this.loginOut();
                     }
-                    this.getUserInfo();
-                    this.$lStore.remove("phoneData");
                 }
             });
+        },
+        loginOut() {
+            this.$http({ url: "/v1/user/login_out", method: "post" })
+                .then(res => {
+                    if (res.status == this.STATUS) {
+                        this.$lStore.remove("token");
+                        this.updatedUserInfo("");
+                        this.updatedBanlace("");
+                        this.$router.push("/login");
+                    }
+                })
+                .catch(err => {
+                    this.$lStore.remove("token");
+                    this.updatedUserInfo("");
+                    this.updatedBanlace("");
+                    this.$router.push("/login");
+                });
         },
         //发送验证
         sendMsg(type) {
@@ -74,8 +93,12 @@ const extendTest = {
                 fn: _this.$timeSet.bind("edit", _this)
             });
         },
-
-        ...mapActions(["getUserInfo", "sendMsgComm"])
+        ...mapActions([
+            "getUserInfo",
+            "sendMsgComm",
+            "updatedUserInfo",
+            "updatedBanlace"
+        ])
     }
 };
 export default extendTest;

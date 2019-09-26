@@ -76,7 +76,7 @@ export default {
       timer: null,
       isClick: true,
       addList: [],
-      drawSite: this.$lStore.get("drawSite")
+      drawSite: this.$lStore.get("drawSite") || {}
     };
   },
   computed: {

@@ -59,14 +59,14 @@
                   <img v-if="checkRdio == 1" :src="radios" alt />
                   <img v-else :src="radio" alt />
                 </p>
-                <p>网上银行</p>
+                <p>银行卡</p>
               </li>
               <li @click="changeRadio(2)">
                 <p>
                   <img v-if="checkRdio == 2" :src="radios" alt />
                   <img v-else :src="radio" alt />
                 </p>
-                <p>手机银行</p>
+                <p>支付宝</p>
               </li>
             </ul>
           </div>
@@ -220,11 +220,12 @@ export default {
       this.inpVal = this.inpVal.replace(/[^\d]/g, "");
       this.isClick(this.inpVal);
     },
+    
     //是否可以点击充值按钮
     isClick(inpVal) {
       if (
-        inpVal < this.otcDetail.buyMinAmount ||
-        inpVal > this.otcDetail.buyMaxAmount
+        inpVal < this.otcDetail.sellMinAmount ||
+        inpVal > this.otcDetail.sellMaxAmount
       ) {
         this.isDisabled = true;
         this.$toast("充值数量不符");

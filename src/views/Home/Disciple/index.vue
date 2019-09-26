@@ -9,10 +9,10 @@
         <div class="wrap_top">
           <div class="wrap_top_l">
             <p class="avatar">
-              <img src="~assets/Images/disciple/top_bg.png" alt />
+              <img :src="userInfo.portrait" alt />
             </p>
             <div class="msg_group">
-              <p class="name">CT123445</p>
+              <p class="name">{{userInfo.nickName}}</p>
               <p class="icon">
                 <img src="~assets/Images/disciple/icon_master.png" alt />
               </p>
@@ -43,7 +43,7 @@
         <img src="~assets/Images/disciple/icon_1.png" alt />人脉变钱脉
       </p>
       <div class="code_wrap">
-        <img src="~assets/Images/disciple/top_bg.png" alt />
+        <img :src="userInfo.qrCodePath" alt />
         <button>长按保存推广图片</button>
       </div>
       <p class="disciple_wrap_title">

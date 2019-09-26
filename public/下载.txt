@@ -48,4 +48,15 @@
 
 
 
+
+
+
 客服系统后台-菜单权限分掉（10.1之前）
+
+
+
+用户数据统计 http://18.139.211.91:8090/v1/userStatistics/list?pageNo=0&pageSize=10 get
+
+/v1/otc/list?pageNo=0&pageSize=10  get
+/v1/otc/detail?id=xxx  get
+/v1/otc/update  post 

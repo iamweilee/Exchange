@@ -48,6 +48,24 @@
             height: 44px;
         }
     }
+    .btnType {
+        height: 46px;
+        padding: 3px 16px;
+        display: flex;
+        justify-content: space-between;
+        button {
+            width: calc(50% - 10px);
+            height: 40px;
+            color: $KSize;
+            font-size: 14px;
+            border: 1px solid #1b212d;
+            border-radius: 4px;
+            &.active {
+                background-color: $btnBgP;
+                color: $write;
+            }
+        }
+    }
     &_form {
         min-height: 108px;
         padding: 0 16px;
@@ -161,7 +179,7 @@
                         border: 1px solid #1b212d;
                         &.active {
                             color: $write;
-                            background: linear-gradient(left, #2DAFFF, #2C68FC);
+                            background-color: $btnBgP;
                         }
                     }
                     &.cash {

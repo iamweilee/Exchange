@@ -341,7 +341,6 @@ export default {
     },
     //更新头部价格成交量
     renderDetail(data) {
-      console.log(data.symbol, this.symbol);
       data.symbol = data.symbol.replace("/USDT", "");
       if (data.symbol == this.coinCode) {
         this.detailData = data;

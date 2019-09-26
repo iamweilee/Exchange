@@ -20,7 +20,6 @@
             >
           </p>
           <p class="top_btn">
-            <span :class="isColor(index)">-18.76</span>
             <button @click.stop="closeOut(item)">
               {{ $t("chat").cancelOrder }}
             </button>

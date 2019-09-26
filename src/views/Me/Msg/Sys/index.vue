@@ -1,5 +1,5 @@
 <template>
-  <div class="sys">
+  <div class="sys" v-if="listData.total">
     <ul
       class="sys_single border-1px"
       v-for="item in listData.list"
@@ -13,13 +13,15 @@
       <li class="cont">{{ item.content }}</li>
     </ul>
   </div>
+  <NotData v-else />
 </template>
 
 <script>
+import NotData from "components/NotData";
 export default {
   data() {
     return {
-      listData: {}
+      listData: { }
     };
   },
   mounted() {
@@ -28,7 +30,7 @@ export default {
   beforeDestroy() {
     this.readAll();
   },
-  components: {},
+  components: { NotData },
   methods: {
     getSysData() {
       this.$http({

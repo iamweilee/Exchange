@@ -32,13 +32,12 @@
         </ul>
       </van-list>
     </van-pull-refresh>
-    <div v-else class="notData">
-      {{ $t("notData") }}
-    </div>
+    <NotData v-else />
   </div>
 </template>
 
 <script>
+import NotData from "components/NotData";
 import NavBar from "components/NavBar";
 export default {
   data() {
@@ -51,7 +50,8 @@ export default {
     };
   },
   components: {
-    NavBar
+    NavBar,
+    NotData
   },
   mounted() {
     this.getDisciple();
@@ -91,8 +91,8 @@ export default {
     pullUp() {
       this.getHistory({ pageNo: this.pageNo + 1 });
     },
-    clickLeft(){
-        this.$router.push('/disciple')
+    clickLeft() {
+      this.$router.push("/disciple");
     }
   }
 };

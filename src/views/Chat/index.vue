@@ -90,9 +90,10 @@ export default {
   },
   components: { NavBar, CloseOut },
   methods: {
-    showDialog(data) {
+    showDialog(data, currentPrice) {
       data.cb = this.$refs.child.refresh;
       this.dialogData = data;
+      this.currentPrice = currentPrice;
       this.$refs.CloseOut.show = true;
     },
     dialogDataNull() {
@@ -109,7 +110,10 @@ export default {
       this.getBanlace();
     },
     Detail(data) {
-      if (this.dialogData.tradeCode == data.symbol) {
+      if (
+        this.dialogData.tradeCode == data.symbol &&
+        this.$route.name == "ChatHold"
+      ) {
         this.currentPrice = data.close;
       }
       if (this.$refs.child.Detail) {
@@ -125,20 +129,25 @@ export default {
     /* 买涨 持仓量*行情价-持仓量*成交价
     买跌 持仓量*成交价-持仓量*行情价 */
     earnings(item, currentPrice) {
-      let earning = 0;
-      if (item.position == 1) {
-        //买跌
-        earning =
-          item.tradeAmount * item.tradePrice - item.tradeAmount * currentPrice;
-      } else {
-        //买涨
-        earning =
-          item.tradeAmount * currentPrice - item.tradeAmount * item.tradePrice;
-      }
-      if (earning < 0) {
-        return priceFormat(earning);
-      } else {
-        return "+" + priceFormat(earning);
+      if (this.$route.name == "ChatHold" && item.tradePrice) {
+        let earning = 0;
+        if (item.position == 1) {
+          //买跌
+          earning =
+            item.tradeAmount * item.tradePrice -
+            item.tradeAmount * currentPrice;
+        } else {
+          //买涨
+          earning =
+            item.tradeAmount * currentPrice -
+            item.tradeAmount * item.tradePrice;
+        }
+        console.log(item, earning, currentPrice);
+        if (earning < 0) {
+          return priceFormat(earning);
+        } else {
+          return "+" + priceFormat(earning);
+        }
       }
     },
     ...mapActions(["getBanlace"])

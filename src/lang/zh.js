@@ -44,7 +44,7 @@ module.exports = {
         guid: "行业",
         news: "快讯",
         guidIntord: "行业快讯德里克代课老师OTC交易",
-        lever: "杠杆操作",
+        lever: "交易操作",
         leverHow: "怎样使用杠杆",
         howOpen: "如何开户",
         experHow: "立刻开户试玩"

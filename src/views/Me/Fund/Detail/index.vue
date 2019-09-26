@@ -34,7 +34,7 @@
             <li class="cardBot_left">
               <p>单价：{{ detail.rmbRate }}CNY/USDT</p>
               <p>数量：{{ detail.coinAmount }}USDT</p>
-              <p>付款方式：网上银行</p>
+              <p>付款方式：银行卡</p>
             </li>
             <li class="cardBot_right">
               <p>付款姓名：{{ detail.userName }}</p>
@@ -78,6 +78,7 @@
     </div>
     <div class="detail_btn">
       <button
+        v-if="detail.status != 2"
         class="cancel"
         v-debounce="{
           fn: cancelOrder
@@ -87,6 +88,8 @@
       </button>
       <button
         v-if="detail.type == '0'"
+        :disabled="detail.status != 1"
+        class="okBtn"
         v-debounce="{
           fn: accountPaid
         }"
@@ -171,7 +174,7 @@ export default {
           this.downTime = Time;
         } else {
           clearTimeout(this.Timer);
-          this.$router.push(`/me/fund/status/${this.$route.params.id}`);
+          //   this.$router.push(`/me/fund/status/${this.$route.params.id}`);
         }
       }, 1000);
     },

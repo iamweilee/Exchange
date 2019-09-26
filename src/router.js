@@ -398,6 +398,12 @@ const router = new Router({
             name: "Intord",
             meta: { id: 11 },
             component: () => import("views/Intord")
+        },
+        {
+            path: "/active_page", //所有介绍
+            name: "ActivePage",
+            meta: { id: 12 },
+            component: () => import("views/ActivePage")
         }
     ]
 });

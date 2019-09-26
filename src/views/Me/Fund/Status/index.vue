@@ -84,7 +84,7 @@ export default {
       });
     },
     clickLeft() {
-      this.$router.back();
+      this.$router.push("/me/fund");
     },
     toService() {
       this.$router.push("/service");

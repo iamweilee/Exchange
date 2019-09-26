@@ -24,7 +24,7 @@
               :class="isColor(earnings(item, coinPrice[item.targetCoin]))"
               >{{ earnings(item, coinPrice[item.targetCoin]) }}</span
             >
-            <button @click.stop="closeOut(item)">
+            <button @click.stop="closeOut(item, coinPrice[item.targetCoin])">
               {{ $t("chat").closeOut }}
             </button>
           </p>
@@ -150,9 +150,9 @@ export default {
         }
       });
     },
-    closeOut(item) {
+    closeOut(item, currentPrice) {
       item.title = "平仓";
-      this.showDialog(item);
+      this.showDialog(item, currentPrice);
     },
     isBuy(type) {
       if (type) {

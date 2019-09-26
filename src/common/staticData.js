@@ -83,19 +83,23 @@ export const navList = [
         path: "/"
     },
     {
+        // id: 2,
+        // normal: icon_lever,
+        // active: icon_lever_a,
+        // name: "lever",
         id: 2,
-        normal: icon_lever,
-        active: icon_lever_a,
-        name: "lever",
-        path: "/lever"
-    },
-    {
-        id: 3,
         normal: icon_position,
         active: icon_position_a,
         name: "position",
-        path: `/position/${lStore.get("coinCode") || "BTC"}`
+        path: "/lever"
     },
+    // {
+    //     id: 3,
+    //     normal: icon_position,
+    //     active: icon_position_a,
+    //     name: "position",
+    //     path: `/position/${lStore.get("coinCode") || "BTC"}`
+    // },
     {
         id: 4,
         normal: icon_chat,

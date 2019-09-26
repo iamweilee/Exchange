@@ -1,5 +1,5 @@
 <template>
-  <div class="sys">
+  <div class="sys" v-if="noticData.total">
     <ul
       class="sys_single border-1px"
       v-for="item in noticData.list"
@@ -15,16 +15,18 @@
       </li>
     </ul>
   </div>
+  <NotData v-else />
 </template>
 
 <script>
+import NotData from "components/NotData";
 export default {
   data() {
     return {
-      noticData: {}
+      noticData: { list: [] }
     };
   },
-  components: {},
+  components: { NotData },
   mounted() {
     this._initPage();
   },

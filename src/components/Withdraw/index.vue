@@ -18,14 +18,26 @@
             <p class="withdraw_from_inp_left">提币数量：</p>
             <input
               class="withdraw_from_inp_middle"
-              type="text"
+              type="number"
+              step="0.01"
               placeholder="最小可售20 USDT"
               v-model="inpVal"
               v-debounce="{ fn: verify, method: 'input' }"
             />
             <p class="withdraw_from_inp_right" @click="allPrice">全部提出</p>
           </div>
-          <div class="withdraw_from_deal" @click="isCheckBox = !isCheckBox">
+          <div class="withdraw_from_deal">
+            <p class="lable">
+              约到账 :
+              <span class="color-red">{{
+                (inpVal * buyRate) | priceFormat
+              }}</span>
+            </p>
+            <p class="deal_tips">
+              （以实际到账为准）
+            </p>
+          </div>
+          <!-- <div class="withdraw_from_deal" @click="isCheckBox = !isCheckBox">
             <p class="checkbox">
               <img
                 v-show="isCheckBox"
@@ -38,7 +50,7 @@
               <span class="color-blue">200.00CNC</span>
               ，实现30分钟内提币到账！
             </p>
-          </div>
+          </div> -->
           <div class="withdraw_from_single bank" v-if="bankList.length">
             <p class="label">收款账户：</p>
             <div class="bankList">
@@ -101,6 +113,7 @@ import radio from "Images/other/icon_radio.png";
 import radios from "Images/other/icon_radios.png";
 import { radioList } from "common/staticData";
 import { mapGetters, mapActions } from "vuex";
+import { priceFormat } from "common/utli";
 export default {
   data() {
     return {
@@ -117,7 +130,7 @@ export default {
       numList: [2000, 1000, 500, 100, 50, "other"],
       otcId: 1,
       bankList: [],
-      isDisabled: false,
+      isDisabled: true,
       otcDetail: {}
     };
   },
@@ -156,24 +169,28 @@ export default {
       this.$refs.inpVal.focus();
     },
     verify() {
-      this.inpVal = this.inpVal.replace(/[^\d]/g, "");
+      if (this.inpVal.indexOf(".") > -1) {
+        if (this.inpVal.toString().split(".")[1].length >= 2) {
+          this.inpVal = priceFormat(this.inpVal);
+        }
+      }
       this.isClick(this.inpVal);
     },
     //是否可以点击充值按钮
     isClick(inpVal) {
       if (
-        inpVal < this.otcDetail.sellMinAmount ||
-        inpVal > this.otcDetail.sellMaxAmount
+        inpVal < this.otcDetail.buyMinAmount ||
+        inpVal > this.otcDetail.buyMaxAmount ||
+        inpVal > this.usableBalance
       ) {
         this.isDisabled = true;
-        this.$toast("提现数量不符");
       } else {
         this.isDisabled = false;
       }
     },
     //全部提现
     allPrice() {
-      this.inpVal = this.usableBalance;
+      this.inpVal = priceFormat(this.usableBalance);
       this.isClick(this.inpVal);
     },
     //选择银行卡列表

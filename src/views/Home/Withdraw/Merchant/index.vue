@@ -32,8 +32,8 @@
         <div class="single_m">
           <div class="single_m_l">
             <p>
-              限额：&nbsp;单笔{{ item.sellMinAmount }}-{{
-                item.sellMaxAmount
+              限额：&nbsp;单笔{{ item.buyMinAmount }}-{{
+                item.buyMaxAmount
               }}&nbsp;USDT
             </p>
             <p class="tips">{{ item.accountDesc }}</p>

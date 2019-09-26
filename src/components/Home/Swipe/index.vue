@@ -4,7 +4,7 @@
       class="swipe-wrap"
       :autoPlay="true"
       :showIndicator="true"
-      interval="500000"
+      interval="5000"
       duration="500"
       v-if="bannerList.length"
     >

@@ -21,12 +21,20 @@
           <img src="~assets/Images/pos/icon_zy.png" alt />
         </p>
         <div class="order_handle_r">
-          <Select
+          <!-- <Select
             v-model="value"
             :values="values"
             @input="changeSelect"
-          ></Select>
+          ></Select> -->
         </div>
+      </div>
+      <div class="btnType">
+        <button :class="!orderType && 'active'" @click="orderTypeHandle(0)">
+          市价
+        </button>
+        <button :class="orderType && 'active'" @click="orderTypeHandle(1)">
+          挂单
+        </button>
       </div>
       <div class="order_form">
         <div class="from_single" v-if="isMarket()">
@@ -107,6 +115,7 @@
                 v-model="isLossProfit"
                 active-color="#2D9FFE"
                 inactive-color="#DEDEDE"
+                @change="changeSwitch"
                 size="0.5rem"
               />
             </p>
@@ -120,13 +129,13 @@
                   class="minus"
                   src="~assets/Images/pos/icon_minus.png"
                   v-debounce="{
-                    fn: minus.bind('click', 'inpProfit')
+                    fn: minus.bind('click', 'inpLoss')
                   }"
                 />
                 <img
                   class="add"
                   v-debounce="{
-                    fn: add.bind('click', 'inpProfit')
+                    fn: add.bind('click', 'inpLoss')
                   }"
                   src="~assets/Images/pos/icon_add.png"
                 />
@@ -209,7 +218,7 @@
     <div class="submit_btn">
       <button :class="position && 'active'" @click="placeOrder(inpPrice)">
         <!-- <button :class="position && 'active'" @click="showSucceed = true"> -->
-        {{ this.btnText() }}{{ inpPrice }}
+        {{ subBtnText }}{{ inpPrice }}
       </button>
     </div>
     <OrderExplain ref="OrderExplain" />
@@ -223,13 +232,14 @@
 </template>
 
 <script>
-import Select from "components/Select";
+// import Select from "components/Select";
 import OrderExplain from "components/OrderExplain";
 import customDialog from "components/customDialog";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { priceFormat } from "common/utli";
 import ScrollV from "components/Scroll";
 import extendsCom from "@/extendsCom";
+import decimal from "common/decimal";
 export default {
   extends: extendsCom,
   props: {
@@ -272,12 +282,12 @@ export default {
       checkCash: 200, //保证金
       coinDetail: this.$lStore.get("coinPrecision"),
       cashList: [],
-      values: [{ text: "市价", value: 0 }, { text: "挂单", value: 1 }],
-      value: { text: "市价", value: 0 },
+      orderType: 0, //0 市价  1  挂单
       freeShow: false, //点击保证金
       isNight: false, //是否过夜
       isLossProfit: false, //是否设置盈损
       title: "快捷",
+      subBtnText: "",
       allCustom: false, //是否自己填入下单价格
       isProfit: false, //是否自己填入止盈价格
       isLoss: false, //是否自己填入止损价格
@@ -292,7 +302,12 @@ export default {
   mounted() {
     this._initPage();
   },
-  components: { Select, ScrollV, OrderExplain, customDialog },
+  components: {
+    // Select,
+    ScrollV,
+    OrderExplain,
+    customDialog
+  },
   methods: {
     _initPage() {
       let setingData = this.$lStore.get("setingData");
@@ -300,9 +315,45 @@ export default {
       this.cashList = setingData[this.coinCode].poundageArray;
       this.checkCash = setingData[this.coinCode].poundageArray[0];
       this.valRate = setingData[this.coinCode].valRate;
+      this.orderTypeHandle(null);
       this.resetData();
     },
-
+    changeSwitch(check) {
+      let req = this.orderData;
+      if (check) {
+        if (this.position == 1) {
+          //跌
+          if (this.isLoss) {
+            this.inpLoss = priceFormat(
+              Number(req.tradePrice) +
+                Number((req.deposit * 0.8) / req.tradeAmount),
+              this.coinPrecision
+            );
+          }
+          if (this.isProfit) {
+            this.inpProfit = priceFormat(
+              req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
+              this.coinPrecision
+            );
+          }
+        } else {
+          //涨
+          if (this.isLoss) {
+            this.inpLoss = priceFormat(
+              req.tradePrice - (req.deposit * 0.8) / req.tradeAmount,
+              this.coinPrecision
+            );
+          }
+          if (this.isProfit) {
+            this.inpProfit = priceFormat(
+              Number(req.tradePrice) +
+                Number((req.deposit * 0.8) / req.tradeAmount),
+              this.coinPrecision
+            );
+          }
+        }
+      }
+    },
     //页面显示数据
     DomData(tradePrice) {
       let req = {};
@@ -330,22 +381,43 @@ export default {
       let chazhi = Math.abs(tradePrice - price);
       return priceFormat(chazhi * this.orderData.tradeAmount);
     },
-
+    orderTypeHandle(type) {
+      if (type != this.orderType) {
+        let text = type ? "挂单" : "市价";
+        switch (this.position) {
+          case 0:
+            text = `${text}买涨 `;
+            break;
+          case 1:
+            text = `${text}买跌 `;
+            break;
+        }
+        this.orderType = type;
+        this.subBtnText = text;
+      }
+    },
     add(key) {
       this[key] = priceFormat(
         decimal.accAdd(Number(this[key]), this.coinData.tickSize),
         this.coinPrecision
       );
+      if (key == "inpPrice") {
+        this.DomData(this[key]);
+      }
     },
     minus(key) {
       this[key] = priceFormat(
         decimal.accSubtr(Number(this[key]), this.coinData.tickSize),
         this.coinPrecision
       );
+      if (key == "inpPrice") {
+        this.DomData(this[key]);
+      }
     },
     //页面显示止盈止损价
     fullStop(req) {
       let inpLoss, inpProfit;
+      console.log(this.isLossProfit);
       if (this.position == 1) {
         //跌
         if (!this.isLoss) {
@@ -433,15 +505,14 @@ export default {
     placeOrder(tradePrice) {
       let req = this.placeOrderData(tradePrice),
         url = "";
-      console.log(req);
       if (this.tradeType) {
         url =
-          this.value.value == 1
+          this.orderType == 1
             ? "/v1/leverage/limited/submit"
             : "/v1/leverage/market/submit";
       } else {
         url =
-          this.value.value == 1
+          this.orderType == 1
             ? "/v1/mock/limit_trade"
             : "/v1/mock/market_trade";
       }
@@ -455,7 +526,6 @@ export default {
           this.succeedOrder(req);
           this.getBanlace();
         }
-        // console.log(res);
       });
     },
     //获取socket数据
@@ -464,10 +534,11 @@ export default {
     },
     //判断  市价  挂单
     isMarket() {
-      switch (this.value.text) {
-        case "挂单":
+      let orderType = this.orderType + "";
+      switch (orderType) {
+        case "1":
           return true;
-        case "市价":
+        case "0":
           return false;
       }
     },
@@ -502,7 +573,7 @@ export default {
         sourceCoin: "USDT", //交易货币
         targetCoin: this.coinCode, //目标货币
         tradeCode: `${this.coinCode}/USDT`, //交易对
-        tradeType: this.value.value, //0-市价 1-限价
+        tradeType: this.orderType, //0-市价 1-限价
         userId: this.userInfo.userId
       };
       //是否过夜 0否 1是
@@ -532,11 +603,12 @@ export default {
     },
     //下单按钮数字
     btnText() {
+      let text = this.tradeType ? "市价" : "挂单";
       switch (this.position) {
         case 0:
-          return `${this.value.text}买涨 `;
+          return `${text}买涨 `;
         case 1:
-          return `${this.value.text}买跌 `;
+          return `${text}买跌 `;
       }
     },
     changeSelect(val) {
@@ -556,7 +628,7 @@ export default {
     },
     //initTradePrice 初始化下单价
     initTradePrice(tradePrice) {
-      if (this.value.value == 1) {
+      if (this.orderType == 1) {
         tradePrice =
           this.position == 1
             ? tradePrice + this.coinData.offset
