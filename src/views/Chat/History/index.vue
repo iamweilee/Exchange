@@ -14,27 +14,25 @@
         @load="pullUp"
         :immediate-check="false"
       >
-        <router-link
+        <ul
           class="history_single"
           v-for="item in historyData.list"
-          :to="`/chat/history/${item.orderNo}`"
+          @click="toHistory(item)"
           :key="item.orderNo"
         >
           <li class="top">
             <p class="top_l">
               <span class="big">{{ item.targetCoin }}</span>
               <span class="small">{{ item.sourceCoin }}</span>
-              <span class="icon" :class="item.position ? 'fall' : 'rise'">
-                {{ isBuy(item.position) }}
-              </span>
-              <span class="num"
-                >×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span
-              >
+              <span class="icon" :class="item.position ? 'fall' : 'rise'">{{ isBuy(item.position) }}</span>
+              <span class="num">×{{ item.tradeAmount / item.stockRate }}{{ $t("hand") }}</span>
             </p>
             <p class="top_btn">
-              <span :class="isColor(item.income)">{{
+              <span :class="isColor(item.income)">
+                {{
                 item.income > 0 ? "+" + item.income : item.income
-              }}</span>
+                }}
+              </span>
               <button>{{ isStatus(item.status) }}</button>
             </p>
           </li>
@@ -48,21 +46,25 @@
               <span>{{ $t("chat").closePrice }}</span>
             </p>
             <p class="line-1px">
-              <span>{{
+              <span>
+                {{
                 item.stopLoss
-                  | priceFormat(coinPrecision[item.targetCoin].tickLength)
-              }}</span>
+                | priceFormat(coinPrecision[item.targetCoin].tickLength)
+                }}
+              </span>
               <span>{{ $t("chat").lossPrice }}</span>
             </p>
             <p>
-              <span>{{
+              <span>
+                {{
                 item.stopProfit
-                  | priceFormat(coinPrecision[item.targetCoin].tickLength)
-              }}</span>
+                | priceFormat(coinPrecision[item.targetCoin].tickLength)
+                }}
+              </span>
               <span>{{ $t("chat").profitPrice }}</span>
             </p>
           </span>
-        </router-link>
+        </ul>
       </van-list>
     </van-pull-refresh>
     <NotData v-else />
@@ -97,6 +99,7 @@ export default {
     clickLeft() {
       this.$router.push("/chat");
     },
+    //获取历史订单列表
     getHistory(initReq) {
       initReq = initReq || { pageNo: 1 };
       let url = this.tradeType
@@ -124,14 +127,16 @@ export default {
         }
       });
     },
+    //判断订单状态
     isStatus(status) {
       switch (status) {
-        case 6:
+        case 2:
           return `已${this.$t("chat").cancelOrder}`;
         case 7:
           return `已${this.$t("chat").closeOut}`;
       }
     },
+    //买涨&&买跌
     isBuy(type) {
       if (type) {
         return "跌";
@@ -139,11 +144,22 @@ export default {
         return "涨";
       }
     },
+    //订单颜色
     isColor(num) {
       if (num < 0) {
         return "color-red1";
       } else {
         return "color-green";
+      }
+    },
+    toHistory(item) {
+      switch (item.status) {
+        case 2:
+          this.$router.push("/chat/history/undo/" + item.orderNo);
+          break;
+        case 7:
+          this.$router.push("/chat/history/" + item.orderNo);
+          brack;
       }
     },
     pullDown(scroll) {

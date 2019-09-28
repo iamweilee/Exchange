@@ -39,6 +39,7 @@
             }"
           />
         </div>
+        <router-link tag="p" class="forget" to="/forget_pwd">忘记密码</router-link>
         <button :disabled="isClick" class="from_btn" @click="login">
           {{ $t("loginReg").login }}
         </button>

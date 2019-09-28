@@ -96,7 +96,7 @@ export default {
         interval: this.interval,
         container_id: this.containerId,
         library_path: this.libraryPath,
-        timezone: "Asia/Shanghai", //todo: ustawianie timezone'a po strefie usera
+        // timezone: "Asia/Shanghai", //todo: ustawianie timezone'a po strefie usera
         locale: "zh",
         drawings_access: {
           type: "black",
@@ -105,12 +105,12 @@ export default {
         customFormatters: {
           timeFormatter: {
             format: function(date) {
-              return dateFormat(date, "hh:mm:ss");
+              return dateFormatUTC(date, "hh:mm:ss");
             }
           },
           dateFormatter: {
             format: function(date) {
-              return dateFormat(date, "yyyy-MM-dd");
+              return dateFormatUTC(date, "yyyy-MM-dd");
             }
           }
         },

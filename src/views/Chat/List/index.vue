@@ -4,9 +4,9 @@
       <router-link
         class="hold_single"
         tag="ul"
-        v-for="(item, index) in entrustIng"
+        v-for="item in entrustIng"
         :key="item.orderNo"
-        :to="`/chat/hold/${item.orderNo}`"
+        :to="`/chat/hold/limit/${item.orderNo}`"
       >
         <li class="top">
           <p class="top_l">

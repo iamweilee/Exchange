@@ -21,77 +21,82 @@ const market = ENV.getENV().market;
 
 // 添加响应拦截器
 axios.interceptors.response.use(
-    function(response) {
-        // 对响应数据做点什么
-        notLogin(response);
-        return response;
-    },
-    function(error) {
-        // 对响应错误做点什么
-        notLogin(error.response);
-        return Promise.reject(error);
-    }
+  function(response) {
+    // 对响应数据做点什么
+    notLogin(response);
+    return response;
+  },
+  function(error) {
+    // 对响应错误做点什么
+    notLogin(error.response);
+    return Promise.reject(error);
+  }
 );
 
 //公共函数
 const comFunc = function(options) {
-    let params = options.data ? options.data : "",
-        headers = {
-            market: market,
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + (lStore.get("token") || "")
-        },
-        axiosData = {
-            headers: headers,
-            url: options.url,
-            method: options.method,
-            baseURL: baseApi,
-            timeout: 5000
-        };
-    if (options.baseApi == "test") {
-        axiosData.baseURL = baseApi1;
-    } else if (options.baseApi == "upload") {
-        axiosData.baseURL = uploadAPI;
-    } else if (options.baseApi == "TV") {
-        axiosData.baseURL = TVApi;
-    }
-    if (options.method == "get") {
-        axiosData.params = params;
-    } else {
-        axiosData.data = params;
-    }
-    return axiosData;
+  let params = options.data ? options.data : "",
+    headers = {
+      market: market,
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + (lStore.get("token") || "")
+    },
+    axiosData = {
+      headers: headers,
+      url: options.url,
+      method: options.method,
+      baseURL: baseApi,
+      timeout: 5000
+    };
+  if (options.baseApi == "test") {
+    axiosData.baseURL = baseApi1;
+  } else if (options.baseApi == "upload") {
+    axiosData.baseURL = uploadAPI;
+  } else if (options.baseApi == "TV") {
+    axiosData.baseURL = TVApi;
+  }
+  if (options.method == "get") {
+    axiosData.params = params;
+  } else {
+    axiosData.data = params;
+  }
+  return axiosData;
 };
 //登录失效处理
 const notLogin = function(res) {
+  if (res.status != 200) {
     if (res.status == 401 || res.status == 403) {
-        Toast("登录失效，请重新登录");
-        Store.commit("SET_USERINFO", "");
-        lStore.remove("token");
-        router.push("/login");
+      Toast("登录失效，请重新登录");
+      Store.commit("SET_USERINFO", "");
+      lStore.remove("token");
+      router.push("/login");
     } else if (res.status == 500) {
-        Toast(res.data.message);
+      Toast("服务器异常");
+    } else {
+      Toast(res.message);
     }
+  }
 };
 
 const http = function(options) {
-    return new Promise((resolve, reject) => {
-        axios(comFunc(options))
-            .then(response => {
-                if (response.status === 200) {
-                    let res = response.data;
-                    console.log(res, options.url);
-                    resolve(res);
-                } else {
-                    reject(response);
-                }
-            })
-            .catch(err => {
-                let errData = err.response;
-                console.log("ERROR:", errData, options.url);
-                reject(errData);
-            });
-    });
+  return new Promise((resolve, reject) => {
+    axios(comFunc(options))
+      .then(response => {
+        if (response.status === 200) {
+          let res = response.data;
+          console.log(res, options.url);
+          resolve(res);
+        } else {
+          reject(response);
+        }
+      })
+      .catch(err => {
+        let errData = err.response;
+
+        console.log("ERROR:", errData, options.url);
+        reject(errData);
+      });
+  });
 };
 
 export default http;

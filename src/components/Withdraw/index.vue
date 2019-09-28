@@ -12,7 +12,7 @@
         <div class="withdraw_from">
           <div class="withdraw_from_single">
             <p class="label">账户余额：</p>
-            <p>{{ usableBalance | priceFormat }}USDT</p>
+            <p>{{ usableBalance | priceFormat(3) }}USDT</p>
           </div>
           <div class="withdraw_from_inp">
             <p class="withdraw_from_inp_left">提币数量：</p>
@@ -29,13 +29,13 @@
           <div class="withdraw_from_deal">
             <p class="lable">
               约到账 :
-              <span class="color-red">{{
+              <span class="color-red">
+                {{
                 (inpVal * buyRate) | priceFormat
-              }}</span>
+                }}
+              </span>
             </p>
-            <p class="deal_tips">
-              （以实际到账为准）
-            </p>
+            <p class="deal_tips">（以实际到账为准）</p>
           </div>
           <!-- <div class="withdraw_from_deal" @click="isCheckBox = !isCheckBox">
             <p class="checkbox">
@@ -50,7 +50,7 @@
               <span class="color-blue">200.00CNC</span>
               ，实现30分钟内提币到账！
             </p>
-          </div> -->
+          </div>-->
           <div class="withdraw_from_single bank" v-if="bankList.length">
             <p class="label">收款账户：</p>
             <div class="bankList">
@@ -67,12 +67,8 @@
                     @click="checkBankHandle(item)"
                   >
                     <div class="bankSingle_left">
-                      <p>
-                        {{ item.bankName }}
-                      </p>
-                      <p>
-                        {{ item.bankAccount }}
-                      </p>
+                      <p>{{ item.bankName }}</p>
+                      <p>{{ item.bankAccount }}</p>
                     </div>
                     <van-icon
                       color="#00a7e0"
@@ -87,16 +83,17 @@
           </div>
           <div class="withdraw_add" v-else>
             <button @click="toAddBank">
-              <van-icon class="plus_icon" name="plus" /> 添加银行卡
+              <van-icon class="plus_icon" name="plus" />添加银行卡
             </button>
           </div>
         </div>
         <div class="withdraw_tips">
           <h2>注意事项</h2>
-          <p><span>1、</span>工作日提币24小时内到账，节假日顺延到工作日；</p>
           <p>
-            <span>2、</span
-            >未交易用户提币将收取一定手续费，手续费将从到账金额中扣除。
+            <span>1、</span>工作日提币24小时内到账，节假日顺延到工作日；
+          </p>
+          <p>
+            <span>2、</span>未交易用户提币将收取一定手续费，手续费将从到账金额中扣除。
           </p>
         </div>
       </div>
@@ -190,7 +187,7 @@ export default {
     },
     //全部提现
     allPrice() {
-      this.inpVal = priceFormat(this.usableBalance);
+      this.inpVal = priceFormat(this.usableBalance, 3);
       this.isClick(this.inpVal);
     },
     //选择银行卡列表

@@ -3,7 +3,7 @@ const history = {};
 
 export default {
     history: history,
-    getBars: function(symbolInfo, resolution, from, to, first, limit) {
+    getBars: function (symbolInfo, resolution, from, to, first, limit) {
         var split_symbol = symbolInfo.name.split(/[:/]/);
         // to = to * 1000;
         // console.log(resolution)
@@ -48,13 +48,11 @@ export default {
                         };
                     });
 
-                    let lastBar = newList[99];
-                    console.log(lastBar);
-                    history[symbolInfo.name] = {
-                        lastBar: lastBar
-                    };
-                    console.log(history[symbolInfo.name]);
-                    return resList;
+                    if (first) {
+                        var lastBar = newList[newList.length - 1];
+                        history[symbolInfo.name] = { lastBar: lastBar };
+                    }
+                    return newList;
                 } else {
                     return [];
                 }

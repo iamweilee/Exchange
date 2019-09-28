@@ -7,7 +7,7 @@
 
       <div v-if="userInfo" class="group_login">
         <p class="balance" @click.stop="show = true">
-          {{ usableBalance | priceFormat }}USDT
+          {{ usableBalance | priceFormat(3) }}USDT
           <img
             class="balance_icon"
             src="~assets/Images/home/icon_more_unsel.png"

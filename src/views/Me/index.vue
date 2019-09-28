@@ -23,7 +23,7 @@
     <div class="me_cont">
       <div class="me_cont_top">
         <p class="title">USDT({{ tradeType ? "" : $t("real") }}余额)</p>
-        <p class="num">{{ usableBalance | priceFormat }}</p>
+        <p class="num">{{ usableBalance | priceFormat(3) }}</p>
       </div>
       <div class="me_cont_btn">
         <button @click="toUrl('/otc')">立即充币</button>

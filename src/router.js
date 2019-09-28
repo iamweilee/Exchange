@@ -168,6 +168,12 @@ const router = new Router({
             component: () => import("views/Login/pwd")
         },
         {
+            path: "/forget_pwd",
+            name: "ForgetPwd",
+            meta: { id: 0.7 },
+            component: () => import("views/Login/Forget")
+        },
+        {
             path: "/register", //注册
             name: "Register",
             meta: { id: 0.3 },
@@ -238,10 +244,16 @@ const router = new Router({
             ]
         },
         {
-            path: "/chat/hold/:id", //持仓详情
-            name: "HoldDetail",
+            path: "/chat/hold/market/:id", //持仓详情
+            name: "MarketPrice",
             meta: { id: 4.3 },
-            component: () => import("views/Chat/HoldDetail")
+            component: () => import("views/Chat/HoldDetail/MarketPrice.vue")
+        },
+        {
+            path: "/chat/hold/limit/:id", //持仓详情
+            name: "LimitPrice",
+            meta: { id: 4.4 },
+            component: () => import("views/Chat/HoldDetail/LimitOrder.vue")
         },
 
         {
@@ -249,6 +261,12 @@ const router = new Router({
             name: "ChatHistoryDetail",
             meta: { id: 4.21 },
             component: () => import("views/Chat/History/Detail.vue")
+        },
+        {
+            path: "/chat/history/undo/:id", //持仓历史
+            name: "ChatHistoryUndo",
+            meta: { id: 4.22 },
+            component: () => import("views/Chat/History/Undo.vue")
         },
         {
             path: "/me", //我的

@@ -11,12 +11,9 @@
     </ul>
     <div class="order_scroll">
       <div class="order_handle">
-        <p
-          class="order_handle_l"
-          v-debounce="{
+        <p class="order_handle_l" v-debounce="{
             fn: Specialty
-          }"
-        >
+          }">
           切换至{{ isSpecialty() ? "快捷" : "专业" }}版
           <img src="~assets/Images/pos/icon_zy.png" alt />
         </p>
@@ -25,16 +22,12 @@
             v-model="value"
             :values="values"
             @input="changeSelect"
-          ></Select> -->
+          ></Select>-->
         </div>
       </div>
       <div class="btnType">
-        <button :class="!orderType && 'active'" @click="orderTypeHandle(0)">
-          市价
-        </button>
-        <button :class="orderType && 'active'" @click="orderTypeHandle(1)">
-          挂单
-        </button>
+        <button :class="!orderType && 'active'" @click="orderTypeHandle(0)">市价</button>
+        <button :class="orderType && 'active'" @click="orderTypeHandle(1)">挂单</button>
       </div>
       <div class="order_form">
         <div class="from_single" v-if="isMarket()">
@@ -44,23 +37,14 @@
           </div>
           <div class="from_single_cont">
             <div class="box" @click="allCustom = true">
-              <input
-                type="number"
-                v-model="inpPrice"
-                @input="changeTradePrice"
-              />
+              <input type="number" v-model="inpPrice" @input="changeTradePrice" />
               <img
                 class="minus"
                 @click="minus('inpPrice')"
                 src="~assets/Images/pos/icon_minus.png"
                 alt
               />
-              <img
-                class="add"
-                @click="add('inpPrice')"
-                src="~assets/Images/pos/icon_add.png"
-                alt
-              />
+              <img class="add" @click="add('inpPrice')" src="~assets/Images/pos/icon_add.png" alt />
             </div>
           </div>
         </div>
@@ -76,9 +60,7 @@
                 :key="item"
                 :class="item == checkHand && 'active'"
                 @click="handClick(item, 'checkHand')"
-              >
-                {{ item }}手
-              </button>
+              >{{ item }}手</button>
             </div>
           </div>
         </div>
@@ -86,8 +68,8 @@
           <div class="from_single_label">
             <p>保证金(USDT)</p>
             <p>
-              可用&nbsp;{{ usableBalance | priceFormat }}&nbsp;USDT，杠杆约{{
-                orderData.leverage
+              可用&nbsp;{{ usableBalance | priceFormat(3) }}&nbsp;USDT，杠杆约{{
+              orderData.leverage
               }}X
             </p>
           </div>
@@ -98,18 +80,14 @@
                 :key="item"
                 :class="item == checkCash && 'active'"
                 @click="handClick(item, 'checkCash')"
-              >
-                {{ item * checkHand }}
-              </button>
+              >{{ item * checkHand }}</button>
             </div>
           </div>
         </div>
 
         <div class="from_single" v-if="isSpecialty()">
           <div class="from_single_label big">
-            <div class="left">
-              {{ $t("stopProfit") + $t("stopLoss") }}
-            </div>
+            <div class="left">{{ $t("stopProfit") + $t("stopLoss") }}</div>
             <p>
               <van-switch
                 v-model="isLossProfit"
@@ -140,11 +118,14 @@
                   src="~assets/Images/pos/icon_add.png"
                 />
                 <p class="box-size" @click.stop>
-                  ≥<em>{{ astrict(inpPrice) }}</em>
+                  ≥
+                  <em>{{ astrict(inpPrice) }}</em>
                   预计亏损约
-                  <em>{{
+                  <em>
+                    {{
                     exLossProfit(inpPrice, inpLoss, orderData.tradeAmount)
-                  }}</em>
+                    }}
+                  </em>
                 </p>
               </div>
             </div>
@@ -167,11 +148,14 @@
                   src="~assets/Images/pos/icon_add.png"
                 />
                 <p class="box-size" @click.stop>
-                  ≤<em>{{ astrict(inpPrice, true) }}</em>
+                  ≤
+                  <em>{{ astrict(inpPrice, true) }}</em>
                   预计盈利约
-                  <em>{{
+                  <em>
+                    {{
                     exLossProfit(inpPrice, inpProfit, orderData.tradeAmount)
-                  }}</em>
+                    }}
+                  </em>
                 </p>
               </div>
             </div>
@@ -199,18 +183,13 @@
           <div class="from_single_label big" @click="freeShow = !freeShow">
             <p>交易综合费</p>
             <p class="selectSingle">
-              {{ orderData.poundageAmount }}（已优惠0）<img
-                :class="freeShow && 'rotate'"
-                src="~assets/Images/pos/icon_down.png"
-                alt
-              />
+              {{ orderData.poundageAmount }}（已优惠0）
+              <img :class="freeShow && 'rotate'" src="~assets/Images/pos/icon_down.png" alt />
             </p>
           </div>
           <div class="from_single_free" v-show="freeShow">
             <p>原价</p>
-            <p>
-              {{ orderData.poundageAmount }}
-            </p>
+            <p>{{ orderData.poundageAmount }}</p>
           </div>
         </div>
       </div>
@@ -223,9 +202,7 @@
     </div>
     <OrderExplain ref="OrderExplain" />
     <customDialog ref="customDialog" :titleText="$t('night')">
-      <p>
-        选择开启后，该笔订单可持仓过夜，但会收取一定的库存费，库存费=交易综合费*30%*持仓过夜天数；如用户不需要持仓过夜可取消设置，设置时间为【07:00:00—次日05:53:00】。
-      </p>
+      <p>选择开启后，该笔订单可持仓过夜，但会收取一定的库存费，库存费=交易综合费*30%*持仓过夜天数；如用户不需要持仓过夜可取消设置，设置时间为【07:00:00—次日05:53:00】。</p>
       <p>如未开启，则该笔订单在次日05:53:00前会被系统强制平仓。</p>
     </customDialog>
   </div>
@@ -392,7 +369,7 @@ export default {
             text = `${text}买跌 `;
             break;
         }
-        this.orderType = type;
+        this.orderType = type ? type : 0;
         this.subBtnText = text;
       }
     },

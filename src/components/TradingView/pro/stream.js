@@ -16,7 +16,7 @@ export default {
             lastBar: historyProvider.history[symbolInfo.name].lastBar,
             listener: updateCb
         };
-        console.log(historyProvider.history[symbolInfo.name].lastBar.time)
+        
         _subs.push(newSub);
     },
     unsubscribeBars: function(uid) {
@@ -48,6 +48,7 @@ const klineLastBar = data => {
 // Take a single trade, and subscription record, return updated bar
 function updateBar(data, sub) {
     var lastBar = sub.lastBar;
+    console.log(lastBar)
     let resolution = sub.resolution;
 
     if (resolution.includes("D")) {
@@ -62,6 +63,7 @@ function updateBar(data, sub) {
     var rounded = data.ts;
     var lastBarSec = Number(lastBar.time) + resolution * 60000;
     var _lastBar;
+    console.log(rounded,lastBarSec)
 
     // return;
     if (rounded > lastBarSec) {

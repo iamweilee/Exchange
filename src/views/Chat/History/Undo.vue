@@ -2,9 +2,7 @@
   <div class="hdetail" v-if="orderDetail.id">
     <NavBar
       :title="
-        `${orderDetail.tradeCode}（${
-          orderDetail.position == 1 ? $t('stopLoss') : $t('stopProfit')
-        }）`
+        `${orderDetail.tradeCode}（${$t('chat').nowUndo}）`
       "
       fixed
       showL
@@ -13,17 +11,12 @@
     <div class="hdetail_wrap">
       <div class="hdetail_title">
         <div class="left">
-          <p>{{ $t("chat").profit }}</p>
+          <p>{{orderDetail.targetCoin}}</p>
           <button
             :class="!position&&'rise'"
           >{{ tradeHandle(orderDetail.tradeType, orderDetail.position) }}</button>
         </div>
-        <div class="right">
-          <p
-            :class="isColor(orderDetail.income)"
-          >{{ orderDetail.income > 0 ? "+" + orderDetail.income : orderDetail.income }}</p>
-          <p>{{ -orderDetail.poundageAmount + orderDetail.income | priceFormat}}({{ $t("chat").netProfit }})</p>
-        </div>
+        <div class="right">{{$t('chat').nowUndo}}</div>
       </div>
       <div class="hdetail_info">
         <ul class="List">
@@ -31,10 +24,7 @@
             <p>{{ $t("chat").dealPrice }}</p>
             <p>{{ orderDetail.dealPrice | priceFormat(coinData.tickLength) }}</p>
           </li>
-          <li>
-            <p>{{ $t("chat").closePrice }}</p>
-            <p>{{ orderDetail.closePrice | priceFormat(coinData.tickLength) }}</p>
-          </li>
+
           <li>
             <p>{{ $t("chat").lossPrice }}</p>
             <p>{{ orderDetail.stopLoss | priceFormat(coinData.tickLength) }}</p>
@@ -55,7 +45,7 @@
       <div class="dotted"></div>
       <div class="hdetail_intord">
         <p>{{ $t("chat").dealTime }}&nbsp;:&nbsp;{{ orderDetail.dealTime }}</p>
-        <p>{{ $t("chat").closeTime }}&nbsp;:&nbsp;{{ orderDetail.updateTime }}</p>
+        <p>{{ $t("chat").undoTime }}&nbsp;:&nbsp;{{ orderDetail.updateTime }}</p>
         <p>{{ $t("chat").orderNo }}&nbsp;:&nbsp;{{ orderDetail.orderNo }}</p>
       </div>
     </div>
@@ -148,8 +138,11 @@ export default {
     align-items: center;
     padding: 0 16px;
     .left {
+      display: flex;
+      align-items: center;
       p {
         font-size: 18px;
+        margin-right: 6px;
       }
       button {
         width: 60px;
@@ -158,21 +151,15 @@ export default {
         color: $write;
         border-radius: 9px;
         font-size: 12px;
-        margin-top: 6px;
         &.rise {
           background-color: $green;
         }
       }
     }
     .right {
-      p {
-        font-size: 13px;
-        text-align: right;
-        &:first-child {
-          font-size: 22px;
-          margin-bottom: 4px;
-        }
-      }
+      font-size: 15px;
+      text-align: right;
+      color: $color9;
     }
   }
   &_info {

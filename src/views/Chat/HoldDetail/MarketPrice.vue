@@ -1,11 +1,6 @@
 <template>
   <div class="holdD">
-    <NavBar
-      :title="$t('chat').DetailTitle"
-      fixed
-      showL
-      @clickLeft="clickLeft"
-    />
+    <NavBar :title="$t('chat').DetailTitle" fixed showL @clickLeft="clickLeft" />
     <div class="holdD_wrap">
       <div class="holdD_btn">
         <ScrollH scrollX :data="btnList">
@@ -15,9 +10,7 @@
               :key="item.title"
               :class="item.title == resolution && 'active'"
               @click="checkResolution(item.title)"
-            >
-              {{ item.title }}
-            </button>
+            >{{ item.title }}</button>
           </div>
         </ScrollH>
       </div>
@@ -30,15 +23,17 @@
       <div class="holdD_title">
         <div class="holdD_title_top">
           <p>{{ orderDetail.tradeCode }}</p>
-          <p :class="isColor(earnings(orderDetail, socketData.close))">
-            {{ earnings(orderDetail, socketData.close) }}
-          </p>
+          <p
+            :class="isColor(earnings(orderDetail, socketData.close))"
+          >{{ earnings(orderDetail, socketData.close) }}</p>
         </div>
         <div class="holdD_title_bot">
-          <p>{{ orderDetail.tradeType == 0 ? $t("fall") : $t("rise") }}</p>
-          <p @click="showProfitLoss = !showProfitLoss">
-            {{ $t("chat").setting }}
-          </p>
+          <p
+            class="rise"
+            :class="orderDetail.position && 'fall'"
+          >{{ orderDetail.position ? $t("fall") : $t("rise") }}</p>
+
+          <p @click="showProfitLoss = !showProfitLoss">{{ $t("chat").setting }}</p>
         </div>
       </div>
       <div class="holdD_info">
@@ -46,29 +41,37 @@
           <li>
             <p>
               <span>{{ $t("chat").lossPrice }}</span>
-              <span>{{
+              <span>
+                {{
                 orderDetail.stopLoss | priceFormat(coinData.tickLength)
-              }}</span>
+                }}
+              </span>
             </p>
             <p>
               <span>{{ $t("chat").currentPrice }}</span>
-              <span>{{
+              <span>
+                {{
                 socketData.close | priceFormat(coinData.tickLength)
-              }}</span>
+                }}
+              </span>
             </p>
           </li>
           <li>
             <p>
               <span>{{ $t("chat").profitPrice }}</span>
-              <span>{{
+              <span>
+                {{
                 orderDetail.stopProfit | priceFormat(coinData.tickLength)
-              }}</span>
+                }}
+              </span>
             </p>
             <p>
               <span>{{ $t("chat").dealPrice }}</span>
-              <span>{{
+              <span>
+                {{
                 orderDetail.dealPrice | priceFormat(coinData.tickLength)
-              }}</span>
+                }}
+              </span>
             </p>
           </li>
           <li>
@@ -88,9 +91,11 @@
             </p>
             <p>
               <span>{{ $t("chat").dealMarket }}</span>
-              <span>{{
+              <span>
+                {{
                 (orderDetail.dealPrice * orderDetail.tradeAmount) | priceFormat
-              }}</span>
+                }}
+              </span>
             </p>
           </li>
           <li class="List_bot mt_bot">
@@ -117,8 +122,9 @@
         <div class="holdD_night_left">
           <p>{{ $t("night") }}</p>
           <p class="icon_size" @click="showCustomDialog">
-            <img src="~assets/Images/other/icon_night.png" alt />{{
-              $t("holdTo")
+            <img src="~assets/Images/other/icon_night.png" alt />
+            {{
+            $t("holdTo")
             }}6:00
           </p>
         </div>
@@ -131,10 +137,10 @@
       </div>
     </div>
     <div class="holdD_hanle">
-      <button @click="afterSingle(socketData.close)">
-        {{ $t("chat").goOrder }}
-      </button>
-      <button @click="showDialog">{{ $t("chat").closeOut }}</button>
+      <button @click="afterSingle(socketData.close)">{{ $t("chat").goOrder }}</button>
+      <button
+        @click="showDialog"
+      >{{ orderDetail.tradeType?$t("chat").cancelOrder:$t("chat").closeOut }}</button>
     </div>
     <van-dialog
       class="customDialog lossProfit"
@@ -165,7 +171,7 @@
             <input type="text" v-model="lossPrice" />
             <!-- v-debounce="{
                 fn: minus.bind('click', 'lossPrice')
-              }" -->
+            }"-->
             <img
               class="minus"
               src="~assets/Images/pos/icon_minus.png"
@@ -175,7 +181,7 @@
             />
             <!-- v-debounce="{
                 fn: add.bind('click', 'lossPrice')
-              }" -->
+            }"-->
             <img
               class="add"
               v-debounce="{
@@ -184,17 +190,22 @@
               src="~assets/Images/pos/icon_add.png"
             />
             <p class="box-size" @click.stop>
-              ≥<em>{{
+              ≥
+              <em>
+                {{
                 (socketData.close * 1.002) | priceFormat(coinData.tickLength)
-              }}</em>
+                }}
+              </em>
               预计亏损约
-              <em>{{
+              <em>
+                {{
                 exLossProfit(
-                  orderDetail.dealPrice,
-                  lossPrice,
-                  orderDetail.tradeAmount
+                orderDetail.dealPrice,
+                lossPrice,
+                orderDetail.tradeAmount
                 )
-              }}</em>
+                }}
+              </em>
             </p>
           </div>
         </div>
@@ -219,17 +230,22 @@
               src="~assets/Images/pos/icon_add.png"
             />
             <p class="box-size" @click.stop>
-              ≤<em>{{
+              ≤
+              <em>
+                {{
                 (socketData.close * 0.998) | priceFormat(coinData.tickLength)
-              }}</em>
+                }}
+              </em>
               预计盈利约
-              <em>{{
+              <em>
+                {{
                 exLossProfit(
-                  orderDetail.dealPrice,
-                  profitPrice,
-                  orderDetail.tradeAmount
+                orderDetail.dealPrice,
+                profitPrice,
+                orderDetail.tradeAmount
                 )
-              }}</em>
+                }}
+              </em>
             </p>
           </div>
         </div>
@@ -261,9 +277,7 @@
       :dialogData="orderDetail"
     />
     <customDialog ref="customDialog" :titleText="$t('night')">
-      <p>
-        选择开启后，该笔订单可持仓过夜，但会收取一定的库存费，库存费=交易综合费*30%*持仓过夜天数；如用户不需要持仓过夜可取消设置，设置时间为【07:00:00—次日05:53:00】。
-      </p>
+      <p>选择开启后，该笔订单可持仓过夜，但会收取一定的库存费，库存费=交易综合费*30%*持仓过夜天数；如用户不需要持仓过夜可取消设置，设置时间为【07:00:00—次日05:53:00】。</p>
       <p>如未开启，则该笔订单在次日05:53:00前会被系统强制平仓。</p>
     </customDialog>
   </div>
@@ -374,7 +388,9 @@ export default {
         req = this.placeOrderData(tradePrice),
         messageText = `确定以${req.tradeType ? "限价" : "市价"}再次下单${
           req.targetCoin
-        }买跌${req.tradeAmount}个`;
+        }买${
+          this.orderDetail.tradeType == 0 ? this.$t("fall") : this.$t("rise")
+        }${req.tradeAmount}个`;
       this.$dialog
         .confirm({
           title: "提示",
@@ -418,6 +434,7 @@ export default {
     },
     //下单数据二次计算
     placeOrderData(tradePrice) {
+      console.log(tradePrice);
       tradePrice = this.initTradePrice(tradePrice);
       let orderDetail = this.orderDetail;
       let req = {

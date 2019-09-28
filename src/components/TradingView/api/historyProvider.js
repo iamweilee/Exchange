@@ -4,7 +4,6 @@ const api_root = "https://min-api.cryptocompare.com";
 const history = {};
 
 export default {
-    history: history,
     getBars: function(symbolInfo, resolution, from, to, first, limit) {
         var split_symbol = symbolInfo.name.split(/[:/]/);
         console.log(resolution)
@@ -43,6 +42,7 @@ export default {
                         volume: el.volumefrom
                     };
                 });
+                console.log(bars[bars.length - 1])
                 if (first) {
                     var lastBar = bars[bars.length - 1];
                     history[symbolInfo.name] = { lastBar: lastBar };

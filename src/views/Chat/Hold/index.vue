@@ -6,7 +6,7 @@
         tag="ul"
         v-for="item in List"
         :key="item.orderNo"
-        :to="`/chat/hold/${item.orderNo}`"
+        :to="`/chat/hold/market/${item.orderNo}`"
       >
         <li class="top">
           <p class="top_l">

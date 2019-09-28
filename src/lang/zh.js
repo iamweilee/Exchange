@@ -107,6 +107,8 @@ module.exports = {
         dealMarket: "开仓市值",
         closePrice: "平仓价",
         closeTime: "平仓时间",
+        undoTime: "撤单时间",
+        nowUndo:"已撤单",
         currentPrice: "当前价",
         tradePrice: "挂单价",
         lossPrice: "止损价",
