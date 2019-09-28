@@ -39,9 +39,9 @@
           <span class="bot">
             <p class="line-1px">
               <span>{{ item.tradePrice }}</span>
-              <span>{{ $t("chat").dealPrice }}</span>
+              <span>{{ item.status == 7?$t("chat").dealPrice:$t("chat").tradePrice }}</span>
             </p>
-            <p class="line-1px">
+            <p class="line-1px" v-show="item.status == 7">
               <span>{{ item.closePrice }}</span>
               <span>{{ $t("chat").closePrice }}</span>
             </p>
@@ -131,6 +131,8 @@ export default {
     isStatus(status) {
       switch (status) {
         case 2:
+          return `已${this.$t("chat").cancelOrder}`;
+        case 6:
           return `已${this.$t("chat").cancelOrder}`;
         case 7:
           return `已${this.$t("chat").closeOut}`;
