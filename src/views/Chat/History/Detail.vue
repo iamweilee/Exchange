@@ -53,7 +53,7 @@
       <div class="dotted"></div>
       <div class="hdetail_intord">
         <p>
-          {{ $t("chat").dealTime }}&nbsp;:&nbsp;{{ orderDetail.createTime }}
+          {{ $t("chat").dealTime }}&nbsp;:&nbsp;{{ orderDetail.dealTime }}
         </p>
         <p>
           {{ $t("chat").closeTime }}&nbsp;:&nbsp;{{ orderDetail.closeTime }}

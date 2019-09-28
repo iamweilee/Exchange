@@ -18,7 +18,7 @@
               </p>
             </div>
           </div>
-          <button class="btn_apprentice">立即收徒</button>
+          <!-- <button class="btn_apprentice">立即收徒</button> -->
         </div>
         <div class="wrap_info">
           <router-link tag="div" to="/disciple/list" class="wrap_info_single">

@@ -383,6 +383,7 @@ export default {
     },
     orderTypeHandle(type) {
       if (type != this.orderType) {
+        console.log(this.orderType);
         let text = type ? "挂单" : "市价";
         switch (this.position) {
           case 0:
@@ -392,7 +393,7 @@ export default {
             text = `${text}买跌 `;
             break;
         }
-        this.orderType = type;
+        this.orderType = type || 0;
         this.subBtnText = text;
       }
     },

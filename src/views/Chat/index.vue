@@ -9,9 +9,12 @@
             <p>USDT</p>
             <p>{{ balance.enableAmount | priceFormat }}</p>
           </div>
-          <router-link tag="p" to="/otc" class="card_btn">
+          <router-link v-show="tradeType" tag="p" to="/otc" class="card_btn">
             <button>{{ $t("chat").rechargeBtn }}</button>
           </router-link>
+          <p  v-show="!tradeType" class="card_btn" @click="setTradeType(!tradeType)">
+            <button>{{ $t("cutFake") }}</button>
+          </p>
         </div>
         <ul class="list">
           <li>
@@ -150,7 +153,7 @@ export default {
         }
       }
     },
-    ...mapActions(["getBanlace"])
+    ...mapActions(["getBanlace","setTradeType"])
   }
   //   watch: {
   //     $route(to, from) {

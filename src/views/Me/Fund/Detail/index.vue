@@ -76,9 +76,9 @@
       </div>
       <p class="detail_tips">支付宝转账时请备注您的姓名，否则无法到账</p>
     </div>
-    <div class="detail_btn">
+    <div class="detail_btn" v-show="detail.rmbValue">
       <button
-        v-if="detail.status != 2"
+        v-show="detail.status != 2"
         class="cancel"
         v-debounce="{
           fn: cancelOrder
@@ -87,7 +87,7 @@
         取消订单
       </button>
       <button
-        v-if="detail.type == '0'"
+        v-show="detail.type == '0'"
         :disabled="detail.status != 1"
         class="okBtn"
         v-debounce="{
@@ -132,7 +132,19 @@ export default {
         method: "put"
       }).then(res => {
         if (res.status == this.STATUS) {
+          let _this = this;
+          this.$dialog.confirm({
+            title: "提示",
+            message:
+              "我们将在5分钟之内确认您的付款金额，请您耐心等候！如果5分钟之内未到账，请您联系客服处理！",
+            confirmButtonText: "联系客服",
+            cancelButtonText: "去看行情",
+            confirmButtonColor: "#2d9ef5",
+            beforeClose: this.beforeClose.bind(arguments, true)
+          });
           this.detail.status = "2";
+          clearTimeout(this.Timer);
+          this.downTime = "";
         }
       });
     },
@@ -144,26 +156,59 @@ export default {
       }).then(res => {
         if (res.status == this.STATUS) {
           this.detail = res.data;
-          this.timeEnd(res.data.updateTime);
+          if (res.data.status == 1) {
+            this.timeEnd(res.data.updateTime);
+          }
         }
       });
     },
     //取消订单
     cancelOrder() {
+      let _this = this;
+      this.$dialog.confirm({
+        title: "提示",
+        message: "确定取消该笔订单吗？",
+        confirmButtonText: "确定",
+        confirmButtonColor: "#2d9ef5",
+        beforeClose: this.beforeClose.bind(arguments, false)
+      });
+    },
+    beforeClose(bol, action, done) {
+      if (bol) {
+        if (action === "confirm") {
+          this.$router.push(`/service`);
+          done();
+        } else {
+          this.$router.push(`/lever`);
+          done();
+        }
+      } else {
+        if (action === "confirm") {
+          this.cnacelHttp(done);
+        } else {
+          done();
+        }
+      }
+    },
+    beforeClose1(action, done) {},
+    cnacelHttp(done) {
       let url =
         this.detail.type == "0"
           ? "recharge-record-cancel"
           : "draw-record-cancel";
-
       this.$http({
         url: `/v1/position/otc/${url}/${this.$route.params.id}`,
         method: "put"
       }).then(res => {
         if (res.status == this.STATUS) {
+          done();
           this.$router.push(`/me/fund/status/${this.$route.params.id}`);
+        } else {
+          done(false);
         }
       });
     },
+
     //倒计时
     timeEnd(creatDate) {
       let endDate = new Date(creatDate).getTime() + 1000 * 60 * 20;

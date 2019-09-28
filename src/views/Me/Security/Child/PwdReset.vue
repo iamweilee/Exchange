@@ -81,7 +81,7 @@ export default {
         method: "put"
       }).then(res => {
         if (res.status == this.STATUS) {
-          this.getUserInfo();
+          this.loginOut();
         }
       });
     },
@@ -93,12 +93,29 @@ export default {
         ? (this.isClick = true)
         : (this.isClick = false);
     },
+    loginOut() {
+      this.$http({ url: "/v1/user/login_out", method: "post" })
+        .then(res => {
+          if (res.status == this.STATUS) {
+            this.$lStore.remove("token");
+            this.updatedUserInfo("");
+            this.updatedBanlace("");
+            this.$router.push("/login");
+          }
+        })
+        .catch(err => {
+          this.$lStore.remove("token");
+          this.updatedUserInfo("");
+          this.updatedBanlace("");
+          this.$router.push("/login");
+        });
+    },
     //发送验证
     sendMsg() {
       let _this = this;
       this.sendMsgComm({
         loginName: this.resetData.loginName,
-        codeType: 7,
+        codeType: 3,
         fn: _this.$timeSet.bind("edit", _this)
       });
     },

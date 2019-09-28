@@ -108,7 +108,7 @@
       </div>
       <div class="dotted"></div>
       <div class="holdD_order">
-        <p>{{ $t("chat").dealTime }}：{{ orderDetail.dealTime }}</p>
+        <p>{{ $t("chat").dealTime }}：{{ orderDetail.createTime }}</p>
         <p>{{ $t("chat").orderNo }}：{{ orderDetail.orderNo }}</p>
         <p></p>
       </div>
