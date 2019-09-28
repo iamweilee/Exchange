@@ -360,6 +360,7 @@ export default {
     },
     orderTypeHandle(type) {
       if (type != this.orderType) {
+        console.log(this.orderType);
         let text = type ? "挂单" : "市价";
         switch (this.position) {
           case 0:

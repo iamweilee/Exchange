@@ -22,17 +22,17 @@
       >
         <li class="left">
           <p class="left_title">
-            <span>OTC交易(BEEPAY充币)</span>
+            <span>OTC{{item.type==1?"提现":"充值"}}</span>
             <span :class="statusColor(item.status)">{{
               item.status | statusType(true)
             }}</span>
           </p>
-          <p class="left_shops">签约商户</p>
+          <p class="left_shops">签约商户：{{item.otcUserName}}</p>
           <p class="left_time">{{ item.createTime | dateFormat }}</p>
         </li>
         <li class="right">
           <p class="big">
-            {{ item.status == 1 ? "-" : "+" }}{{ item.coinAmount }}
+            {{ item.type == 1 ? "-" : "+" }}{{ item.coinAmount }}
           </p>
           <p class="small">USDT</p>
         </li>

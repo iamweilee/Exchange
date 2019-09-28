@@ -153,7 +153,7 @@ export default {
       }, 1000);
     },
     clickLeft() {
-      this.$router.back();
+      this.$router.push("/");
     },
     onRefresh() {
       setTimeout(() => {
